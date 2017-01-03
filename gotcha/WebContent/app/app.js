@@ -1,0 +1,1 @@
+var gotcha = angular.module('gotcha', []);
