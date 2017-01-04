@@ -5,4 +5,4 @@
  * @author Ahmad
  *
  */
-package gotcha.logic;
+package gotcha.controller;
