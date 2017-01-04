@@ -80,12 +80,12 @@ public interface Globals {
 			return connection;
 		}
 		// Execute a given SQL query as a string
-		public static void execute (String query) throws SQLException {
+		public static ResultSet execute (String query) throws SQLException {
 			Connection connection = getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
-			System.out.println(resultSet.toString());
 			statement.close();
+			return resultSet;
 		}
 	}
 }
