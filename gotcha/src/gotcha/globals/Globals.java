@@ -1,7 +1,5 @@
 package gotcha.globals;
 
-import java.util.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -51,19 +49,13 @@ public interface Globals {
 	        							+ 	");"
 	        							   );
 
-	        		statement.executeUpdate("CREATE TABLE MESSAGE ("
-	        							+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-	        							+ 		"SENT TIMESTAMP NOT NULL,"
-	        							+ 		"TEXT VARCHAR(2500) NOT NULL"
-	        							+ 	");"
-	        							   );
-
 	        		statement.executeUpdate("CREATE TABLE MESSAGES ("
 	        							+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
+	        							+ 		"TEXT VARCHAR(2500) NOT NULL,"
 	        							+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
 	        							+ 		"RECEIVER VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
 	        							+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES APP.CHANNELS(NAME) ON DELETE CASCADE,"
-	        							+ 		"MESSAGE INTEGER NOT NULL REFERENCES APP.MESSAGE(ID) ON DELETE CASCADE"
+	        							+ 		"SENT TIMESTAMP NOT NULL"
 	        							+ 	");"
 	        							   );
 					// Commit the changes
@@ -81,7 +73,6 @@ public interface Globals {
 					// get a connection to it
 					connection = DriverManager.getConnection(protocol + dbName);
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

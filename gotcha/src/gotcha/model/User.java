@@ -41,11 +41,27 @@ public class User {
 		this.description = description;
 		this.photoUrl = photoUrl;
 	}
+	
+	public String name () {
+		return this.name;
+	}
+	
+	public String description () {
+		return this.description;
+	}
+	
+	public String nickName () {
+		return this.nickName;
+	}
+	
+	public String photoUrl () {
+		return this.photoUrl;
+	}
 	// User authentication method
 	public boolean authenticate (String password) {
 		return password.equals(this.password) ? true : false;
 	}
-	
+	// User attributes update method
 	public void update (HashMap<String, String> attributes) {
 		for (Entry<String, String> attribute : attributes.entrySet()) {
 			switch (attribute.getKey()) {
