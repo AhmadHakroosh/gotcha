@@ -11,6 +11,10 @@ public class Subscription {
 		this.username = username;
 		this.channel = channel;
 	}
+	
+	public int id () {
+		return this.id;
+	}
 
 	public String username () {
 		return this.username;
