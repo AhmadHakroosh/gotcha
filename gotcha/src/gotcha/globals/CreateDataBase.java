@@ -22,8 +22,13 @@ public class CreateDataBase implements ServletContextListener {
     	ServletContext context = event.getServletContext();
         Database database = new Database();
         try {
+<<<<<<< HEAD
 	
         	database.execute("CREATE TABLE USERS ("
+=======
+        	
+        	database.executeUpdate("CREATE TABLE USERS ("
+>>>>>>> origin
 						+ 		"NAME VARCHAR(10) NOT NULL PRIMARY KEY,"
 						+ 		"PASSWORD VARCHAR(8) NOT NULL,"
 						+ 		"NICKNAME VARCHAR(20) UNIQUE,"
@@ -69,7 +74,14 @@ public class CreateDataBase implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event)  { 
+<<<<<<< HEAD
          
+=======
+         ServletContext context = event.getServletContext();
+         Database database = (Database) context.getAttribute("database");
+         database.shutdown();
+         context.removeAttribute("database");
+>>>>>>> origin
     }
 	
 }

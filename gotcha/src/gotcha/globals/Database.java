@@ -10,7 +10,13 @@ public class Database {
 	// Database parameters
 	private final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 	private final String dbName = "gotchaDB";
+<<<<<<< HEAD
 	private final String protocol = "jdbc:derby:";
+=======
+	private final String protocol = "jdbc:derby:";
+	private final String username = "gotcha";
+	private final String password = "gotcha";
+>>>>>>> origin
 	
 	private Connection connection = null;
 	
@@ -31,8 +37,37 @@ public class Database {
 		return this.connection;
 	}
 	
+<<<<<<< HEAD
 	public ResultSet execute (String query) throws SQLException {
 		Statement statement = connection.createStatement();
 		return statement.executeQuery(query);
+=======
+	public void executeUpdate (String query) throws SQLException {
+		
+		Statement statement = connection.createStatement();
+		statement.executeUpdate(query);
+	}
+	
+	public ResultSet executeQuery (String query) throws SQLException {
+		
+		Statement statement = connection.createStatement();
+		return statement.executeQuery(query);
+	}
+
+	public void shutdown() {
+		try {
+			
+			Class.forName(driver);
+			this.connection = DriverManager.getConnection(protocol + dbName + ";user=" + username + ";password=" + password + ";shutdown=true");
+		
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+>>>>>>> origin
 	}
 }
