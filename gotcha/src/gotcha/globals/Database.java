@@ -43,10 +43,10 @@ public class Database {
 		statement.executeUpdate(query);
 	}
 	
-	public void executeQuery (String query) throws SQLException {
+	public ResultSet executeQuery (String query) throws SQLException {
 		
 		Statement statement = connection.createStatement();
-		statement.executeQuery(query);
+		return statement.executeQuery(query);
 	}
 
 	public void shutdown() {
