@@ -22,56 +22,6 @@ public class CreateDataBase implements ServletContextListener {
     	ServletContext context = event.getServletContext();
         Database database = new Database();
         try {
-<<<<<<< HEAD
-        	
-        	database.execute("CREATE TABLE USERS ("
-						+ 		"NAME VARCHAR(10) NOT NULL PRIMARY KEY,"
-						+ 		"PASSWORD VARCHAR(8) NOT NULL,"
-						+ 		"NICKNAME VARCHAR(20) UNIQUE,"
-						+		"DESCRIPTION VARCHAR(50),"
-						+ 		"PHOTO VARCHAR(512)"
-						+ 	  ")"
-						     );
-
-        	database.execute("CREATE TABLE CHANNELS ("
-			 			+ 		"NAME VARCHAR(40) PRIMARY KEY,"
-			 			+ 		"DESCRIPTION VARCHAR(100) NOT NULL,"
-			 			+ 		"SUBSCRIBERS INTEGER"
-			 			+ 	  ")"
-					   	     );
-
-        	database.execute("CREATE TABLE SUBSCRIPTIONS ("
-						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES APP.CHANNELS(NAME) ON DELETE CASCADE"
-			 			+ 	  ")"
-				   	     	 );
-
-        	database.execute("CREATE TABLE MESSAGES ("
-						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-						+ 		"TEXT VARCHAR(2500) NOT NULL,"
-						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"RECEIVER VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES APP.CHANNELS(NAME) ON DELETE CASCADE,"
-						+ 		"SENT TIMESTAMP NOT NULL"
-						+ 	  ")"
-						     );
-        	
-        	context.setAttribute("database", database);
-        	
-		} catch (SQLException e) {
-			
-			System.out.println(e.getSQLState().equals("X0Y32") ? e.getMessage() : "An unknown error occured while creating the database.");
-		
-		}
-    }
-
-	/**
-     * @see ServletContextListener#contextDestroyed(ServletContextEvent)
-     */
-    public void contextDestroyed(ServletContextEvent event)  { 
-         
-=======
         	
         	database.executeUpdate("CREATE TABLE USERS ("
 						+ 		"NAME VARCHAR(10) NOT NULL PRIMARY KEY,"
@@ -118,12 +68,10 @@ public class CreateDataBase implements ServletContextListener {
 	/**
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
-    public void contextDestroyed(ServletContextEvent event)  { 
+    public void contextDestroyed(ServletContextEvent event)  {
          ServletContext context = event.getServletContext();
          Database database = (Database) context.getAttribute("database");
          database.shutdown();
          context.removeAttribute("database");
->>>>>>> refs/remotes/origin/master
     }
-	
 }
