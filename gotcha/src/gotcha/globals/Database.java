@@ -19,7 +19,7 @@ public class Database {
 	public Database () {
 		try {
 			Class.forName(driver);
-			this.connection = DriverManager.getConnection(protocol + dbName + ";create=true");
+			this.connection = DriverManager.getConnection(protocol + dbName + ";user=" + username + ";password=" + password + ";create=true");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
