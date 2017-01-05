@@ -4,9 +4,12 @@
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+<<<<<<< HEAD
+=======
   <listener>
   	<listener-class>gotcha.globals.CreateDataBase</listener-class>
   </listener>
+>>>>>>> refs/remotes/origin/master
   <servlet>
     <servlet-name>Login</servlet-name>
     <servlet-class>gotcha.controller.Login</servlet-class>
