@@ -10,8 +10,9 @@ public class Database {
 	// Database parameters
 	private final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 	private final String dbName = "gotchaDB";
-<<<<<<< HEAD
 	private final String protocol = "jdbc:derby:";
+	private final String username = "gotcha";
+	private final String password = "gotcha";
 	
 	private Connection connection = null;
 	
@@ -31,38 +32,7 @@ public class Database {
 	public Connection getConnection () {
 		return this.connection;
 	}
-	
-	public ResultSet execute (String query) throws SQLException {
-		Statement statement = connection.createStatement();
-		return statement.executeQuery(query);
-=======
-	private final String protocol = "jdbc:derby:";
-	private final String username = "gotcha";
-	private final String password = "gotcha";
-	
-	private Connection connection = null;
-	
-	public Database () {
-		try {
-			
-			Class.forName(driver);
-			this.connection = DriverManager.getConnection(protocol + dbName + ";user=" + username + ";password=" + password + ";create=true");
-		
-		} catch (ClassNotFoundException e) {
 
-			e.printStackTrace();
-			
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-	}
-	
-	public Connection getConnection () {
-		
-		return this.connection;
-	}
-	
 	public void executeUpdate (String query) throws SQLException {
 		
 		Statement statement = connection.createStatement();
@@ -89,6 +59,5 @@ public class Database {
 			
 			e.printStackTrace();
 		}
->>>>>>> refs/remotes/origin/master
 	}
 }
