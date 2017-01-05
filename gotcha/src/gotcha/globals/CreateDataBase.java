@@ -22,8 +22,8 @@ public class CreateDataBase implements ServletContextListener {
     	ServletContext context = event.getServletContext();
         Database database = new Database();
         try {
-        	
-        	database.executeUpdate("CREATE TABLE USERS ("
+	
+        	database.execute("CREATE TABLE USERS ("
 						+ 		"NAME VARCHAR(10) NOT NULL PRIMARY KEY,"
 						+ 		"PASSWORD VARCHAR(8) NOT NULL,"
 						+ 		"NICKNAME VARCHAR(20) UNIQUE,"
@@ -32,21 +32,21 @@ public class CreateDataBase implements ServletContextListener {
 						+ 	  ")"
 						     );
 
-        	database.executeUpdate("CREATE TABLE CHANNELS ("
+        	database.execute("CREATE TABLE CHANNELS ("
 			 			+ 		"NAME VARCHAR(40) PRIMARY KEY,"
 			 			+ 		"DESCRIPTION VARCHAR(100) NOT NULL,"
 			 			+ 		"SUBSCRIBERS INTEGER"
 			 			+ 	  ")"
 					   	     );
 
-        	database.executeUpdate("CREATE TABLE SUBSCRIPTIONS ("
+        	database.execute("CREATE TABLE SUBSCRIPTIONS ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
 						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES APP.CHANNELS(NAME) ON DELETE CASCADE"
 			 			+ 	  ")"
 				   	     	 );
 
-        	database.executeUpdate("CREATE TABLE MESSAGES ("
+        	database.execute("CREATE TABLE MESSAGES ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 						+ 		"TEXT VARCHAR(2500) NOT NULL,"
 						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES APP.USERS(NAME) ON DELETE CASCADE,"
@@ -69,10 +69,7 @@ public class CreateDataBase implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event)  { 
-         ServletContext context = event.getServletContext();
-         Database database = (Database) context.getAttribute("database");
-         database.shutdown();
-         context.removeAttribute("database");
+         
     }
 	
 }
