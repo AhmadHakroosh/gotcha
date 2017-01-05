@@ -5,11 +5,20 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin
 =======
   <listener>
   	<listener-class>gotcha.globals.CreateDataBase</listener-class>
   </listener>
 >>>>>>> refs/remotes/origin/master
+<<<<<<< HEAD
+=======
+>>>>>>> branch 'backend' of https://github.com/AhmadHakroosh/gotcha.git
+=======
+>>>>>>> origin
   <servlet>
     <servlet-name>Login</servlet-name>
     <servlet-class>gotcha.controller.Login</servlet-class>
