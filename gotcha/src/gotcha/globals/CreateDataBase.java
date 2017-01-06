@@ -38,7 +38,7 @@ public class CreateDataBase implements ServletContextListener {
 						+ 		"PASSWORD VARCHAR(8) NOT NULL,"
 						+ 		"NICKNAME VARCHAR(20) UNIQUE,"
 						+		"DESCRIPTION VARCHAR(50),"
-						+ 		"PHOTO VARCHAR(512)"
+						+ 		"PHOTO VARCHAR(150)"
 						+ 	  ")"
 						     );
 
