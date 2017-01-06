@@ -2,10 +2,11 @@ package gotcha.globals;
 
 import java.sql.SQLException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import javax.naming.*;
 
 /**
  * Application Lifecycle Listener implementation class CreateDataBase
@@ -19,11 +20,20 @@ public class CreateDataBase implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent event)  {
     	
-    	ServletContext context = event.getServletContext();
+    	Context context = null;
+    	
+		try {
+			context = new InitialContext();
+		} catch (NamingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
         Database database = new Database();
+        
         try {
         	
-        	database.executeUpdate("CREATE TABLE USERS ("
+        	database.execute("CREATE TABLE USERS ("
 						+ 		"NAME VARCHAR(10) NOT NULL PRIMARY KEY,"
 						+ 		"PASSWORD VARCHAR(8) NOT NULL,"
 						+ 		"NICKNAME VARCHAR(20) UNIQUE,"
@@ -32,36 +42,47 @@ public class CreateDataBase implements ServletContextListener {
 						+ 	  ")"
 						     );
 
-        	database.executeUpdate("CREATE TABLE CHANNELS ("
+        	database.execute("CREATE TABLE CHANNELS ("
 			 			+ 		"NAME VARCHAR(40) PRIMARY KEY,"
 			 			+ 		"DESCRIPTION VARCHAR(100) NOT NULL,"
 			 			+ 		"SUBSCRIBERS INTEGER"
 			 			+ 	  ")"
 					   	     );
 
-        	database.executeUpdate("CREATE TABLE SUBSCRIPTIONS ("
+        	database.execute("CREATE TABLE SUBSCRIPTIONS ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES GOTCHA.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES GOTCHA.CHANNELS(NAME) ON DELETE CASCADE"
+						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
+						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE"
 			 			+ 	  ")"
 				   	     	 );
 
-        	database.executeUpdate("CREATE TABLE MESSAGES ("
+        	database.execute("CREATE TABLE MESSAGES ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 						+ 		"TEXT VARCHAR(2500) NOT NULL,"
-						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES GOTCHA.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"RECEIVER VARCHAR(10) NOT NULL REFERENCES GOTCHA.USERS(NAME) ON DELETE CASCADE,"
-						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES GOTCHA.CHANNELS(NAME) ON DELETE CASCADE,"
+						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
+						+ 		"RECEIVER VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
+						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE,"
 						+ 		"SENT TIMESTAMP NOT NULL"
 						+ 	  ")"
 						     );
         	
-        	context.setAttribute("database", database);
+        	database.commit();
+        	
+        	context.bind("gotchaDB", database);
         	
 		} catch (SQLException e) {
-			
-			System.out.println(e.getSQLState().equals("X0Y32") ? e.getMessage() : "An unknown error occured while creating the database.");
-		
+			if (e.getSQLState().equals("X0Y32")) {
+				System.out.println("The database is already existing, you're now connected to it.");
+				try {
+					context.bind("gotchaDB", database);
+				} catch (NamingException n) {
+					n.printStackTrace();
+				}
+			} else {
+				System.out.println("An unknown error has occured while trying to create the database.");
+			}
+		} catch (NamingException e) {
+			e.printStackTrace();
 		}
     }
 
@@ -69,9 +90,13 @@ public class CreateDataBase implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event)  {
-         ServletContext context = event.getServletContext();
-         Database database = (Database) context.getAttribute("database");
-         database.shutdown();
-         context.removeAttribute("database");
+    	try {
+			Context context = new InitialContext();
+			Database database = (Database)context.lookup("gotchaDB");
+			database.shutdown();
+			context.unbind("gotchaDB");
+    	} catch (NamingException e) {
+    		e.printStackTrace();
+    	}
     }
 }
