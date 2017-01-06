@@ -5,7 +5,7 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   <listener>
-  	<listener-class>gotcha.globals.CreateDataBase</listener-class>
+    <listener-class>gotcha.globals.CreateDataBase</listener-class>
   </listener>
   <resource-ref>
     <description>GotCha! Database Connection</description>

@@ -43,8 +43,8 @@ public class CreateDataBase implements ServletContextListener {
 						     );
 
         	database.execute("CREATE TABLE CHANNELS ("
-			 			+ 		"NAME VARCHAR(40) PRIMARY KEY,"
-			 			+ 		"DESCRIPTION VARCHAR(100) NOT NULL,"
+			 			+ 		"NAME VARCHAR(30) PRIMARY KEY,"
+			 			+ 		"DESCRIPTION VARCHAR(500) NOT NULL,"
 			 			+ 		"CREATEDBY VARCHAR(10) NOT NULL,"
 			 			+ 		"CREATED TIMESTAMP NOT NULL,"
 			 			+ 		"SUBSCRIBERS INTEGER"
@@ -60,10 +60,11 @@ public class CreateDataBase implements ServletContextListener {
 
         	database.execute("CREATE TABLE MESSAGES ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-						+ 		"TEXT VARCHAR(2500) NOT NULL,"
+						+ 		"TEXT VARCHAR(500) NOT NULL,"
 						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 						+ 		"RECEIVER VARCHAR(10) REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 						+ 		"CHANNEL VARCHAR(40) REFERENCES CHANNELS(NAME) ON DELETE CASCADE,"
+						+ 		"REPLYFOR INTEGER REFERENCES MESSAGES(ID) ON DELETE CASCADE,"
 						+ 		"SENT TIMESTAMP NOT NULL"
 						+ 	  ")"
 						     );
