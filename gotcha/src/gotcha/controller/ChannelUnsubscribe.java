@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class DirectMessage
+ * Servlet implementation class ChannelUnsubscribe
  */
-@WebServlet("/DirectMessage")
-public class DirectMessage extends HttpServlet {
+@WebServlet("/ChannelUnsubscribe")
+public class ChannelUnsubscribe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DirectMessage() {
+    public ChannelUnsubscribe() {
         super();
         // TODO Auto-generated constructor stub
     }
