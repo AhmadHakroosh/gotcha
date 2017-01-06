@@ -45,13 +45,15 @@ public class CreateDataBase implements ServletContextListener {
         	database.execute("CREATE TABLE CHANNELS ("
 			 			+ 		"NAME VARCHAR(40) PRIMARY KEY,"
 			 			+ 		"DESCRIPTION VARCHAR(100) NOT NULL,"
+			 			+ 		"CREATEDBY VARCHAR(10) NOT NULL,"
+			 			+ 		"CREATED TIMESTAMP NOT NULL,"
 			 			+ 		"SUBSCRIBERS INTEGER"
 			 			+ 	  ")"
 					   	     );
 
         	database.execute("CREATE TABLE SUBSCRIPTIONS ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
-						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
+						+ 		"USERNAME VARCHAR(10) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE"
 			 			+ 	  ")"
 				   	     	 );
@@ -59,22 +61,22 @@ public class CreateDataBase implements ServletContextListener {
         	database.execute("CREATE TABLE MESSAGES ("
 						+ 		"ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 						+ 		"TEXT VARCHAR(2500) NOT NULL,"
-						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
-						+ 		"RECEIVER VARCHAR(10) NOT NULL REFERENCES USERS(NAME) ON DELETE CASCADE,"
-						+ 		"CHANNEL VARCHAR(40) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE,"
+						+ 		"SENDER VARCHAR(10) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
+						+ 		"RECEIVER VARCHAR(10) REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
+						+ 		"CHANNEL VARCHAR(40) REFERENCES CHANNELS(NAME) ON DELETE CASCADE,"
 						+ 		"SENT TIMESTAMP NOT NULL"
 						+ 	  ")"
 						     );
         	
         	database.commit();
         	
-        	context.bind("gotchaDB", database);
+        	context.bind(Globals.dbName, database);
         	
 		} catch (SQLException e) {
 			if (e.getSQLState().equals("X0Y32")) {
 				System.out.println("The database is already existing, you're now connected to it.");
 				try {
-					context.bind("gotchaDB", database);
+					context.bind(Globals.dbName, database);
 				} catch (NamingException n) {
 					n.printStackTrace();
 				}
@@ -92,9 +94,9 @@ public class CreateDataBase implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent event)  {
     	try {
 			Context context = new InitialContext();
-			Database database = (Database)context.lookup("gotchaDB");
+			Database database = (Database)context.lookup(Globals.dbName);
 			database.shutdown();
-			context.unbind("gotchaDB");
+			context.unbind(Globals.dbName);
     	} catch (NamingException e) {
     		e.printStackTrace();
     	}

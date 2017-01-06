@@ -2,14 +2,15 @@ package gotcha.globals;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 
 public class Database {
 	// Database parameters
 	private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String dbName = "gotchaDB";
+	private static final String dbName = Globals.dbName;
 	private static final String protocol = "jdbc:derby:";
 	
 	private Connection connection = null;
@@ -32,14 +33,24 @@ public class Database {
 	}
 	// Execute a given query as a string
 	public void execute (String query) throws SQLException {
-		
-		Statement statement = connection.createStatement();
-		statement.executeUpdate(query);
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.executeUpdate();
 	}
 	// Execute a given query and return the produced data
-	public ResultSet executeQuery (String query) throws SQLException {
-		Statement statement = connection.createStatement();
-		return statement.executeQuery(query);
+	public ResultSet executeQuery (String query, List<Object> values, List<Object> where) throws SQLException {
+		int i, j;
+		
+		PreparedStatement statement = connection.prepareStatement(query);
+		
+		for (i = 0; i < values.size(); i++) {
+			statement.setObject(i+1, values.get(i));
+		}
+		
+		for (j = 0; j < where.size(); j++) {
+			statement.setObject(i+j, where.get(j));
+		}
+		
+		return statement.executeQuery();
 	}
 	// Commit changes to database
 	public void commit () throws SQLException {
