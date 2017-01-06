@@ -1,18 +1,20 @@
 package gotcha.model;
 
+import java.sql.Timestamp;
+
 public class Channel {
 	private String name;
 	private String description;
+	private String createdBy;
+	private Timestamp created;
 	private int subscribers;
 	
-	public Channel (String name) {
-		this.name = name;
-		this.subscribers = 0;
-	}
-	
-	public Channel (String name, String description) {
+	public Channel (String name, String description, String createdBy) {
 		this.name = name;
 		this.description = description;
+		this.createdBy = createdBy;
+		this.created = new Timestamp(System.currentTimeMillis());
+		this.subscribers = 1;
 	}
 	
 	public String name () {
@@ -21,6 +23,14 @@ public class Channel {
 	
 	public String description () {
 		return this.description;
+	}
+	
+	public String createdBy () {
+		return this.createdBy;
+	}
+	
+	public Timestamp created () {
+		return this.created;
 	}
 	
 	public int subscribers () {

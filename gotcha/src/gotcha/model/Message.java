@@ -9,15 +9,17 @@ public class Message {
 	private String receiver;
 	private String channel;
 	private Timestamp sent;
+	private int replyFor;
 	
 	// Constructor
-	public Message (int id, String text, String sender, String receiver, String channel) {
+	public Message (int id, String text, String sender, String receiver, String channel, int replyFor) {
 		this.id = id;
 		this.text = text;
 		this.sender = sender;
 		this.receiver = receiver;
 		this.channel = channel;
 		this.sent = new Timestamp(System.currentTimeMillis());
+		this.replyFor = replyFor;
 	}
 	
 	public int id () {
@@ -42,6 +44,10 @@ public class Message {
 	
 	public Timestamp sent () {
 		return this.sent;
+	}
+	
+	public int replyFor () {
+		return this.replyFor;
 	}
 	
 	public boolean sentToChannel () {
