@@ -47,7 +47,7 @@ public class Database {
 		}
 		
 		for (j = 0; j < where.size(); j++) {
-			statement.setObject(i+j, where.get(j));
+			statement.setObject(i+j+1, where.get(j));
 		}
 		
 		return statement.executeQuery();

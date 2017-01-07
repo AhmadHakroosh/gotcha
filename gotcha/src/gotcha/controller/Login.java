@@ -1,12 +1,22 @@
 package gotcha.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.google.gson.*;
+
+import gotcha.model.User;
+import gotcha.globals.Globals;
 
 /**
  * Servlet implementation class Login
@@ -20,7 +30,6 @@ public class Login extends HttpServlet {
      */
     public Login() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -38,6 +47,51 @@ public class Login extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Gson gson = new GsonBuilder().create();
+		// Convert JSON object from request input to User object
+		User user = gson.fromJson(request.getReader(), User.class);
+		// Get the user from Database (if exists)
+		User registered = get(user);
+		// Prepare a JSON to be returned in the response
+		response.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		// Write user data to the response of type JSON
+		if (registered != null) {
+			String jsonUser = gson.toJson(registered, User.class);
+			out.println("{\"status\": \"online\", \"profile\": " + jsonUser + "}");
+			out.close();
+		// Write "failure" status to the response
+		} else {
+			out.println("{\"status\": \"offline\", \"profile\": {}}");
+			out.close();
+		}
+	}
+	
+	private User get (User user) {
+		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> where = new ArrayList<Object>();
 		
+		where.add(user.username());
+		where.add(user.password());
+		
+		ResultSet resultSet = Globals.execute(Globals.SELECT_USER_BY_USERNAME_AND_PASSWORD, values, where);
+		try {
+			// The user exists in our system, get his data
+			if (resultSet.next()) {
+				String username = resultSet.getString("USERNAME");
+				String password = resultSet.getString("PASSWORD");
+				String description = resultSet.getString("DESCRIPTION");
+				String nickname = resultSet.getString("NICKNAME");
+				String photourl = resultSet.getString("PHOTOURL");
+				return new User(username, password, nickname, description, photourl);
+			// He is not existing, return null
+			} else {
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
