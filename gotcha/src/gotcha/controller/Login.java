@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.lang.Object;
 
@@ -59,6 +60,8 @@ public class Login extends HttpServlet {
 		String data;
 		// Write user data to the response of type JSON
 		if (registered != null) {
+			HttpSession session = request.getSession();
+			request.setAttribute("HTTP_SESSION", session);
 			String jsonUser = gson.toJson(registered, User.class);
 			data = "{"
 				+ 		"\"status\": \"success\","

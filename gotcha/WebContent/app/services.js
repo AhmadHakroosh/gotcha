@@ -1,8 +1,8 @@
 // Restful call service
-gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $q, notifyService) {
+gotcha.service('restService', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
 	return {
 		// Perform an Asynchronous callback with the specified URL
-		call: function (method, url, data, model) {
+		call: function (method, url, data) {
 
 			return $http({
 				method: method,
@@ -13,7 +13,12 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 				data: data
 			}).then(
 				function (success) {
-					console.log(success.data);
+					if (success.data.route !== undefined) {
+						$rootScope.route = success.data.route;
+					} else {
+						$rootScope.gotchaData = success.data;
+						console.log(success.data);
+					}
 				},
 				function (error) {
 					console.log("An unknown error has occured while trying to retrieve data from server.")
@@ -23,15 +28,15 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 	};
 }])
 // Authentication system service
-.service('authService', ['restService', function(restService) {
+.service('authService', ['$timeout', 'restService', function($timeout, restService) {
 	return {
 		// Log the passed user in
 		login: function (user) {
-			restService.call('POST', 'login/auth', user, "user");
+			restService.call('POST', 'login/auth', user);
 		},
 		// Log the passed user out
 		logout: function (user) {
-			restService.call('POST', 'logout', user, "user");
+			restService.call('POST', 'logout', user);
 		}
 	}
 }])
@@ -40,7 +45,7 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 	return {
 		// Register the passed user to the system
 		register: function (user) {
-			restService.call('POST', 'register', user, "user");
+			restService.call('POST', 'register', user);
 		}
 	}
 }])
@@ -54,7 +59,7 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 				"channel": channel
 			};
 
-			restService.call('POST', 'subscribe', data, "subscriptions");
+			restService.call('POST', 'subscribe', data);
 		},
 		// Unsubscribe the passed user from the passed channel
 		unsubscribe: function (user, channel) {
@@ -63,7 +68,7 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 				"channel": channel
 			};
 
-			restService.call('POST', 'unsubscribe', data, "subscriptions");
+			restService.call('POST', 'unsubscribe', data);
 		}
 	}
 }])
@@ -109,11 +114,11 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 	return {
 		// Create a new channel
 		createChannel: function (channel) {
-			restService.call('POST', 'createChannel', channel);
+			restService.call('POST', 'createChannel');
 		},
 		// Delete an existing channel
 		deleteChannel: function (channel) {
-			restService.call('POST', 'deleteChannel', channel);
+			restService.call('POST', 'deleteChannel');
 		},
 		// Add a new user to an existing channel
 		addUser: function (user, channel) {
@@ -134,13 +139,9 @@ gotcha.service('restService', ['$http', '$q', 'notifyService', function($http, $
 	}
 })
 
-.service('routingService', ['$location', '$timeout', function($location, $timeout) {
+.service('routingService', [function() {
 	return {
-		route: function (location) {
-			$timeout(function () {
-				$location.$$absUrl = $location.$$absUrl.split("http://localhost:8080/gotcha/")[0] + location + "/";
-			}, 1000);
-		}
+		
 	}	
 }])
 
