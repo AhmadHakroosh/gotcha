@@ -138,7 +138,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 })
 
-.service('dataSharingService', [function() {
+.service('dataSharingService', ['$location', function($location) {
 
 	var data = {};
 
@@ -154,13 +154,5 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		log: function () {
 			console.log(data);
 		}
-	}	
-}])
-
-.service('loadDataService', ['$rootScope', function($rootScope) {
-	return {
-		load: function (controllerScope, element, data) {
-			$rootScope.controllerScope[element] = data;
-		}
 	}
-}])
+}]);

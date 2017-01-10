@@ -6,6 +6,12 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 			var route = dataSharingService.get("route");
 			return route !== undefined ? "app/views/" + route + ".html" : "app/views/login.html";
 	}}, 1000);
+
+	$scope.$watch(function () {
+		return dataSharingService.get("route");
+	}, function (newValue, oldValue) {
+		$location.path(newValue);
+	});
 }])
 
 // Login controller that uses 'restService' for restful call
