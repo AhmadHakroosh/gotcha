@@ -65,6 +65,7 @@ public class Login extends HttpServlet {
 			String jsonUser = gson.toJson(registered, User.class);
 			data = "{"
 				+ 		"\"status\": \"success\","
+				+ 		"\"route\": \"messages\","
 				+ 		"\"notification\": {"
 				+ 			"\"selector\": \".login-form-notification\","
 				+ 			"\"message\": \"Logged in successfully\""
@@ -82,6 +83,7 @@ public class Login extends HttpServlet {
 		} else {
 			data = "{"
 				+ 		"\"status\": \"failure\","
+				+ 		"\"route\": \"login\","
 				+ 		"\"notification\": {"
 				+ 			"\"selector\": \".login-form-notification\","
 				+ 			"\"message\": \"Incorrect username and/or password\""

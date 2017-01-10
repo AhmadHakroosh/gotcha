@@ -41,7 +41,7 @@ public class Router extends HttpServlet {
 	
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-	    String route = session == null ? "{\"route\": \"login\"}" : "{\"route\": \"messages\"}";
+	    String route = session == null ? "{\"status\": \"success\", \"route\": \"login\"}" : "{\"status\": \"success\", \"route\": \"messages\"}";
 	    response.setContentType("application/JSON; charset=UTF-8");
 	    PrintWriter out = response.getWriter();
 	    out.println(route);

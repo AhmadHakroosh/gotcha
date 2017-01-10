@@ -1,5 +1,5 @@
 // Restful call service
-gotcha.service('restService', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
+gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($http, $q, dataSharingService) {
 	return {
 		// Perform an Asynchronous callback with the specified URL
 		call: function (method, url, data) {
@@ -13,12 +13,11 @@ gotcha.service('restService', ['$rootScope', '$http', '$q', function($rootScope,
 				data: data
 			}).then(
 				function (success) {
-					if (success.data.route !== undefined) {
-						$rootScope.route = success.data.route;
-					} else {
-						$rootScope.gotchaData = success.data;
-						console.log(success.data);
-					}
+					dataSharingService.set("status", success.data.status);
+					dataSharingService.set("route", success.data.route);
+					dataSharingService.set("notification", success.data.notification);
+					dataSharingService.set("user", success.data.user);
+					dataSharingService.log();
 				},
 				function (error) {
 					console.log("An unknown error has occured while trying to retrieve data from server.")
@@ -139,9 +138,22 @@ gotcha.service('restService', ['$rootScope', '$http', '$q', function($rootScope,
 	}
 })
 
-.service('routingService', [function() {
+.service('dataSharingService', [function() {
+
+	var data = {};
+
 	return {
+		get: function (key) {
+			return data[key];
+		},
+
+		set: function (key, value) {
+			data[key] = value;
+		},
 		
+		log: function () {
+			console.log(data);
+		}
 	}	
 }])
 

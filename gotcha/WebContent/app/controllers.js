@@ -1,20 +1,15 @@
-gotcha.controller('mainController', ['$scope', '$rootScope', '$timeout', '$location', 'restService', function($scope, $rootScope, $timeout, $location, restService) {
+gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restService', 'dataSharingService', function($scope, $timeout, $location, restService, dataSharingService) {
 	
 	restService.call('POST', 'welcome', {});
-
 	$timeout(function () {
-		if ($rootScope.route == "login") {
-			$scope.templateUrl = "app/views/login.html";
-			$location.path("login");
-		} else {
-			$scope.templateUrl = "app/views/main.html";
-			$location.path("messages");
-		}
-	}, 1000);
+		$scope.templateUrl = function () {
+			var route = dataSharingService.get("route");
+			return route !== undefined ? "app/views/" + route + ".html" : "app/views/login.html";
+	}}, 1000);
 }])
 
 // Login controller that uses 'restService' for restful call
-.controller('loginController', ['$rootScope', '$scope', '$timeout', '$location', 'authService', 'notifyService', 'routingService', function($rootScope, $scope, $timeout, $location, authService, notifyService, routingService) {
+.controller('loginController', ['$scope', '$timeout', '$location', 'authService', 'notifyService', function($scope, $timeout, $location, authService, notifyService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -23,8 +18,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$timeout', '$locat
 		};
 
 		authService.login(user);
-
-		
 	}
 }])
 
@@ -32,8 +25,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$timeout', '$locat
 	
 }])
 
-.controller('channelsListController', ['$rootScope', '$scope', 'restService', function($rootScope, $scope, restService) {
-	$scope.channels = $rootScope.data.user.channels;
+.controller('channelsListController', ['$scope', 'restService', 'dataSharingService', function($scope, restService, dataSharingService) {
+	$scope.channels = dataSharingService.get("user").channels;
 }])
 
 .controller('directMessagesController', ['$scope', 'restService', function($scope, restService) {
