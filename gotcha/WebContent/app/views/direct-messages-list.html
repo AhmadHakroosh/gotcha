@@ -1,5 +1,5 @@
 <div class="direct-messages-list-container" ng-controller="directMessagesController">
 	<ul>
-		<li ng-repeat="(key, value) in dataset"></li>
+		<li ng-repeat="message in directMessages">{{message}}</li>
 	</ul>
 </div>

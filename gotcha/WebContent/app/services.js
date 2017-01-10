@@ -17,7 +17,6 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 					dataSharingService.set("route", success.data.route);
 					dataSharingService.set("notification", success.data.notification);
 					dataSharingService.set("user", success.data.user);
-					dataSharingService.log();
 				},
 				function (error) {
 					console.log("An unknown error has occured while trying to retrieve data from server.")
@@ -39,7 +38,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		}
 	}
 }])
-
+// Registeration system service
 .service('registerationService', ['restService', function(restService) {
 	return {
 		// Register the passed user to the system
@@ -137,7 +136,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		}
 	}
 })
-
+// Service for data sharing over all scopes 
 .service('dataSharingService', ['$location', function($location) {
 
 	var data = {};
