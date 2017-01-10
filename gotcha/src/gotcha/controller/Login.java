@@ -61,7 +61,8 @@ public class Login extends HttpServlet {
 		// Write user data to the response of type JSON
 		if (registered != null) {
 			HttpSession session = request.getSession();
-			request.setAttribute("HTTP_SESSION", session);
+			session.setAttribute("user", registered);
+			request.setAttribute("httpSession", session);
 			String jsonUser = gson.toJson(registered, User.class);
 			data = "{"
 				+ 		"\"status\": \"success\","
@@ -76,6 +77,7 @@ public class Login extends HttpServlet {
 				;
 
 			request.setAttribute("data", data + ",");
+			session.setAttribute("data", data + ",");
 			request.setAttribute("user", registered);
 			request.getRequestDispatcher("/messages").forward(request, response);
 			data += "}";		
