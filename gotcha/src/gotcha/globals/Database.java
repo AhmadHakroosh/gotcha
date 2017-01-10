@@ -59,10 +59,8 @@ public class Database {
 	// Shutdown database connection and instance
 	public void shutdown() {
 		try {
-			
 			Class.forName(driver);
 			this.connection = DriverManager.getConnection(protocol + ";shutdown=true");
-			
 		} catch (SQLException e) {
 			if (e.getSQLState().equals("XJ015")) {
 				System.out.println("Shutting down database...");

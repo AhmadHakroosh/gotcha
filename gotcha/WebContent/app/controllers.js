@@ -1,5 +1,5 @@
 // Login controller that uses 'restService' for restful call
-gotcha.controller('loginController', ['$scope', 'authService', function($scope, authService) {
+gotcha.controller('loginController', ['$location', '$scope', 'authService', function($location, $scope, authService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -7,8 +7,7 @@ gotcha.controller('loginController', ['$scope', 'authService', function($scope, 
 			'password': $scope.password
 		};
 
-		user = authService.login(user);
-		var userProfile = user.profile;
+		authService.login(user);
 	}
 }])
 
@@ -16,7 +15,7 @@ gotcha.controller('loginController', ['$scope', 'authService', function($scope, 
 	
 }])
 
-.controller('channelsController', ['$scope', 'restService', function($scope, restService) {
+.controller('channelsListController', ['$scope', 'restService', function($scope, restService) {
 	
 }])
 
@@ -24,6 +23,6 @@ gotcha.controller('loginController', ['$scope', 'authService', function($scope, 
 	
 }])
 
-.controller('chatController', ['$scope', 'restService', function($scope, restService) {
+.controller('chatController', ['$location', '$scope', 'restService', function($location, $scope, restService) {
 	
 }]);

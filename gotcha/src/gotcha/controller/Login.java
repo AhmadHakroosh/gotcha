@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.lang.Object;
+
 import com.google.gson.*;
 
 import gotcha.model.User;
@@ -20,7 +22,7 @@ import gotcha.globals.Globals;
 /**
  * Servlet implementation class Login
  */
-@WebServlet("/Login")
+@WebServlet("/login/auth")
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -51,19 +53,42 @@ public class Login extends HttpServlet {
 		User user = gson.fromJson(request.getReader(), User.class);
 		// Get the user from Database (if exists)
 		User registered = get(user);
-		// Prepare a JSON to be returned in the response
-		response.setContentType("application/json; charset=UTF-8");
+		// Prepare a JSON to be forwarded to a new servlet or returned in the response
 		PrintWriter out = response.getWriter();
+		response.setContentType("application/json; charset=UTF-8");
+		String data;
 		// Write user data to the response of type JSON
 		if (registered != null) {
 			String jsonUser = gson.toJson(registered, User.class);
-			out.println("{\"status\": \"online\", \"profile\": " + jsonUser + "}");
-			out.close();
+			data = "{"
+				+ 		"\"status\": \"success\","
+				+ 		"\"notification\": {"
+				+ 			"\"selector\": \".login-form-notification\","
+				+ 			"\"message\": \"Logged in successfully\""
+				+ 		"},"
+				+ 		"\"user\": {"
+				+			"\"status\": \"online\","
+				+ 			"\"profile\": " + jsonUser
+				;
+
+			request.setAttribute("data", data + ",");
+			request.setAttribute("user", registered);
+			request.getRequestDispatcher("/messages").forward(request, response);
+			data += "}";		
 		// Write "failure" status to the response
 		} else {
-			out.println("{\"status\": \"offline\", \"profile\": {}}");
-			out.close();
+			data = "{"
+				+ 		"\"status\": \"failure\","
+				+ 		"\"notification\": {"
+				+ 			"\"selector\": \".login-form-notification\","
+				+ 			"\"message\": \"Incorrect username and/or password\""
+				+ 		"}"
+				+ 	"}"
+				;
 		}
+		
+		out.println(data);
+		out.close();
 	}
 	
 	private User get (User user) {
@@ -77,12 +102,13 @@ public class Login extends HttpServlet {
 		try {
 			// The user exists in our system, get his data
 			if (resultSet.next()) {
-				String username = resultSet.getString("USERNAME");
-				String password = resultSet.getString("PASSWORD");
-				String description = resultSet.getString("DESCRIPTION");
-				String nickname = resultSet.getString("NICKNAME");
-				String photourl = resultSet.getString("PHOTOURL");
-				return new User(username, password, nickname, description, photourl);
+				User registered = new User();
+				registered.username(resultSet.getString("USERNAME"));
+				registered.password(resultSet.getString("PASSWORD"));
+				registered.description(resultSet.getString("DESCRIPTION"));
+				registered.nickName(resultSet.getString("NICKNAME"));
+				registered.photoUrl(resultSet.getString("PHOTOURL"));
+				return registered;
 			// He is not existing, return null
 			} else {
 				return null;

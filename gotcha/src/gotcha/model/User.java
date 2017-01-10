@@ -62,24 +62,24 @@ public class User {
 		return this.photoUrl;
 	}
 
-	public String username (String username) {
-		return this.username;
+	public void username (String username) {
+		this.username = username;
 	}
 	
-	public String password (String password) {
-		return this.password;
+	public void password (String password) {
+		this.password = password;
 	}
 	
-	public String description (String description) {
-		return this.description;
+	public void description (String description) {
+		this.description = description;
 	}
 	
-	public String nickName (String nickName) {
-		return this.nickName;
+	public void nickName (String nickName) {
+		this.nickName = nickName;
 	}
 	
-	public String photoUrl (String photoUrl) {
-		return this.photoUrl;
+	public void photoUrl (String photoUrl) {
+		this.photoUrl = photoUrl;
 	}
 	
 	// User attributes update method

@@ -23,4 +23,16 @@ public class Subscription {
 	public String channel () {
 		return this.channel;
 	}
+
+	public void id (int id) {
+		this.id = id;
+	}
+
+	public void username (String username) {
+		this.username = username;
+	}
+
+	public void channel (String channel) {
+		this.channel = channel;
+	}
 }

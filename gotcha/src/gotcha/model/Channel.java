@@ -17,6 +17,10 @@ public class Channel {
 		this.subscribers = 1;
 	}
 	
+	public Channel () {
+		
+	}
+	
 	public String name () {
 		return this.name;
 	}
