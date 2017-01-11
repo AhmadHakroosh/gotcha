@@ -62,4 +62,23 @@ public final class Globals {
 			return null;
 		}
 	}
+	
+	// Execute query via calling executeQuery method of Database
+	public static final int executeUpdate (String query, List<Object> values, List<Object> where) {
+		try {
+			Context context = new InitialContext();
+			Database database = (Database)context.lookup(dbName);
+			
+			try {
+				return database.executeUpdate(query, values, where);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return 0;
+			}
+			
+		} catch (NamingException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
 }

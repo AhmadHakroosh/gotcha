@@ -37,21 +37,37 @@ public class Database {
 		statement.executeUpdate();
 	}
 	// Execute a given query and return the produced data
-	public ResultSet executeQuery (String query, List<Object> values, List<Object> where) throws SQLException {
-		int i, j;
-		
-		PreparedStatement statement = connection.prepareStatement(query);
-		
-		for (i = 0; i < values.size(); i++) {
-			statement.setObject(i+1, values.get(i));
+		public ResultSet executeQuery (String query, List<Object> values, List<Object> where) throws SQLException {
+			int i, j;
+			
+			PreparedStatement statement = connection.prepareStatement(query);
+			
+			for (i = 0; i < values.size(); i++) {
+				statement.setObject(i+1, values.get(i));
+			}
+			
+			for (j = 0; j < where.size(); j++) {
+				statement.setObject(i+j+1, where.get(j));
+			}
+			
+			return statement.executeQuery();
 		}
-		
-		for (j = 0; j < where.size(); j++) {
-			statement.setObject(i+j+1, where.get(j));
+		// Execute a given query and return the produced data
+		public int executeUpdate (String query, List<Object> values, List<Object> where) throws SQLException {
+			int i, j;
+			
+			PreparedStatement statement = connection.prepareStatement(query);
+			
+			for (i = 0; i < values.size(); i++) {
+				statement.setObject(i+1, values.get(i));
+			}
+			
+			for (j = 0; j < where.size(); j++) {
+				statement.setObject(i+j+1, where.get(j));
+			}
+			
+			return statement.executeUpdate();
 		}
-		
-		return statement.executeQuery();
-	}
 	// Commit changes to database
 	public void commit () throws SQLException {
 		connection.commit();

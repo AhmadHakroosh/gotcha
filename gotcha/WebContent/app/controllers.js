@@ -29,20 +29,40 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 		};
 
 		authService.login(user);
-		
-		$scope.$watch(function () {
-			return dataSharingService.get("notification");
-		}, function (newValue, oldValue) {
-			if (newValue !== oldValue) {
-				var status = dataSharingService.get("status");
-				notifyService.alert(newValue, status);
-			}
-		});
 	};
+
+	$scope.$watch(function () {
+		return dataSharingService.get("notification");
+	}, function (newValue, oldValue) {
+		if (newValue !== oldValue) {
+			var status = dataSharingService.get("status");
+			notifyService.alert(newValue, status);
+		}
+	});
 }])
 
-.controller('registerController', ['$scope', 'restService', function($scope, restService) {
+.controller('registerController', ['$scope', 'registerationService', 'dataSharingService', 'notifyService', function($scope, registerationService, dataSharingService, notifyService) {
 	
+	$scope.register = function () {
+		var user = {
+			"username": $scope.username,
+			"password": $scope.password,
+			"nickName": $scope.nickname,
+			"description": $scope.description,
+			"photoUrl": $scope.photoUrl
+		};
+
+		registerationService.register(user);
+	};
+
+	$scope.$watch(function () {
+		return dataSharingService.get("notification");
+	}, function (newValue, oldValue) {
+		if (newValue !== oldValue) {
+			var status = dataSharingService.get("status");
+			notifyService.alert(newValue, status);
+		}
+	});
 }])
 
 .controller('messagesController', ['$scope', 'dataSharingService', function($scope, dataSharingService) {
