@@ -68,7 +68,7 @@ public class Login extends HttpServlet {
 				+ 		"\"status\": \"success\","
 				+ 		"\"route\": \"messages\","
 				+ 		"\"notification\": {"
-				+ 			"\"selector\": \".login-form-notification\","
+				+ 			"\"selector\": \".login-notification\","
 				+ 			"\"message\": \"Logged in successfully\""
 				+ 		"},"
 				+ 		"\"user\": {"
@@ -84,10 +84,10 @@ public class Login extends HttpServlet {
 		// Write "failure" status to the response
 		} else {
 			data = "{"
-				+ 		"\"status\": \"failure\","
+				+ 		"\"status\": \"danger\","
 				+ 		"\"route\": \"login\","
 				+ 		"\"notification\": {"
-				+ 			"\"selector\": \".login-form-notification\","
+				+ 			"\"selector\": \".login-notification\","
 				+ 			"\"message\": \"Incorrect username and/or password\""
 				+ 		"}"
 				+ 	"}"

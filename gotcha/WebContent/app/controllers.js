@@ -1,22 +1,26 @@
+// Main application controller
 gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restService', 'dataSharingService', function($scope, $timeout, $location, restService, dataSharingService) {
+	
+	$scope.route = "app/views/login.html";
+
 	// Check whether the HTTP Session is still alive
 	restService.call('POST', 'welcome', {});
-	// Get the location we're supposed to be in
-	$timeout(function () {
-		$scope.templateUrl = function () {
-			var route = dataSharingService.get("route");
-			return route !== undefined ? "app/views/" + route + ".html" : "app/views/login.html";
-	}}, 1000);
-	// watcher for templateUrl in order to update the url in address bar
+	
 	$scope.$watch(function () {
 		return dataSharingService.get("route");
 	}, function (newValue, oldValue) {
-		$location.path(newValue);
+		$timeout(function () {
+			$scope.route = "app/views/" + newValue + ".html";
+			$location.path(newValue);
+		}, 2000);
 	});
+	
+	$scope.templateUrl = function () {
+		return $scope.route;
+	};
 }])
-
 // Login controller that uses 'restService' for restful call
-.controller('loginController', ['$scope', '$timeout', '$location', 'authService', 'notifyService', function($scope, $timeout, $location, authService, notifyService) {
+.controller('loginController', ['$scope', '$timeout', '$location', 'authService', 'notifyService', 'dataSharingService', function($scope, $timeout, $location, authService, notifyService, dataSharingService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -25,7 +29,16 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 		};
 
 		authService.login(user);
-	}
+		
+		$scope.$watch(function () {
+			return dataSharingService.get("notification");
+		}, function (newValue, oldValue) {
+			if (newValue !== oldValue) {
+				var status = dataSharingService.get("status");
+				notifyService.alert(newValue, status);
+			}
+		});
+	};
 }])
 
 .controller('registerController', ['$scope', 'restService', function($scope, restService) {
@@ -36,14 +49,16 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 	$scope.userProfile = dataSharingService.get("user").profile;
 }])
 
-.controller('channelsListController', ['$scope', 'restService', 'dataSharingService', function($scope, restService, dataSharingService) {
+.controller('channelsListController', ['$scope', 'dataSharingService', function($scope, dataSharingService) {
+	$scope.section = "channels";
 	$scope.channels = dataSharingService.get("user").channels;
 }])
 
 .controller('directMessagesController', ['$scope', 'restService', 'dataSharingService', function($scope, restService, dataSharingService) {
+	$scope.section = "direct messages";
 	$scope.directMessages = dataSharingService.get("user").directMessages;
 }])
 
-.controller('chatController', ['$location', '$scope', 'restService', function($location, $scope, restService) {
+.controller('chatController', ['$scope', function($scope) {
 	
 }]);

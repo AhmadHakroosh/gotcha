@@ -17,6 +17,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 					dataSharingService.set("route", success.data.route);
 					dataSharingService.set("notification", success.data.notification);
 					dataSharingService.set("user", success.data.user);
+					dataSharingService.set("users", success.data.users);
 				},
 				function (error) {
 					console.log("An unknown error has occured while trying to retrieve data from server.")
@@ -44,6 +45,10 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		// Register the passed user to the system
 		register: function (user) {
 			restService.call('POST', 'register', user);
+		},
+		// Get users with the provided username (or) nickname
+		checkExistance: function (user) {
+
 		}
 	}
 }])
@@ -71,42 +76,27 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Messaging system service
-/*.service('messagingService', ['$rootScope', '$location', function($rootScope, $location) {
-	$rootScope.chats = {};
+.service('messagingService', ['$location', 'dataSharingService', function($location, dataSharingService) {
+	
+	$scope.chats = {};
+	$scope.currentChat = {};
+
 	return {
-		// Open chat window
+		// Add a new chat connection (websocket)
 		openChat: function (user) {
-			if ($rootScope.chats[user] !== undefined && $rootScope.chats[user].readyState !== WebSocket.CLOSED) {
-				return;
+			if ($scope.chats[user] === undefined) {
+				$scope.chats[user] = new websocket("ws://" + $location.absUrl() + "/@" + user);
 			}
-			var chatUrl = "ws" + $location.$$absUrl.split("http")[1] + "@" + user;
-			$rootScope.chats[user] = new WebSocket(chatUrl);
-			
-			/**
-			 * Binding functions to the listeners of the websocket
-			 */
-			/*$rootScope.chats[user].onopen = function (event) {
-				if (event.data === undefined) {
-					return;
-				}
-				
-				sendMessage(event.data);
-			};
-			
-			$rootScope.chats[user].onmessage = function (event) {
-				sendMessage(event.data);
-			};
-			
-			$rootScope.chats[user].onclose = function (event) {
-				sendMessage("Connection closed.");
-			};
+			// Return the current open chat
+			$scope.currentChat = $scope.chats[user];
+			return $scope.currentChat;
 		},
-		// Messages sending service
-		sendMessage: function (message) {
-			
+		// Send message to the current chat
+		sendMessage: function (user, message) {
+
 		}
 	}
-}])*/
+}])
 // Channel management system service
 .service('channelManagementService', ['restService', 'subscriptionService', function(restService, subscriptionService) {
 	return {
@@ -129,17 +119,22 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Notification system service
-.service('notifyService', function() {
+.service('notifyService', ['$timeout', function ($timeout) {
 	return {
-		alert: function (selector, notification) {
-			$(selector).html(notification);
+		alert: function (notification, status) {
+			$(notification.selector).addClass('alert alert-' + status).html(notification.message);
+			$timeout(function () {
+				$(notification.selector).removeClass('alert alert-' + status).html("");
+			}, 3000);
 		}
 	}
-})
+}])
 // Service for data sharing over all scopes 
-.service('dataSharingService', ['$location', function($location) {
+.service('dataSharingService', [function () {
 
-	var data = {};
+	var data = {
+			"route": "login"
+	};
 
 	return {
 		get: function (key) {
