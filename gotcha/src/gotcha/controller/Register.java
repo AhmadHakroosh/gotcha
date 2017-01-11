@@ -68,7 +68,7 @@ public class Register extends HttpServlet {
 				+ 		"\"route\": \"messages\","
 				+ 		"\"notification\": {"
 				+ 			"\"selector\": \".register-notification\","
-				+ 			"\"message\": \"Registered in successfully\""
+				+ 			"\"message\": \"Registered successfully\""
 				+ 		"},"
 				+ 		"\"user\": {"
 				+			"\"status\": \"online\","
