@@ -1,33 +1,34 @@
 // Restful call service
 gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($http, $q, dataSharingService) {
+	
 	return {
 		// Perform an Asynchronous callback with the specified URL
-		call: function (method, url, data) {
-
-			return $http({
+		call: function (method, url, input) {
+			$http({
 				method: method,
 				url: url,
 				headers: {
 					'Content-Type' : "application/json; charset=utf-8"
 				},
-				data: data
+				data: input
 			}).then(
 				function (success) {
 					dataSharingService.set("status", success.data.status);
 					dataSharingService.set("route", success.data.route);
 					dataSharingService.set("notification", success.data.notification);
 					dataSharingService.set("user", success.data.user);
-					dataSharingService.set("users", success.data.users);
-				},
-				function (error) {
-					console.log("An unknown error has occured while trying to retrieve data from server.")
-				}
-			);
+					dataSharingService.set("valid", success.data.valid);
+			}, function (failure) {
+				console.log("An unknown error has occured while trying to retrieve data from server...");
+			});
 		}
 	};
 }])
 // Authentication system service
-.service('authService', ['$timeout', 'restService', function($timeout, restService) {
+.service('authService', ['restService', function(restService) {
+	
+	var data = {};
+
 	return {
 		// Log the passed user in
 		login: function (user) {
@@ -48,7 +49,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		},
 		// Get users with the provided username (or) nickname
 		checkExistance: function (user) {
-
+			restService.call('POST', 'validate', user);
 		}
 	}
 }])
@@ -119,13 +120,21 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Notification system service
-.service('notifyService', ['$timeout', function ($timeout) {
+.service('notifyService', ['$rootScope', '$timeout', 'dataSharingService', function ($rootScope, $timeout, dataSharingService) {
 	return {
-		alert: function (notification, status) {
-			$(notification.selector).addClass('alert alert-' + status).html(notification.message);
-			$timeout(function () {
-				$(notification.selector).removeClass('alert alert-' + status).html("");
-			}, 3000);
+		alert: function () {
+			$rootScope.$watch(function () {
+				return dataSharingService.get("notification") !== undefined && dataSharingService.get("status") !== undefined;
+			}, function (newValue, oldValue) {
+				if (newValue) {
+					var notification = dataSharingService.get("notification");
+					var status = dataSharingService.get("status");
+					$(notification.selector).addClass('alert alert-' + status).html(notification.message);
+					$timeout(function () {
+						$(notification.selector).removeClass('alert alert-' + status).html("");
+					}, 3000);
+				}
+			});
 		}
 	}
 }])
@@ -147,6 +156,22 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		
 		log: function () {
 			console.log(data);
+		}
+	}
+}])
+// System animations service
+.service('animationService', ['$timeout', function ($timeout) {
+	return {
+		animate: function (id, className) {
+			$("#" + id).addClass(className).css({
+				transform: 'scale(1)'
+			});
+
+			$timeout(function () {
+				$("#" + id).removeClass(className).css({
+					transform: ''
+				});
+			}, 3000);
 		}
 	}
 }]);
