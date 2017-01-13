@@ -154,16 +154,11 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 // System animations service
 .service('animationService', ['$timeout', function ($timeout) {
 	return {
-		animate: function (id, className) {
-			$("#" + id).addClass(className).css({
-				transform: 'scale(1)'
-			});
-
+		animate: function () {
+			$("body").addClass('loading');
 			$timeout(function () {
-				$("#" + id).removeClass(className).css({
-					transform: ''
-				});
-			}, 3000);
+				$("body").removeClass('loading');
+			});
 		}
 	}
 }]);

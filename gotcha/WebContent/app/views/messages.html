@@ -1,6 +1,23 @@
 <div ng-controller="messagesController">
-	<div ng-include="'app/views/header.html'" ng-if="true"></div>
-	<div ng-include="'app/views/channels-list.html'" ng-if="true"></div>
-	<div ng-include="'app/views/direct-messages-list.html'" ng-if="true"></div>
-	<div ng-include="'app/views/chat-window.html'" ng-if="true"></div>
+	<!-- Application's main menu -->
+	<header id="header" class="">
+		
+	</header>
+
+	<!-- User's channels list -->
+	<div id="channels-list">
+		<span class="list-header">Channels</span>
+		<ul>
+			<li ng-repeat="channel in user.channels">{{channel}}</li>
+		</ul>
+	</div>
+
+	<!-- User's direct messages list -->
+	<div id="direct-messages-list">
+		<span class="list-header">Direct Messages</span>
+		<ul>
+			<li ng-repeat="message in user.directMessages">{{message}}</li>
+		</ul>
+	</div>
+	<div id="chat-window"></div>
 </div>

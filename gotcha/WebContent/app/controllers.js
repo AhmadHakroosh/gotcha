@@ -1,5 +1,5 @@
 // Main application controller
-gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http', function($scope, $rootScope, $location, $http) {
+gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http', 'animationService', function($scope, $rootScope, $location, $http, animationService) {
 	
 	$rootScope.route = "login";
 
@@ -26,7 +26,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	});
 }])
 // Login controller that uses 'restService' for restful call
-.controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', function($scope, $rootScope, $timeout, $http, notifyService) {
+.controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, notifyService, animationService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -59,7 +59,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', function($scope, $rootScope, $timeout, $http, notifyService) {
+.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, notifyService, animationService) {
 	
 	$scope.checkButton = function () {
 		$scope.disabled = 
@@ -151,7 +151,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 .controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'notifyService', function($scope, $http, $timeout, $rootScope, notifyService) {
 
-	$scope.userProfile = $rootScope.user.profile;
+	$scope.user = $rootScope.user;
 
 	$scope.logout = function () {
 		$http({
