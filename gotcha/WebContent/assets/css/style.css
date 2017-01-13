@@ -1,0 +1,28 @@
+// Global preferences
+#main-ui {
+	padding: 0;
+}
+
+section {
+	padding: 0;
+}
+
+// Sidebar (channels & direct messages lists) preferences
+#sidebar {
+	background: #F8F8FA;
+	position: absolute;
+	height: 100%;
+	float: left;
+}
+
+.list-header {
+	text-transform: uppercase;
+}
+
+#channels-list ul, #direct-messages-list ul {
+	padding-left: 15px;
+}
+
+#channels-list ul li, #direct-messages-list ul li {
+	list-style-type: none;
+}

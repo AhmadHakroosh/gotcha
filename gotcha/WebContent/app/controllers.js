@@ -162,14 +162,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				var data = success.data;
-				notifyService.alert({
-					"status": data.status,
-					"selector": data.notification.selector,
-					"message": data.notification.message
-				});
-				$timeout(function () {
-					$rootScope.route = data.route;
-				}, 2500);
+				$rootScope.route = data.route;
 			},
 			function (failure) {
 				console.log(failure.data);
