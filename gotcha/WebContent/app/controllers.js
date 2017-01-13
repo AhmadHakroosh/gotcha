@@ -61,8 +61,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 .controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', function($scope, $rootScope, $timeout, $http, notifyService) {
 	
-	var checkAvailabality = function () {
-		$scope.disabled = $scope.validUsername != "glyphicon glyphicon-ok-circle" || $scope.validNickname != "glyphicon glyphicon-ok-circle"
+	$scope.checkButton = function () {
+		$scope.disabled = 
+			$scope.validUsername != "glyphicon glyphicon-ok-circle" || $scope.validNickname != "glyphicon glyphicon-ok-circle"
+			||
+			$scope.username == "" || $scope.nickname == "" ||	$scope.password == ""
+			||
+			$scope.username == undefined || $scope.nickname == undefined ||	$scope.password == undefined;
 	};
 
 	$scope.register = function () {
@@ -100,38 +105,48 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.validateUsername = function () {
-		$http({
-			method: 'POST',
-			url: 'validate',
-			headers: {'Content-Type' : "application/json; charset=utf-8"},
-			data: {"username": $scope.username}
-		}).then(
-			function (success) {
-				$scope.validUsername = "glyphicon glyphicon-" + success.data.valid + "-circle";
-				checkAvailabality();
-			},
-			function (failure) {
-				console.log(failure.data);
-			}
-		);
-	}
+		if ($scope.username != "" && $scope.username !== undefined) {
+			$http({
+				method: 'POST',
+				url: 'validate',
+				headers: {'Content-Type' : "application/json; charset=utf-8"},
+				data: {"username": $scope.username}
+			}).then(
+				function (success) {
+					$scope.validUsername = "glyphicon glyphicon-" + success.data.valid + "-circle";
+					$scope.checkButton();
+				},
+				function (failure) {
+					console.log(failure.data);
+				}
+			);
+		} else {
+			$scope.validUsername = "";
+		}
+	};
 
 	$scope.validateNickname = function () {
-		$http({
-			method: 'POST',
-			url: 'validate',
-			headers: {'Content-Type' : "application/json; charset=utf-8"},
-			data: {"nickName": $scope.nickname}
-		}).then(
-			function (success) {
-				$scope.validNickname = "glyphicon glyphicon-" + success.data.valid + "-circle";
-				checkAvailabality();
-			},
-			function (failure) {
-				console.log(failure.data);
-			}
-		);
-	}
+		if ($scope.nickname != "" && $scope.nickname !== undefined) {
+			$http({
+				method: 'POST',
+				url: 'validate',
+				headers: {'Content-Type' : "application/json; charset=utf-8"},
+				data: {"nickName": $scope.nickname}
+			}).then(
+				function (success) {
+					$scope.validNickname = "glyphicon glyphicon-" + success.data.valid + "-circle";
+					$scope.checkButton();
+				},
+				function (failure) {
+					console.log(failure.data);
+				}
+			);
+		} else {
+			$scope.validNickname = "";
+		}
+	};
+
+	$scope.disabled = true;
 }])
 
 .controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'notifyService', function($scope, $http, $timeout, $rootScope, notifyService) {
