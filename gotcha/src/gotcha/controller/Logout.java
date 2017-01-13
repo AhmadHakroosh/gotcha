@@ -45,16 +45,15 @@ public class Logout extends HttpServlet {
 		String data;
 		data = "{"
 			+ 		"\"status\": \"success\","
-			+ 		"\"route\": \"messages\","
+			+ 		"\"route\": \"login\","
 			+ 		"\"notification\": {"
 			+ 			"\"selector\": \".logout-notification\","
 			+ 			"\"message\": \"Logged out successfully\""
 			+ 		"}"
-			+	"}"
+			+  "}"
 			;
 		HttpSession session = request.getSession();
 		session.invalidate();
-		request.getRequestDispatcher("/welcome").forward(request, response);
 		out.println(data);
 		out.close();
 	}

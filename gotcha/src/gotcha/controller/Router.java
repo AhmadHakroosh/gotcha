@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import gotcha.model.User;
-
 /**
  * Servlet implementation class Router
  */
@@ -43,21 +41,14 @@ public class Router extends HttpServlet {
 	
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		response.setContentType("application/JSON; charset=UTF-8");
-	    PrintWriter out = response.getWriter();
-		String data;
 		if (session == null) {
-			data = "{\"status\": \"success\", \"route\": \"login\"}";
+			response.setContentType("application/JSON; charset=UTF-8");
+		    PrintWriter out = response.getWriter();
+		    String data = 	"{\"status\": \"success\", \"route\": \"login\"}";
+			out.println(data);
+			out.close();
 		} else {
-			data = (String)session.getAttribute("data");
-			User user = (User)session.getAttribute("user");
-			request.setAttribute("user", user);
-			request.setAttribute("data", data);
 			request.getRequestDispatcher("/messages").forward(request, response);
-			data += "}";
 		}
-	    
-	    out.println(data);
-	    out.close();
 	}
 }

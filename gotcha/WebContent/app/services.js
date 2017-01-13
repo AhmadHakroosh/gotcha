@@ -13,11 +13,11 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 				data: input
 			}).then(
 				function (success) {
-					dataSharingService.set("status", success.data.status);
-					dataSharingService.set("route", success.data.route);
-					dataSharingService.set("notification", success.data.notification);
-					dataSharingService.set("user", success.data.user);
-					dataSharingService.set("valid", success.data.valid);
+					dataSharingService.set("status", success.data.status !== undefined ? success.data.status : dataSharingService.get("status"));
+					dataSharingService.set("route", success.data.route !== undefined ? success.data.route : dataSharingService.get("route"));
+					dataSharingService.set("notification", success.data.notification !== undefined ? success.data.notification : dataSharingService.get("notification"));
+					dataSharingService.set("user", success.data.user !== undefined ? success.data.user : dataSharingService.get("user"));
+					dataSharingService.set("users", success.data.users !== undefined ? success.data.users : dataSharingService.get("users"));
 			}, function (failure) {
 				console.log("An unknown error has occured while trying to retrieve data from server...");
 			});
@@ -41,15 +41,15 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Registeration system service
-.service('registerationService', ['restService', function(restService) {
+.service('registerService', ['restService', function(restService) {
 	return {
 		// Register the passed user to the system
 		register: function (user) {
 			restService.call('POST', 'register', user);
 		},
 		// Get users with the provided username (or) nickname
-		checkExistance: function (user) {
-			restService.call('POST', 'validate', user);
+		getUsers: function () {
+			restService.call('POST', 'getUsers', {});
 		}
 	}
 }])
@@ -122,19 +122,11 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 // Notification system service
 .service('notifyService', ['$rootScope', '$timeout', 'dataSharingService', function ($rootScope, $timeout, dataSharingService) {
 	return {
-		alert: function () {
-			$rootScope.$watch(function () {
-				return dataSharingService.get("notification") !== undefined && dataSharingService.get("status") !== undefined;
-			}, function (newValue, oldValue) {
-				if (newValue) {
-					var notification = dataSharingService.get("notification");
-					var status = dataSharingService.get("status");
-					$(notification.selector).addClass('alert alert-' + status).html(notification.message);
-					$timeout(function () {
-						$(notification.selector).removeClass('alert alert-' + status).html("");
-					}, 3000);
-				}
-			});
+		alert: function (notification) {
+			$(notification.selector).addClass("alert alert-" + notification.status).html(notification.message);
+			$timeout(function () {
+				$(notification.selector).removeClass("alert alert-" + notification.status).html("");
+			}, 2500);
 		}
 	}
 }])

@@ -14,7 +14,7 @@
 					<form name="register-form" ng-submit="register()">
 						<div class="form-group">
 							<label for="username">Username:</label>
-							<input type="text" ng-model="username" id="username" class="form-control" ng-keyup="validateUsername(username)" required>
+							<input type="text" ng-model="username" id="username" class="form-control" ng-keyup="validateUsername()" required>
 							<span ng-class="validUsername" aria-hidden="true"></span>
 						</div>
 						<div class="form-group">
@@ -23,7 +23,7 @@
 						</div>
 						<div class="form-group">
 							<label for="nickname">Nickname:</label>
-							<input type="text" ng-model="nickname" id="nickname" class="form-control" ng-keyup="validateNickname(nickname)" required>
+							<input type="text" ng-model="nickname" id="nickname" class="form-control" ng-keyup="validateNickname()" required>
 							<span ng-class="validNickname" aria-hidden="true"></span>
 						</div>
 						<div class="form-group">

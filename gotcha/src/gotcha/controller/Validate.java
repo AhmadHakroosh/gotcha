@@ -52,24 +52,21 @@ public class Validate extends HttpServlet {
 		// Convert JSON object from request input to User object
 		User user = gson.fromJson(request.getReader(), User.class);
 		// Check whether the passed was a username or a nickname
-		boolean existing = user.username() != null ? checkUsernames(user.username()) : checkNicknames(user.nickName());
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json; charset=UTF-8");
 		String data;
-		if (existing) {
-			data = "{"
-				+ 		"\"valid\": \"ban\","
-				+		"\"status\": \"success\","
-				+		"\"route\": \"login\""
-				+  "}"
-				;
+		if (user.username() != null) {
+			if (checkUsernames(user.username())) {
+				data = "{\"valid\": \"ban\"}";
+			} else {
+				data = "{\"valid\": \"ok\"}";
+			}
 		} else {
-			data = "{"
-				+ 		"\"valid\": \"ok\","
-				+		"\"status\": \"success\","
-				+		"\"route\": \"login\""
-				+  "}"
-				;
+			if (checkNicknames(user.nickName())) {
+				data = "{\"valid\": \"ban\"}";
+			} else {
+				data = "{\"valid\": \"ok\"}";
+			}
 		}
 		out.println(data);
 		out.close();

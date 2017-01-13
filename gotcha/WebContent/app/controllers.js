@@ -1,26 +1,32 @@
 // Main application controller
-gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restService', 'dataSharingService', function($scope, $timeout, $location, restService, dataSharingService) {
+gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http', function($scope, $rootScope, $location, $http) {
 	
-	$scope.route = "app/views/login.html";
+	$rootScope.route = "login";
 
-	// Check whether the HTTP Session is still alive
-	restService.call('POST', 'welcome', {});
-	
-	$scope.$watch(function () {
-		return dataSharingService.get("route");
-	}, function (newValue, oldValue) {
-		if (newValue !== oldValue) {
-			$scope.route = "app/views/" + newValue + ".html";
-			$location.path(newValue);
+	$http({
+		method: 'POST',
+		url: 'welcome',
+		headers: {'Content-Type' : "application/json; charset=utf-8"},
+		data: {}
+	}).then(
+		function (success) {
+			$rootScope.route = success.data.route;
+			$rootScope.user = success.data.user;
+		},
+		function (failure) {
+			console.log(failure.data);
 		}
+	);
+
+	$rootScope.$watch(function () {
+		return $rootScope.route;
+	}, function (newValue, oldValue) {
+		$scope.templateUrl = "app/views/" + newValue + ".html";
+		$location.path(newValue);
 	});
-	
-	$scope.templateUrl = function () {
-		return $scope.route;
-	};
 }])
 // Login controller that uses 'restService' for restful call
-.controller('loginController', ['$scope', '$timeout', '$location', 'authService', 'notifyService', 'dataSharingService', 'animationService', function($scope, $timeout, $location, authService, notifyService, dataSharingService, animationService) {
+.controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', function($scope, $rootScope, $timeout, $http, notifyService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -28,17 +34,36 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 			'password': $scope.password
 		};
 
-		authService.login(user);
+		$http({
+			method: 'POST',
+			url: 'login/auth',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: user
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				$timeout(function () {
+					$rootScope.route = data.route;
+					$rootScope.user = data.user;
+				}, 2500);
+			},
+			function (failure) {
+				console.log(failure.data);
+			}
+		);
 	};
-
-	notifyService.alert();
 }])
 
-.controller('registerController', ['$scope', '$timeout', 'registerationService', 'dataSharingService', 'notifyService', 'animationService', function($scope, $timeout, registerationService, dataSharingService, notifyService, animationService) {
+.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', function($scope, $rootScope, $timeout, $http, notifyService) {
 	
-	$scope.validUsername = "ok";
-	$scope.validNickname = "ok";
-	$scope.disabled = false;
+	var checkAvailabality = function () {
+		$scope.disabled = $scope.validUsername != "glyphicon glyphicon-ok-circle" || $scope.validNickname != "glyphicon glyphicon-ok-circle"
+	};
 
 	$scope.register = function () {
 		var user = {
@@ -49,63 +74,103 @@ gotcha.controller('mainController', ['$scope', '$timeout', '$location', 'restSer
 			"photoUrl": $scope.photoUrl
 		};
 
-		$(".modal-backdrop").css({
-			display: 'none'
-		});
-		registerationService.register(user);
+		$http({
+			method: 'POST',
+			url: 'register',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: user
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				$timeout(function () {
+					$(".modal-backdrop").css({display: 'none'});
+					$rootScope.route = data.route;
+					$rootScope.user = data.user;
+				}, 2500);
+			},
+			function (failure) {
+				console.log(failure.data);
+			}
+		);
 	};
 
-	$scope.validateUsername = function (username) {
-		var user = {
-			"username": username
-		};
-
-		registerationService.checkExistance(user);
-		$timeout(function () {
-			$scope.validUsername = "glyphicon glyphicon-" + dataSharingService.get("valid") + "-circle";
-		}, 1000);
-	};
-
-	$scope.validateNickname = function (nickname) {
-		var user = {
-			"nickName": nickname
-		};
-
-		registerationService.checkExistance(user);
-		$timeout(function () {
-			$scope.validNickname = "glyphicon glyphicon-" + dataSharingService.get("valid") + "-circle";
-		}, 1000);
-	};
-
-	$scope.$watch(function () {
-		return $scope.validUsername == "glyphicon glyphicon-ok-circle" && $scope.validNickname == "glyphicon glyphicon-ok-circle";
-	}, function (newValue, oldValue) {
-		$scope.disabled = newValue;
-		console.log($scope.disabled);
-	});
-
-	notifyService.alert();
-}])
-
-.controller('messagesController', ['$scope', 'authService','dataSharingService', 'notifyService', 'animationService', function($scope, authService, dataSharingService, notifyService, animationService) {
-
-	$scope.userProfile = dataSharingService.get("user").profile;
-
-	$scope.logout = function () {
-		authService.logout();
+	$scope.validateUsername = function () {
+		$http({
+			method: 'POST',
+			url: 'validate',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: {"username": $scope.username}
+		}).then(
+			function (success) {
+				$scope.validUsername = "glyphicon glyphicon-" + success.data.valid + "-circle";
+				checkAvailabality();
+			},
+			function (failure) {
+				console.log(failure.data);
+			}
+		);
 	}
 
-	notifyService.alert();
+	$scope.validateNickname = function () {
+		$http({
+			method: 'POST',
+			url: 'validate',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: {"nickName": $scope.nickname}
+		}).then(
+			function (success) {
+				$scope.validNickname = "glyphicon glyphicon-" + success.data.valid + "-circle";
+				checkAvailabality();
+			},
+			function (failure) {
+				console.log(failure.data);
+			}
+		);
+	}
 }])
 
-.controller('channelsListController', ['$scope', 'dataSharingService', function($scope, dataSharingService) {
+.controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'notifyService', function($scope, $http, $timeout, $rootScope, notifyService) {
+
+	$scope.userProfile = $rootScope.user.profile;
+
+	$scope.logout = function () {
+		$http({
+			method: 'POST',
+			url: 'logout',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: {}
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				$timeout(function () {
+					$rootScope.route = data.route;
+				}, 2500);
+			},
+			function (failure) {
+				console.log(failure.data);
+			}
+		);
+	}
+}])
+
+.controller('channelsListController', ['$scope', '$rootScope', function($scope, $rootScope) {
 	$scope.section = "channels";
-	$scope.channels = dataSharingService.get("user").channels;
+	$scope.channels = $rootScope.user.channels;
 }])
 
-.controller('directMessagesController', ['$scope', 'restService', 'dataSharingService', function($scope, restService, dataSharingService) {
+.controller('directMessagesController', ['$scope', '$rootScope', function($scope, $rootScope) {
 	$scope.section = "direct messages";
-	$scope.directMessages = dataSharingService.get("user").directMessages;
+	$scope.directMessages = $rootScope.user.directMessages;
 }])
 
 .controller('chatController', ['$scope', function($scope) {

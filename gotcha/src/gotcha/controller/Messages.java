@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import gotcha.model.*;
 import gotcha.globals.Globals;
@@ -46,8 +47,9 @@ public class Messages extends HttpServlet {
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Data forwarded from login servlet
-		String data = (String)request.getAttribute("data");
-		User user = (User)request.getAttribute("user");
+		HttpSession session = request.getSession();
+		String data = (String)session.getAttribute("data");
+		User user = (User)session.getAttribute("user");
 		// 1. Find user subscriptions:
 		ArrayList<String> channels = getUserSubscriptions(user);
 		// 2. Find user direct chats
