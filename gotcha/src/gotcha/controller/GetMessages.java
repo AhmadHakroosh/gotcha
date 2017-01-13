@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class ChannelUnsubscribe
+ * Servlet implementation class GetUserMessages
  */
-@WebServlet("/ChannelUnsubscribe")
-public class ChannelUnsubscribe extends HttpServlet {
+@WebServlet("/GetUserMessages")
+public class GetMessages extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ChannelUnsubscribe() {
+    public GetMessages() {
         super();
         // TODO Auto-generated constructor stub
     }

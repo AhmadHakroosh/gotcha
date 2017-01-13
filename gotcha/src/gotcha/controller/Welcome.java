@@ -14,13 +14,13 @@ import javax.servlet.http.HttpSession;
  * Servlet implementation class Router
  */
 @WebServlet("/welcome")
-public class Router extends HttpServlet {
+public class Welcome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Router() {
+    public Welcome() {
         super();
         // TODO Auto-generated constructor stub
     }
