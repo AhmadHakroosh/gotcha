@@ -44,7 +44,10 @@ public class Messages extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+
+	/**
+	 * 
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Data forwarded from login servlet
 		HttpSession session = request.getSession();
@@ -78,7 +81,10 @@ public class Messages extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+
+	/**
+	 * 
+	 */
 	private ArrayList<String> getUserSubscriptions (User user) {
 		ArrayList<Object> values = new ArrayList<Object>();
 		ArrayList<Object> where = new ArrayList<Object>();
@@ -96,18 +102,22 @@ public class Messages extends HttpServlet {
 		
 		return channels;
 	}
-	
+
+	/**
+	 * 
+	 */
 	private ArrayList<String> getUserDirectChats (User user) {
 		ArrayList<Object> values = new ArrayList<Object>();
 		ArrayList<Object> where = new ArrayList<Object>();
 		ArrayList<String> users = new ArrayList<String>();
+		ArrayList<String> channels = new ArrayList<String>(Channel.getAllChannels());
 		
 		where.add(user.nickName());
-		ResultSet resultSet = Globals.execute(Globals.SELECT_DIRECT_MESSAGE_BY_SENDER, values, where);
+		ResultSet resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_SENDER, values, where);
 		try {
 			while (resultSet.next()) {
-				String receiver = resultSet.getString("RECEIVER");
-				if (!users.contains(receiver)) {
+				String receiver = resultSet.getString("TO");
+				if (!users.contains(receiver) && !channels.contains(receiver)) {
 					users.add(receiver);
 				}
 			}
@@ -115,10 +125,10 @@ public class Messages extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		resultSet = Globals.execute(Globals.SELECT_DIRECT_MESSAGE_BY_RECEIVER, values, where);
+		resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_RECEIVER, values, where);
 		try {
 			while (resultSet.next()) {
-				String sender = resultSet.getString("SENDER");
+				String sender = resultSet.getString("FROM");
 				if (!users.contains(sender)) {
 					users.add(sender);
 				}

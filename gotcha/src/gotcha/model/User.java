@@ -1,5 +1,6 @@
 package gotcha.model;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -10,6 +11,8 @@ public class User {
 	private String nickName;
 	private String description;
 	private String photoUrl;
+	private String status;
+	private Timestamp lastSeen;
 	
 	// Default constructor
 	public User () {
@@ -34,12 +37,13 @@ public class User {
 		this.description = description;
 	}
 
-	public User (String username, String password, String nickName, String description, String photoUrl) {
+	public User (String username, String password, String nickName, String description, String photoUrl, String status) {
 		this.username = username;
 		this.password = password;
 		this.nickName = nickName;
 		this.description = description;
 		this.photoUrl = photoUrl;
+		this.status = status;
 	}
 	
 	public String username () {
@@ -60,6 +64,14 @@ public class User {
 	
 	public String photoUrl () {
 		return this.photoUrl;
+	}
+	
+	public String status () {
+		return this.status;
+	}
+	
+	public Timestamp lastSeen () {
+		return this.lastSeen;
 	}
 
 	public void username (String username) {
@@ -82,6 +94,14 @@ public class User {
 		this.photoUrl = photoUrl;
 	}
 	
+	public void status (String status) {
+		this.status = status;
+	}
+	
+	public void latSeen (Timestamp time) {
+		this.lastSeen = time;
+	}
+	
 	// User attributes update method
 	public void update (HashMap<String, String> attributes) {
 		for (Entry<String, String> attribute : attributes.entrySet()) {
@@ -101,6 +121,8 @@ public class User {
 				case "photoUrl":
 					this.photoUrl = attribute.getValue();
 					break;
+				case "status":
+					this.status = attribute.getValue();
 			}
 		}
 	}

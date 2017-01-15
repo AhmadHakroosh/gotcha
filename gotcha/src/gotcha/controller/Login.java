@@ -114,7 +114,7 @@ public class Login extends HttpServlet {
 				registered.password(resultSet.getString("PASSWORD"));
 				registered.description(resultSet.getString("DESCRIPTION"));
 				registered.nickName(resultSet.getString("NICKNAME"));
-				registered.photoUrl(resultSet.getString("PHOTOURL"));
+				registered.photoUrl(resultSet.getString("PHOTO_URL"));
 				return registered;
 			// He is not existing, return null
 			} else {

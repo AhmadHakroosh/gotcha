@@ -26,7 +26,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	});
 }])
 // Login controller that uses 'restService' for restful call
-.controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, notifyService, animationService) {
+.controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'messagingService', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, messagingService, notifyService, animationService) {
 	
 	$scope.login = function () {
 		var user = {
@@ -47,10 +47,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"selector": data.notification.selector,
 					"message": data.notification.message
 				});
-				$timeout(function () {
-					$rootScope.route = data.route;
-					$rootScope.user = data.user;
-				}, 2500);
+				if (data.status == "success") {
+					$timeout(function () {
+						$rootScope.route = data.route;
+						$rootScope.user = data.user;
+						messagingService.create();
+					}, 2500);
+				}
 			},
 			function (failure) {
 				console.log(failure.data);
@@ -59,7 +62,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, notifyService, animationService) {
+.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', '$filter', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, $filter, notifyService, animationService) {
 	
 	$scope.checkButton = function () {
 		$scope.disabled = 
@@ -76,7 +79,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"password": $scope.password,
 			"nickName": $scope.nickname,
 			"description": $scope.description,
-			"photoUrl": $scope.photoUrl
+			"photoUrl": $scope.photoUrl,
+			"status" : "active",
+			"lastSeen": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
 		};
 
 		$http({
@@ -92,11 +97,14 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"selector": data.notification.selector,
 					"message": data.notification.message
 				});
-				$timeout(function () {
-					$(".modal-backdrop").css({display: 'none'});
-					$rootScope.route = data.route;
-					$rootScope.user = data.user;
-				}, 2500);
+				if (data.status == "success") {
+					$timeout(function () {
+						$(".modal-backdrop").css({display: 'none'});
+						$rootScope.route = data.route;
+						$rootScope.user = data.user;
+						messagingService.create();						
+					}, 2500);
+				}
 			},
 			function (failure) {
 				console.log(failure.data);
@@ -169,16 +177,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	}
-}])
-
-.controller('channelsListController', ['$scope', '$rootScope', function($scope, $rootScope) {
-	$scope.section = "channels";
-	$scope.channels = $rootScope.user.channels;
-}])
-
-.controller('directMessagesController', ['$scope', '$rootScope', function($scope, $rootScope) {
-	$scope.section = "direct messages";
-	$scope.directMessages = $rootScope.user.directMessages;
 }])
 
 .controller('chatController', ['$scope', function($scope) {

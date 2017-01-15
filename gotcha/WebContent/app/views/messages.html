@@ -1,45 +1,39 @@
 <div ng-controller="messagesController">
-	<section id="sidebar" class="col-md-2 col-sm-2">
+	<div id="sidebar" class="col-md-2 col-sm-2">
 		<!-- User's profile area -->
 		<div id="user-profile">
 			<button type="button" class="btn btn-default" ng-click="logout()">Sign out</button>
 		</div>
 		<!-- User's channels list -->
 		<div id="channels-list">
-			<span class="list-header">Channels <span class="channels-number">({{user.channels.length}})</span></span>
+			<span class="list-header text-uppercase">Channels <span class="channels-number">({{user.channels.length}})</span></span>
 			<ul>
-				<li ng-repeat="channel in user.channels" class="chat-item">{{channel}}</li>
+				<li ng-repeat="channel in user.channels" class="chat-item"># {{channel}}</li>
 			</ul>
 		</div>
 
 		<!-- User's direct messages list -->
 		<div id="direct-messages-list">
-			<span class="list-header">Direct Messages</span>
+			<span class="list-header text-uppercase">Direct Messages</span>
 			<ul>
-				<li ng-repeat="message in user.directMessages" class="chat-item">{{message}}</li>
+				<li ng-repeat="message in user.directMessages" class="chat-item"><span class="status"></span>{{message}}</li>
 			</ul>
 		</div>
-	</section>
+	</div>
 	<!-- User's active chat window -->
-	<section id="chat-window" class="col-md-10 col-sm-10">
+	<div id="chat-window" class="col-md-10 col-sm-10">
 		<!-- Chat header -->
 		<div id="chat-header">
 			<!-- Details of user who is chatting with -->
-			<div id="user-details">
-				
-			</div>
+			<div id="user-details"></div>
 			<!-- Chat options -->
-			<div id="main-menu">
-				
-			</div>
+			<div id="main-menu"></div>
 		</div>
-		<!-- User's active chat's messages -->
-		<div id="active-chat">
-
+		<div ng-controller="chatController">
+			<!-- User's active chat's messages -->
+			<div id="active-chat"></div>
+			<!-- Area for typing and sending messages -->
+			<div id="typing-area"></div>
 		</div>
-		<!-- Area for typing and sending messages -->
-		<div id="typing-area">
-			
-		</div>
-	</section>
+	</div>
 </div>

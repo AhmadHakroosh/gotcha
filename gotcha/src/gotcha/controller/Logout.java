@@ -2,6 +2,10 @@ package gotcha.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import gotcha.globals.Globals;
+import gotcha.model.User;
 
 /**
  * Servlet implementation class Logout
@@ -53,8 +60,25 @@ public class Logout extends HttpServlet {
 			+  "}"
 			;
 		HttpSession session = request.getSession();
+		updateUserStatus(session);
 		session.invalidate();
 		out.println(data);
 		out.close();
+	}
+	
+	private void updateUserStatus (HttpSession session) {
+		User user = (User)session.getAttribute("user");
+		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> where = new ArrayList<Object>();
+		
+		String status = "away";
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		
+		values.add(status);
+		values.add(last_seen);
+		
+		where.add(user.username());
+		
+		Globals.executeUpdate(Globals.UPDATE_USER_STATUS, values, where);
 	}
 }

@@ -47,7 +47,7 @@ public class Register extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
 		// Convert JSON object from request input to User object
 		User user = gson.fromJson(request.getReader(), User.class);
 		// Prepare a JSON to be forwarded to a new servlet or returned in the response
@@ -69,7 +69,7 @@ public class Register extends HttpServlet {
 				+ 			"\"message\": \"Registered successfully\""
 				+ 		"},"
 				+ 		"\"user\": {"
-				+			"\"status\": \"online\","
+				+			"\"status\": \"active\","
 				+ 			"\"profile\": " + jsonUser
 				;
 	
@@ -101,6 +101,8 @@ public class Register extends HttpServlet {
 		values.add(user.nickName());
 		values.add(user.description());
 		values.add(user.photoUrl());
+		values.add(user.status());
+		values.add(user.lastSeen());
 		
 		int rows = Globals.executeUpdate(Globals.INSERT_USER, values, where);
 		

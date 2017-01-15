@@ -1,14 +1,10 @@
 // Global preferences
 #main-ui {
-	padding: 0;
-}
-
-section {
-	padding: 0;
+	padding: 0 !important;
 }
 
 // Sidebar (channels & direct messages lists) preferences
-#sidebar {
+#bootstrap-overrides #sidebar {
 	background: #F8F8FA;
 	position: absolute;
 	height: 100%;
@@ -16,13 +12,18 @@ section {
 }
 
 .list-header {
-	text-transform: uppercase;
+	
 }
 
 #channels-list ul, #direct-messages-list ul {
-	padding-left: 15px;
+	padding-left: 5px;
 }
 
 #channels-list ul li, #direct-messages-list ul li {
 	list-style-type: none;
+}
+
+// Login page style
+#login-form {
+	top: 50px;
 }

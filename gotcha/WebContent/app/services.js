@@ -77,24 +77,18 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Messaging system service
-.service('messagingService', ['$location', 'dataSharingService', function($location, dataSharingService) {
+.service('messagingService', ['$location', '$rootScope', function($location, $rootScope) {
 	
-	$scope.chats = {};
-	$scope.currentChat = {};
-
 	return {
-		// Add a new chat connection (websocket)
-		openChat: function (user) {
-			if ($scope.chats[user] === undefined) {
-				$scope.chats[user] = new websocket("ws://" + $location.absUrl() + "/@" + user);
-			}
-			// Return the current open chat
-			$scope.currentChat = $scope.chats[user];
-			return $scope.currentChat;
-		},
-		// Send message to the current chat
-		sendMessage: function (user, message) {
+		// Open websocket
+		create: function () {
+			var user = $rootScope.user;
+			var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.profile.nickName;
+			$rootScope.session = new WebSocket(sessionUri);
+			// Define websocket methods
+			$rootScope.session.onopen = function (event) {
 
+			}
 		}
 	}
 }])
