@@ -72,7 +72,7 @@ public class Login extends HttpServlet {
 				+ 			"\"message\": \"Logged in successfully\""
 				+ 		"},"
 				+ 		"\"user\": {"
-				+			"\"status\": \"online\","
+				+			"\"status\": \"active\","
 				+ 			"\"profile\": " + jsonUser
 				;
 

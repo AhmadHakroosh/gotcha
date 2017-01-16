@@ -1,29 +1,65 @@
-// Global preferences
-#main-ui {
-	padding: 0 !important;
+// Global styling
+body {
+	overflow: hidden;
 }
 
-// Sidebar (channels & direct messages lists) preferences
-#bootstrap-overrides #sidebar {
-	background: #F8F8FA;
-	position: absolute;
-	height: 100%;
+.right {
+	float: right;
+}
+
+.left {
 	float: left;
 }
 
-.list-header {
-	
+.status {
+	border-radius: 50%;
+	border: 2px solid #DCDDDF;
+	width: 12px;
+	height: 12px;
+	vertical-align: middle;
+	margin-right: 10px;
 }
 
-#channels-list ul, #direct-messages-list ul {
-	padding-left: 5px;
+.active {
+	background: #63D259;
 }
 
-#channels-list ul li, #direct-messages-list ul li {
-	list-style-type: none;
+.away {
+	background: #FCFCFD;
 }
 
-// Login page style
-#login-form {
-	top: 50px;
+#login-page {
+	padding-top: 15px;
+}
+
+#login-page #login-form {
+	padding: 15px;
+	margin-top: 130px;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+}
+
+#profile-area {
+	padding-top: 15px;
+	background: #F8F8FA;
+	position: absolute;
+	height: 60px;
+	z-index: 50;
+	border-bottom: 1px solid lightgrey;
+}
+
+.profile-options, .profile-options ul {
+	width: 100%;
+}
+
+#sidebar {
+	padding-top: 75px;
+	position: absolute;
+	background: #F8F8FA;
+	height: 100%;
+}
+
+#chat-window, #main-menu {
+	right: 0;
+	position: absolute;
 }

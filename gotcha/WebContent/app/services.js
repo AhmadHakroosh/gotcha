@@ -77,8 +77,21 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	}
 }])
 // Messaging system service
-.service('messagingService', ['$location', '$rootScope', function($location, $rootScope) {
+.service('messagingService', ['$location', '$rootScope', '$filter', function($location, $rootScope, $filter) {
 	
+	var notify = function (message) {
+		console.log(message);
+	};
+
+	var pack = function (message) {
+		return {
+			"from": $rootScope.user.profile.nickName,
+			"to": "",
+			"text": message,
+			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+		};
+	}
+
 	return {
 		// Open websocket
 		create: function () {
@@ -86,9 +99,32 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 			var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.profile.nickName;
 			$rootScope.session = new WebSocket(sessionUri);
 			// Define websocket methods
+			// On connection open
 			$rootScope.session.onopen = function (event) {
-
-			}
+				console.log("Connected to server...");
+			};
+			// On received message
+			$rootScope.session.onmessage = function (event) {
+				notify(event.data);
+			};
+			// On error
+			$rootScope.session.onerror = function (event) {
+				notify("Error: " + event.data);
+			};
+			// On connection close
+			$rootScope.session.onclose = function (event) {
+				$rootScope.session = null;
+				console.log("disconnected from server...");
+			};
+		},
+		// Deliver a message
+		send: function (message) {
+			var packedMessage = pack(message);
+			$rootScope.session.send(packedMessage);
+		},
+		// Close connection
+		close: function () {
+			$rootScope.session.close();
 		}
 	}
 }])

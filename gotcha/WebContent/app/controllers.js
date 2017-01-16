@@ -157,10 +157,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.disabled = true;
 }])
 
-.controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'notifyService', function($scope, $http, $timeout, $rootScope, notifyService) {
+.controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'messagingService', 'notifyService', function($scope, $http, $timeout, $rootScope, messagingService, notifyService) {
 
 	$scope.user = $rootScope.user;
-
+	// Send button is disabled by default
+	$scope.disabled = true;
+	// Logout from the system
 	$scope.logout = function () {
 		$http({
 			method: 'POST',
@@ -176,6 +178,19 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				console.log(failure.data);
 			}
 		);
+	};
+	// Update typing area send button
+	$scope.checkButton = function () {
+		if ($scope.chatInput !== undefined || $scope.chatInput != "") {
+			$scope.disabled = false;
+		} else {
+			$scope.disabled = true;
+		}
+	};
+	// Send message
+	$scope.send = function () {
+		messagingService.send($scope.chatInput);
+		$scope.chatInput = "";
 	}
 }])
 

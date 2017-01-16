@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import javax.websocket.DecodeException;
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -81,6 +82,11 @@ public class GotChaServerEndpoint {
 				active.remove(user.getKey());
 			}
 		}
+	}
+	
+	@OnError
+	public void log (Session session, Throwable t) {
+		t.printStackTrace();
 	}
 
 	/**

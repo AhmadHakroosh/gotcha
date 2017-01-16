@@ -1,39 +1,55 @@
 <div ng-controller="messagesController">
-	<div id="sidebar" class="col-md-2 col-sm-2">
-		<!-- User's profile area -->
-		<div id="user-profile">
-			<button type="button" class="btn btn-default" ng-click="logout()">Sign out</button>
+	<div class="row">
+		<div id="profile-area" class="col-md-2 col-sm-2">
+			<!-- User's profile area -->
+			<div id="user-profile">
+				<ul class="nav nav-pills">
+					<li role="presentation" class="dropdown profile-options">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="status {{user.status}} left"></span> {{user.profile.nickName}} <span class="glyphicon glyphicon-menu-down right"></span>
+				    	</a>
+						<ul class="dropdown-menu">
+							<li ng-click="logout()">Sign out</li>
+						</ul>
+					</li>
+				</ul>
+				
+			</div>
 		</div>
-		<!-- User's channels list -->
-		<div id="channels-list">
-			<span class="list-header text-uppercase">Channels <span class="channels-number">({{user.channels.length}})</span></span>
-			<ul>
-				<li ng-repeat="channel in user.channels" class="chat-item"># {{channel}}</li>
-			</ul>
+		<!-- Main menu -->
+		<div id="main-menu" class="col-md-10 col-sm-10">
+			
 		</div>
+	</div>
+	<div class="row">
+		<!-- Gotcha sidebar -->
+		<div id="sidebar" class="col-md-2 col-sm-2">
+			<!-- User's channels list -->
+			<div id="channels-list">
+				<span class="list-header text-uppercase">Channels <span class="channels-number">({{user.channels.length}})</span></span>
+				<ul>
+					<li ng-repeat="channel in user.channels" class="chat-item"># {{channel}}</li>
+				</ul>
+			</div>
 
-		<!-- User's direct messages list -->
-		<div id="direct-messages-list">
-			<span class="list-header text-uppercase">Direct Messages</span>
-			<ul>
-				<li ng-repeat="message in user.directMessages" class="chat-item"><span class="status"></span>{{message}}</li>
-			</ul>
+			<!-- User's direct messages list -->
+			<div id="direct-messages-list">
+				<span class="list-header text-uppercase">Direct Messages</span>
+				<ul>
+					<li ng-repeat="message in user.directMessages" class="chat-item"><span class="status"></span>{{message}}</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-	<!-- User's active chat window -->
-	<div id="chat-window" class="col-md-10 col-sm-10">
-		<!-- Chat header -->
-		<div id="chat-header">
-			<!-- Details of user who is chatting with -->
-			<div id="user-details"></div>
-			<!-- Chat options -->
-			<div id="main-menu"></div>
+		<!-- User's active chat window -->
+		<div id="chat-window" class="col-md-10 col-sm-10">
+			<div id="active-chat-window">
+				<!-- User's active chat's messages -->
+				<div id="active-chat"></div>
+				<!-- Area for typing and sending messages -->
+				<div id="typing-area">
+					<input type="text" placeholder="Type your message...">
+					<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-send"></span></button>
+				</div>
+			</div>
 		</div>
-		<div ng-controller="chatController">
-			<!-- User's active chat's messages -->
-			<div id="active-chat"></div>
-			<!-- Area for typing and sending messages -->
-			<div id="typing-area"></div>
-		</div>
-	</div>
+	</div>		
 </div>
