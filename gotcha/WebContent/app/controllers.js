@@ -161,7 +161,15 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.user = $rootScope.user;
 	// Send button is disabled by default
-	$scope.disabled = true;
+	$scope.$watch(function () {
+		return $scope.inputMessage;
+	}, function (newValue, oldValue) {
+		if (newValue === undefined || newValue == "") {
+			$(".glyphicon-send").css("color", "lightgrey");
+		} else {
+			$(".glyphicon-send").css("color", "#007AB8");
+		}
+	});
 	$scope.showDropdown = false;
 	$scope.oppositeStatus = $scope.user.status == "active" ? "away" : "active";
 	

@@ -2,6 +2,10 @@ body {
 	overflow: hidden;
 }
 
+input:focus {
+	outline: none;
+}
+
 .right {
 	float: right;
 }
@@ -12,6 +16,12 @@ body {
 
 .absolute-postion {
 	position: absolute;
+}
+
+.media-object {
+	height: 45px;
+	width: 45px;
+	border-radius: 5px;
 }
 
 .status {
@@ -70,13 +80,14 @@ li.divider {
 #top-header #main-header {
 	padding: 0;
 	border-bottom: 1px solid lightgrey;
+	z-index: 9999;
 }
 
 #main-header .icon {
 	border: none;
 	font-size: 1.5em;
 	margin: 4px 8px 0 8px;
-	color: grey;
+	color: lightgrey;
 }
 
 #main-header .icon:hover {
@@ -164,6 +175,7 @@ li.divider {
 
 #profile-area div {
 	display: inline-block;
+	vertical-align: middle;
 }
 
 #profile-dropdown-menu {

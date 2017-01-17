@@ -3,14 +3,20 @@
 		<!-- Profile area -->
 		<div class="sidebar col-md-2 col-sm-2" id="profile-dropdown-menu-toggle" ng-click="toggleShow()">
 			<div id="profile-area">
-				<div class="profile-picture"></div>
+				<div class="media">
+					<div class="media-left">
+				    	<img class="media-object" src="{{user.profile.photoUrl}}" alt="{{user.profile.nickName}} profile picture">
+				  	</div>
+				</div>
 				<div class="status {{user.status}}"></div>
-				<div class="nickname">{{user.profile.nickName}}</div>
+			    <div class="nickname">{{user.profile.nickName}}</div>
 			</div>
 			<div id="profile-dropdown-menu" ng-show="showDropdown">
 				<ul>
 					<li>Edit your profile</li>
 					<li><span ng-show="user.status == 'away'">[Away] </span>Set yourself to <span class="bold">{{oppositeStatus}}</span></li>
+					<li role="separator" class="divider"></li>
+					<li>Statistics</li>
 					<li role="separator" class="divider"></li>
 					<li ng-click="logout()">Sign out</li>
 				</ul>
