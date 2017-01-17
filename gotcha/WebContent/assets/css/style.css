@@ -1,4 +1,3 @@
-// Global styling
 body {
 	overflow: hidden;
 }
@@ -11,23 +10,43 @@ body {
 	float: left;
 }
 
+.absolute-postion {
+	position: absolute;
+}
+
 .status {
-	border-radius: 50%;
-	border: 2px solid #DCDDDF;
-	width: 12px;
-	height: 12px;
-	vertical-align: middle;
-	margin-right: 10px;
+	border-radius: 5px;
+	border: 2px solid lightgrey;
+	display: inline;
+	width: 10px;
+	height: 10px;
 }
 
 .active {
 	background: #63D259;
+	border: 2px solid #63D259;
 }
 
 .away {
-	background: #FCFCFD;
+	background: transparent;
 }
 
+.busy {
+	background: 
+}
+
+li.divider {
+	border-bottom: 1px solid lightgrey;
+	height: 0px;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+// Login page styling
 #login-page {
 	padding-top: 15px;
 }
@@ -39,27 +58,181 @@ body {
 	border-radius: 5px;
 }
 
-#profile-area {
-	padding-top: 15px;
-	background: #F8F8FA;
-	position: absolute;
+#top-header {
 	height: 60px;
-	z-index: 50;
+}
+
+#top-header .sidebar, #top-header #main-header {
+	height: 100%;
+	border: none;
+}
+
+#top-header #main-header {
+	padding: 0;
 	border-bottom: 1px solid lightgrey;
 }
 
-.profile-options, .profile-options ul {
-	width: 100%;
+#main-header .icon {
+	border: none;
+	font-size: 1.5em;
+	margin: 4px 8px 0 8px;
+	color: grey;
 }
 
-#sidebar {
-	padding-top: 75px;
-	position: absolute;
+#main-header .icon:hover {
+	cursor: pointer;
+	color: #007AB8;
+}
+
+.divider-bar {
+    width: 1px;
+    height: 2.4rem;
+    background: lightgrey;
+    margin: .5rem 0 .25rem 5px;
+}
+
+#global-header {
+	padding: 0;
+}
+
+#search-container {
+	width: 75%;
+	padding: 0;
+	border: 1px solid lightgrey;
+	border-radius: 4px;
+	height: 30px;
+	margin-top: 2px;
+}
+
+.search-input {
+	width: 75%;
+	height: 28px;
+	margin-left: 2px;
+}
+
+.search-input input {
+	border: none;
+	width: 100%;
+	height: 100%;
+	padding-left: 2px;
+}
+
+.search-icon {
+	margin: 5px;
+	color: lightgrey;
+}
+
+.search-input-clear {
+	margin-right: 5px;
+	margin-top: 5px;
+	color: lightgrey;
+}
+
+.search-input-clear:hover {
+	cursor: pointer;
+	color: grey;
+}
+
+#recent-mentions {
+	padding: 0;
+}
+
+.chat-header {
+	padding: 0;
+}
+
+.sidebar {
 	background: #F8F8FA;
+}
+
+.sidebar .icon {
+	color: lightgrey;
+}
+
+.sidebar .icon:hover {
+	cursor: pointer;
+	color: grey;
+}
+
+.sidebar, .chat-header, .global-header {
+	padding-top: 12px;
+}
+
+#top-header .sidebar:hover {
+	cursor: pointer;
+}
+
+#profile-area div {
+	display: inline-block;
+}
+
+#profile-dropdown-menu {
+	position: absolute;
+	display: block;
+	z-index: 1000;
+	float: left;
+	top: 60px;
+	left: 15px;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	width: 87%;
+	background: white;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+#profile-dropdown-menu ul {
+	list-style: none;
+	padding: 0;
+}
+
+#profile-dropdown-menu ul li {
+	margin: 8px 16px 8px;
+	padding: 4px;
+}
+
+#profile-dropdown-menu ul li:hover {
+	background: #2D9EE0;
+	border-radius: 5px;
+}
+
+.list-header {
+	text-transform: uppercase;
+}
+
+#active-chat {
 	height: 100%;
 }
 
-#chat-window, #main-menu {
-	right: 0;
-	position: absolute;
+#chat-console {
+	height: 100%;
+}
+
+#typing-area .icon {
+	font-size: 1.8em;
+	margin: 8px 16px 8px 16px;
+	color: lightgrey;
+}
+
+#typing-area .icon:hover {
+	cursor: pointer;
+	color: #007AB8;
+}
+
+#input-message-container {
+	height: 75%;
+	border: 2px solid lightgrey;
+	border-radius: 8px;
+}
+
+#input-message {
+	height: 100%;
+	width: 89%;
+}
+
+#input-message form, #input-message form input {
+	border: none;
+	height: 100%;
+	width: 100%;
+	padding: 2px;
+	margin: 0;
 }

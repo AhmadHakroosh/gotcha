@@ -1,53 +1,94 @@
 <div ng-controller="messagesController">
-	<div class="row">
-		<div id="profile-area" class="col-md-2 col-sm-2">
-			<!-- User's profile area -->
-			<div id="user-profile">
-				<ul class="nav nav-pills">
-					<li role="presentation" class="dropdown profile-options">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="status {{user.status}} left"></span> {{user.profile.nickName}} <span class="glyphicon glyphicon-menu-down right"></span>
-				    	</a>
-						<ul class="dropdown-menu">
-							<li ng-click="logout()">Sign out</li>
-						</ul>
-					</li>
+	<div id="top-header" class="row">
+		<!-- Profile area -->
+		<div class="sidebar col-md-2 col-sm-2" id="profile-dropdown-menu-toggle" ng-click="toggleShow()">
+			<div id="profile-area">
+				<div class="profile-picture"></div>
+				<div class="status {{user.status}}"></div>
+				<div class="nickname">{{user.profile.nickName}}</div>
+			</div>
+			<div id="profile-dropdown-menu" ng-show="showDropdown">
+				<ul>
+					<li>Edit your profile</li>
+					<li><span ng-show="user.status == 'away'">[Away] </span>Set yourself to <span class="bold">{{oppositeStatus}}</span></li>
+					<li role="separator" class="divider"></li>
+					<li ng-click="logout()">Sign out</li>
 				</ul>
-				
 			</div>
 		</div>
-		<!-- Main menu -->
-		<div id="main-menu" class="col-md-10 col-sm-10">
-			
+		<!-- Main activity menu -->
+		<div id="main-header" class="col-md-10 col-sm-10">
+			<header id="gotcha-header">
+				<div class="chat-header left col-md-9 col-sm-9">
+					<div class="chat-title left">
+						<h2 id="chat-name-container" class="chat-name-container">
+							<span class="chat-name"></span>
+						</h2>
+						<div class="chat-header-info">
+							<div class="chat-header-info-item chat-members"></div>
+							<div class="chat-header-info-item chat-purpose"></div>
+						</div>
+					</div>
+					<div class="divider-bar right"></div>
+					<div class="chat-header-actions right">
+						<div class="icon right"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
+						<div class="icon right"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<div class="global-header col-md-3 col-sm-3">
+					<div id="search-container" class="col-md-10 col-sm-10">
+						<form role="search" accept-charset="utf-8" id="global-search-form">
+							<div class="search-icon left"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+							<div class="search-input left">
+								<input type="text" name="query" placeholder="Search" autocomplete="off" maxlength="120">
+							</div>
+							<div class="search-input-clear right"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></div>
+							<div class="popover-menu"></div>
+						</form>
+					</div>
+					<div id="recent-mentions" class="col-md-2 col-sm-2 right">
+						<div class="icon right"><span class="glyphicon glyphicon-tags" aria-hidden="true"></span></div>
+					</div>
+				</div>
+			</header>
 		</div>
 	</div>
-	<div class="row">
-		<!-- Gotcha sidebar -->
-		<div id="sidebar" class="col-md-2 col-sm-2">
-			<!-- User's channels list -->
+	<div id="main-activity-window" class="row">
+		<!-- Sidebar & lists -->
+		<div class="sidebar col-md-2 col-sm-2">
 			<div id="channels-list">
-				<span class="list-header text-uppercase">Channels <span class="channels-number">({{user.channels.length}})</span></span>
+				<span class="list-header">Channels <span class="counter" ng-hide="user.channels.length == 0">({{user.channels.length}})</span><span class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li ng-repeat="channel in user.channels" class="chat-item"># {{channel}}</li>
+					<li ng-repeat="channel in user.channels">{{channel}}</li>
 				</ul>
 			</div>
-
-			<!-- User's direct messages list -->
 			<div id="direct-messages-list">
-				<span class="list-header text-uppercase">Direct Messages</span>
+				<span class="list-header">Direct Messages <span id="" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li ng-repeat="message in user.directMessages" class="chat-item"><span class="status"></span>{{message}}</li>
+					<li ng-repeat="directMessage in user.directMessages">{{directMessage}}</li>
 				</ul>
 			</div>
 		</div>
-		<!-- User's active chat window -->
-		<div id="chat-window" class="col-md-10 col-sm-10">
-			<div id="active-chat-window">
-				<!-- User's active chat's messages -->
-				<div id="active-chat"></div>
-				<!-- Area for typing and sending messages -->
-				<div id="typing-area">
-					<input type="text" placeholder="Type your message...">
-					<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-send"></span></button>
+		<!-- Main activity window (active chat & typing area) -->
+		<div id="activity-window" class="col-md-10 col-sm-10">
+			<!-- Active chat -->
+			<div id="active-chat">
+				<div id="chat-console"></div>
+			</div>
+			<!-- Typing area -->
+			<div id="typing-area">
+				<div id="input-message-container">
+					<div class="addon-button">
+						<span class="icon left glyphicon glyphicon-paperclip"></span>
+					</div>
+					<div id="input-message" class="left">
+						<form>
+							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChatPerson}}">
+						</form>
+					</div>
+					<div id="send-button">
+						<span class="icon right glyphicon glyphicon-send"></span>
+					</div>
 				</div>
 			</div>
 		</div>

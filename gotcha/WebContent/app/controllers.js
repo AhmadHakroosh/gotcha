@@ -162,6 +162,20 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.user = $rootScope.user;
 	// Send button is disabled by default
 	$scope.disabled = true;
+	$scope.showDropdown = false;
+	$scope.oppositeStatus = $scope.user.status == "active" ? "away" : "active";
+	
+	(function () {
+		$("#main-activity-window").height($(window).height() - $("#top-header").height());
+		$("#activity-window").height(0.9 * $("#main-activity-window").height());
+		$("#typing-area").height(0.1 * $("#main-activity-window").height());
+		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
+	})();
+	
+	// Toggle dropdown menu
+	$scope.toggleShow = function () {
+		$scope.showDropdown = !$scope.showDropdown;
+	};
 	// Logout from the system
 	$scope.logout = function () {
 		$http({
