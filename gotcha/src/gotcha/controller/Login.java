@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -80,7 +81,8 @@ public class Login extends HttpServlet {
 			session.setAttribute("data", data + ",");
 			request.setAttribute("user", registered);
 			request.getRequestDispatcher("/messages").forward(request, response);
-			data += "}";		
+			data += "}";
+			updateUserStatus(session);
 		// Write "failure" status to the response
 		} else {
 			data = "{"
@@ -93,7 +95,7 @@ public class Login extends HttpServlet {
 				+ 	"}"
 				;
 		}
-		
+
 		out.println(data);
 		out.close();
 	}
@@ -125,5 +127,21 @@ public class Login extends HttpServlet {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private void updateUserStatus (HttpSession session) {
+		User user = (User)session.getAttribute("user");
+		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> where = new ArrayList<Object>();
+		
+		String status = "active";
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		
+		values.add(status);
+		values.add(last_seen);
+		
+		where.add(user.username());
+		
+		Globals.executeUpdate(Globals.UPDATE_USER_STATUS, values, where);
 	}
 }
