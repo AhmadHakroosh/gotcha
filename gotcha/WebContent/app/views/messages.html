@@ -5,16 +5,16 @@
 			<div id="profile-area">
 				<div class="media">
 					<div class="media-left">
-				    	<img class="media-object" src="{{user.profile.photoUrl}}" alt="{{user.profile.nickName}} profile picture">
+				    	<img class="media-object" src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
 				  	</div>
 				</div>
 				<div class="status {{user.status}}"></div>
-			    <div class="nickname">{{user.profile.nickName}}</div>
+			    <div class="nickname">{{user.nickName}}</div>
 			</div>
 			<div id="profile-dropdown-menu" ng-show="showDropdown">
 				<ul>
 					<li>Edit your profile</li>
-					<li><span ng-show="user.status == 'away'">[Away] </span>Set yourself to <span class="bold">{{oppositeStatus}}</span></li>
+					<li ng-click="changeStatus()"><span ng-show="user.status == 'away'">[Away]- </span>Set yourself to <span class="bold">{{oppositeStatus}}</span></li>
 					<li role="separator" class="divider"></li>
 					<li>Statistics</li>
 					<li role="separator" class="divider"></li>
@@ -63,15 +63,15 @@
 		<!-- Sidebar & lists -->
 		<div class="sidebar col-md-2 col-sm-2">
 			<div id="channels-list">
-				<span class="list-header">Channels <span class="counter" ng-hide="user.channels.length == 0">({{user.channels.length}})</span><span class="icon right glyphicon glyphicon-plus-sign"></span></span>
+				<span class="list-header">Channels <span class="counter" ng-hide="channels.length == 0">({{user.channels.length}})</span><span class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li ng-repeat="channel in user.channels">{{channel}}</li>
+					<li ng-repeat="channel in user.channels">&#35; {{channel}}</li>
 				</ul>
 			</div>
 			<div id="direct-messages-list">
 				<span class="list-header">Direct Messages <span id="" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li ng-repeat="directMessage in user.directMessages">{{directMessage}}</li>
+					<li ng-repeat="directMessage in directMessages">&#64; {{directMessage}}</li>
 				</ul>
 			</div>
 		</div>
@@ -98,5 +98,6 @@
 				</div>
 			</div>
 		</div>
-	</div>		
+	</div>
+		
 </div>

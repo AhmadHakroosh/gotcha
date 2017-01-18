@@ -96,7 +96,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		// Open websocket
 		create: function () {
 			var user = $rootScope.user;
-			var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.profile.nickName;
+			var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.nickName;
 			$rootScope.session = new WebSocket(sessionUri);
 			// Define websocket methods
 			// On connection open

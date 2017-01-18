@@ -64,17 +64,15 @@ public class Messages extends HttpServlet {
 		for (String channel : channels) {
 			data += i++ < channels.size() ? "\"" + channel + "\"," : "\"" + channel + "\"";
 		}
-		data += "],";
+		data +=   "],";
 		
 		i = 1;
 		data += "\"directMessages\": [";
 		for (String someone : users) {
 			data += i++ < users.size() ? "\"" + someone + "\"," : "\"" + someone + "\"";
 		}
-		data +=		  "]"
-			 +	   "}"
-			 +	"}"
-			 ;
+		data +=	  "]"
+			 + "}";
 		
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();

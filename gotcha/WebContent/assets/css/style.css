@@ -3,7 +3,7 @@
 body {
 	overflow: hidden;
 	font-family: 'Titillium Web', sans-serif;
-	font-size: 1.5em;
+	font-size: 1.4em;
 }
 
 input:focus {
@@ -97,6 +97,10 @@ li.divider {
 #main-header .icon:hover {
 	cursor: pointer;
 	color: #007AB8;
+}
+
+#recent-mentions .icon:hover {
+	color: #EB4D5C;
 }
 
 .divider-bar {
@@ -209,6 +213,7 @@ li.divider {
 #profile-dropdown-menu ul li:hover {
 	background: #2D9EE0;
 	border-radius: 5px;
+	color: white;
 }
 
 .list-header {

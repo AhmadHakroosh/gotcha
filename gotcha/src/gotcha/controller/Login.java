@@ -72,9 +72,8 @@ public class Login extends HttpServlet {
 				+ 			"\"selector\": \".login-notification\","
 				+ 			"\"message\": \"Logged in successfully\""
 				+ 		"},"
-				+ 		"\"user\": {"
-				+			"\"status\": \"active\","
-				+ 			"\"profile\": " + jsonUser
+				+ 		"\"user\":"
+				+			jsonUser
 				;
 
 			request.setAttribute("data", data + ",");
@@ -117,6 +116,9 @@ public class Login extends HttpServlet {
 				registered.description(resultSet.getString("DESCRIPTION"));
 				registered.nickName(resultSet.getString("NICKNAME"));
 				registered.photoUrl(resultSet.getString("PHOTO_URL"));
+				registered.status(resultSet.getString("STATUS"));
+				registered.latSeen(resultSet.getTimestamp("LAST_SEEN"));
+				
 				return registered;
 			// He is not existing, return null
 			} else {

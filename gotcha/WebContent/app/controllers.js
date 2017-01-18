@@ -12,6 +12,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		function (success) {
 			$rootScope.route = success.data.route;
 			$rootScope.user = success.data.user;
+			$rootScope.channels = success.data.channels;
+			$rootScope.directMessages = success.data.directMessages;
 		},
 		function (failure) {
 			console.log(failure.data);
@@ -51,6 +53,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					$timeout(function () {
 						$rootScope.route = data.route;
 						$rootScope.user = data.user;
+						$rootScope.channels = data.channels;
+						$rootScope.directMessages = data.directMessages;
 						messagingService.create();
 					}, 2500);
 				}
@@ -63,7 +67,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 }])
 
 .controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', '$filter', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, $filter, notifyService, animationService) {
-	
+	// Scope variables
+	$scope.disabled = true;
+
+	// Scope methods
 	$scope.checkButton = function () {
 		$scope.disabled = 
 			$scope.validUsername != "glyphicon glyphicon-ok-circle" || $scope.validNickname != "glyphicon glyphicon-ok-circle"
@@ -102,6 +109,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$(".modal-backdrop").css({display: 'none'});
 						$rootScope.route = data.route;
 						$rootScope.user = data.user;
+						$rootScope.channels = data.channels;
+						$rootScope.directMessages = data.directMessages;
 						messagingService.create();						
 					}, 2500);
 				}
@@ -153,14 +162,21 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.validNickname = "";
 		}
 	};
-
-	$scope.disabled = true;
 }])
 
-.controller('messagesController', ['$scope', '$http', '$timeout', '$rootScope', 'messagingService', 'notifyService', function($scope, $http, $timeout, $rootScope, messagingService, notifyService) {
-
+.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, messagingService, notifyService) {
+	// Scope variables
 	$scope.user = $rootScope.user;
-	// Send button is disabled by default
+	$scope.showDropdown = false;
+	$scope.oppositeStatus;
+
+	// Scope watchers
+	$scope.$watch(function () {
+		return $scope.user.status;
+	}, function (newValue, oldValue) {
+		$scope.oppositeStatus = newValue == "active" ? "away" : "active";
+	});
+
 	$scope.$watch(function () {
 		return $scope.inputMessage;
 	}, function (newValue, oldValue) {
@@ -170,20 +186,30 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$(".glyphicon-send").css("color", "#007AB8");
 		}
 	});
-	$scope.showDropdown = false;
-	$scope.oppositeStatus = $scope.user.status == "active" ? "away" : "active";
-	
+
+	// Scope event binding
+	$("#profile-dropdown-menu-toggle").bind('click', function(event) {
+		event.stopPropagation();
+	});
+
+	$document.bind('click', function () {
+		$scope.showDropdown = false;
+		$scope.$apply();
+	});
+
+	// Ifi functions
 	(function () {
 		$("#main-activity-window").height($(window).height() - $("#top-header").height());
 		$("#activity-window").height(0.9 * $("#main-activity-window").height());
 		$("#typing-area").height(0.1 * $("#main-activity-window").height());
 		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
 	})();
-	
+
 	// Toggle dropdown menu
 	$scope.toggleShow = function () {
 		$scope.showDropdown = !$scope.showDropdown;
 	};
+
 	// Logout from the system
 	$scope.logout = function () {
 		$http({
@@ -201,6 +227,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
+
 	// Update typing area send button
 	$scope.checkButton = function () {
 		if ($scope.chatInput !== undefined || $scope.chatInput != "") {
@@ -209,11 +236,33 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.disabled = true;
 		}
 	};
+
 	// Send message
 	$scope.send = function () {
 		messagingService.send($scope.chatInput);
 		$scope.chatInput = "";
-	}
+	};
+
+	// User status update
+	$scope.changeStatus = function () {
+		var user = {
+			"status": $scope.oppositeStatus
+		};
+
+		$http({
+			method: 'POST',
+			url: 'setStatus',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: user
+		}).then(
+			function (success) {
+				$scope.user.status = $scope.oppositeStatus;
+			},
+			function (failure) {
+				console.log("cannot change status!");
+			}
+		);
+	};
 }])
 
 .controller('chatController', ['$scope', function($scope) {
