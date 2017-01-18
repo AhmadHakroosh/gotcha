@@ -6,6 +6,10 @@ body {
 	font-size: 1.4em;
 }
 
+body .modal-open {
+	-webkit-filter: blur(5px) grayscale(50%);
+}
+
 input:focus {
 	outline: none;
 }
@@ -84,7 +88,7 @@ li.divider {
 #top-header #main-header {
 	padding: 0;
 	border-bottom: 1px solid lightgrey;
-	z-index: 9999;
+	z-index: 1001;
 }
 
 #main-header .icon {
@@ -218,6 +222,15 @@ li.divider {
 
 .list-header {
 	text-transform: uppercase;
+}
+
+#channels-list ul {
+	list-style: none;
+	padding-left: 5px;
+}
+
+#channels-list ul li {
+	padding: 0;
 }
 
 #active-chat {

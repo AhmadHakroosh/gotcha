@@ -11,15 +11,13 @@ public class Channel {
 	private String name;
 	private String description;
 	private String createdBy;
-	private Timestamp created;
-	private int subscribers;
+	private Timestamp createdTime;
 	
 	public Channel (String name, String description, String createdBy) {
 		this.name = name;
 		this.description = description;
 		this.createdBy = createdBy;
-		this.created = new Timestamp(System.currentTimeMillis());
-		this.subscribers = 1;
+		this.createdTime = new Timestamp(System.currentTimeMillis());
 	}
 	
 	public Channel () {
@@ -38,20 +36,8 @@ public class Channel {
 		return this.createdBy;
 	}
 	
-	public Timestamp created () {
-		return this.created;
-	}
-	
-	public int subscribers () {
-		return this.subscribers;
-	}
-	
-	public void subscribe () {
-		this.subscribers++;
-	}
-	
-	public void unsubscribe () {
-		this.subscribers--;
+	public Timestamp createdTime () {
+		return this.createdTime;
 	}
 	
 	public static ArrayList<String> getSubscribersList (String channel) {

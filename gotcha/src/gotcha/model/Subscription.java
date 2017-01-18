@@ -2,13 +2,12 @@ package gotcha.model;
 
 public class Subscription {
 	private int id;
-	private String username;
+	private String nickname;
 	private String channel;
 
 	// Constructor
-	public Subscription (int id, String username, String channel) {
-		this.id = id;
-		this.username = username;
+	public Subscription (String nickname, String channel) {
+		this.nickname = nickname;
 		this.channel = channel;
 	}
 	
@@ -16,8 +15,8 @@ public class Subscription {
 		return this.id;
 	}
 
-	public String username () {
-		return this.username;
+	public String nickname () {
+		return this.nickname;
 	}
 
 	public String channel () {
@@ -28,8 +27,8 @@ public class Subscription {
 		this.id = id;
 	}
 
-	public void username (String username) {
-		this.username = username;
+	public void nickname (String nickname) {
+		this.nickname = nickname;
 	}
 
 	public void channel (String channel) {

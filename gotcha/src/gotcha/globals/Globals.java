@@ -38,7 +38,8 @@ public final class Globals {
 	// SUBSCRIPTIONS TABLE STATEMENTS
 	public static final String SELECT_SUBSCRIPTON_BY_USER = "SELECT * FROM SUBSCRIPTIONS WHERE NICKNAME=?";
 	public static final String SELECT_SUBSCRIPTON_BY_CHANNEL = "SELECT * FROM SUBSCRIPTIONS WHERE CHANNEL=?";
-	public static final String DELETE_SUBSCRIPTON = "DELETE FROM SUBSCRIPTION WHERE NICKNAME=? AND CHANNEL=?";
+	public static final String DELETE_SUBSCRIPTON = "DELETE FROM SUBSCRIPTIONS WHERE NICKNAME=? AND CHANNEL=?";
+	public static final String INSERT_SUBSCRIPTON = "INSERT INTO SUBSCRIPTIONS (NICKNAME, CHANNEL) VALUES (?,?)";
 	
 	// Execute query via calling executeQuery method of Database
 	public static final ResultSet execute (String query, List<Object> values, List<Object> where) {

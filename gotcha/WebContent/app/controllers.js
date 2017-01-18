@@ -164,9 +164,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, messagingService, notifyService) {
+.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $filter, messagingService, notifyService) {
 	// Scope variables
 	$scope.user = $rootScope.user;
+	$scope.channels = $rootScope.channels;
+	$scope.directMessages = $rootScope.directMessages;
+
 	$scope.showDropdown = false;
 	$scope.oppositeStatus;
 
@@ -260,6 +263,77 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			},
 			function (failure) {
 				console.log("cannot change status!");
+			}
+		);
+	};
+
+	// Channel creation method
+	$scope.createChannel = function () {
+		var channel = {
+			"name": $scope.channelName,
+			"description": $scope.channelDescription,
+			"createdBy": $scope.user.username,
+			"createdTime": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+		};
+
+		$http({
+			method: 'POST',
+			url: 'createChannel',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: channel
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				if (data.status == "success") {
+					$timeout(function () {
+						$("#create-channel-form").css({display: 'none'});
+						$(".modal-backdrop").css({display: 'none'});
+						$rootScope.route = data.route;
+						$scope.subscribe(data.channel.name);					
+					}, 2500);
+				}
+			},
+			function (failure) {
+				console.log("Cannot create channel!");
+			}
+		);
+	};
+
+	// Subscribe to the given channel
+	$scope.subscribe = function (channel) {
+		var subscription = {
+			"nickname": $scope.user.nickName,
+			"channel": channel
+		};
+
+		$http({
+			method: 'POST',
+			url: 'subscribe',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: subscription
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				if (data.status == "success") {
+					$timeout(function () {
+						$(".modal-backdrop").css({display: 'none'});
+						$rootScope.route = data.route;
+						$rootScope.channels.push(data.subscription.channel);					
+					}, 2500);
+				}
+			},
+			function (failure) {
+				console.log("Cannot subscribe to channel!");
 			}
 		);
 	};
