@@ -62,6 +62,7 @@ public class Login extends HttpServlet {
 		// Write user data to the response of type JSON
 		if (registered != null) {
 			HttpSession session = request.getSession();
+			registered.status("active");
 			session.setAttribute("user", registered);
 			request.setAttribute("httpSession", session);
 			String jsonUser = gson.toJson(registered, User.class);

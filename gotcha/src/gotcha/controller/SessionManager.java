@@ -1,12 +1,17 @@
 package gotcha.controller;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import javax.websocket.Session;
+
+import gotcha.globals.Globals;
+import gotcha.model.User;
 
 /**
  * Application Lifecycle Listener implementation class SessionManager
@@ -36,15 +41,24 @@ public class SessionManager implements HttpSessionListener {
     public void sessionDestroyed(HttpSessionEvent event)  { 
          // TODO Auto-generated method stub
     	System.out.println("The session with id: " + event.getSession().getId() + " has logged out.");
-    	HttpSession httpSession = event.getSession();
-    	Session websocketSession = (Session)httpSession.getAttribute("WEBSOCKET_SESSION");
-    	
-    	if (websocketSession != null) {
-    		try {
-    			websocketSession.getBasicRemote().sendText("Logged out");
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    	}
+    	HttpSession session = event.getSession();
+    	User user = (User)session.getAttribute("user");
+    	logoff(user);
+    }
+    
+    private void logoff (User user) {
+    	String status = "away";
+		
+		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> where = new ArrayList<Object>();
+		
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		
+		values.add(status);
+		values.add(last_seen);
+		
+		where.add(user.username());
+		
+		Globals.executeUpdate(Globals.UPDATE_USER_STATUS, values, where);
     }
 }
