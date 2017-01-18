@@ -65,7 +65,7 @@
 			<div id="channels-list">
 				<span class="list-header">Channels <span class="counter" ng-hide="channels.length == 0">({{channels.length}})</span><span data-toggle="modal" data-target="#create-channel-form" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li ng-repeat="channel in channels">&#35; {{channel}}</li>
+					<li ng-repeat="channel in channels">&#35; {{channel}} <span ng-click="unsubscribe(channel)" class="remove icon right glyphicon glyphicon-remove-circle"></span></li>
 				</ul>
 			</div>
 			<div id="direct-messages-list">

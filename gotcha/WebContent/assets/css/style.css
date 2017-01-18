@@ -226,11 +226,31 @@ li.divider {
 
 #channels-list ul {
 	list-style: none;
-	padding-left: 5px;
+	margin-left: -15px;
+	padding: 0;
 }
 
 #channels-list ul li {
-	padding: 0;
+	padding: 3px 0 3px 20px;
+	margin-right: -5px;
+	border-radius: 5px;
+}
+
+#channels-list ul li:hover {
+	padding-left: 20px;
+	border-radius: 4px;
+	background: #FCFCFD;
+	cursor: pointer;
+}
+
+#channels-list ul li .icon.remove {
+	margin: 2px 5px 0 0;
+	display: none;
+	vertical-align: middle;
+}
+
+#channels-list ul li:hover .icon.remove {
+	display: inline;
 }
 
 #active-chat {

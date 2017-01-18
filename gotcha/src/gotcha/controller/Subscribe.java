@@ -72,7 +72,7 @@ public class Subscribe extends HttpServlet {
 				+ 		"\"notification\": {"
 				+ 			"\"selector\": \".subscription-notification\","
 				+ 			"\"message\": \"Something went wrong, please try again later\""
-				+ 		"},"
+				+ 		"}"
 				+  "}"
 				;
 		}

@@ -337,6 +337,39 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
+	
+	// Ubsubscribe from the given channel
+	$scope.unsubscribe = function (channel) {
+		var subscription = {
+				"nickname": $scope.user.nickName,
+				"channel": channel
+		};
+		
+		$http({
+			method: 'POST',
+			url: 'unsubscribe',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: subscription
+		}).then(
+			function (success) {
+				var data = success.data;
+				notifyService.alert({
+					"status": data.status,
+					"selector": data.notification.selector,
+					"message": data.notification.message
+				});
+				if (data.status == "success") {
+					$timeout(function () {
+						$rootScope.route = data.route;
+						$rootScope.channels.splice($rootScope.channels.indexOf(channel), 1);					
+					}, 2500);
+				}
+			},
+			function (failure) {
+				console.log("Cannot unsubscribe from the channel!");
+			}
+		);
+	};
 }])
 
 .controller('chatController', ['$scope', function($scope) {
