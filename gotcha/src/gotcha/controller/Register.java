@@ -68,9 +68,8 @@ public class Register extends HttpServlet {
 				+ 			"\"selector\": \".register-notification\","
 				+ 			"\"message\": \"Registered successfully\""
 				+ 		"},"
-				+ 		"\"user\": {"
-				+			"\"status\": \"active\","
-				+ 			"\"profile\": " + jsonUser
+				+ 		"\"user\": "
+				+			 jsonUser
 				;
 	
 			request.setAttribute("data", data + ",");
@@ -84,7 +83,7 @@ public class Register extends HttpServlet {
 				+ 		"\"notification\": {"
 				+ 			"\"selector\": \".register-notification\","
 				+ 			"\"message\": \"Something went wrong, please try again later\""
-				+ 		"},"
+				+ 		"}"
 				+	"}"
 				;
 		}
