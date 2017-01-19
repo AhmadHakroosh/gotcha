@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet implementation class GetChannelMessages
  */
 @WebServlet("/GetChannelMessages")
-public class GetChannelMessages extends HttpServlet {
+public class GetTenChannelMessages extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetChannelMessages() {
+    public GetTenChannelMessages() {
         super();
         // TODO Auto-generated constructor stub
     }

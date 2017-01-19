@@ -40,6 +40,26 @@ public class Channel {
 		return this.createdTime;
 	}
 	
+	public void name (String name) {
+		this.name = name;
+	}
+	
+	public void description (String description) {
+		this.description = description;
+	}
+	
+	public void createdBy (String createdBy) {
+		this.createdBy = createdBy;
+	}
+	
+	public void createdTime (Timestamp createdTime) {
+		this.createdTime = createdTime;
+	}
+	
+	public boolean isEmpty () {
+		return this.name == null;
+	}
+	
 	public static ArrayList<String> getSubscribersList (String channel) {
 		ArrayList<String> subscribers = new ArrayList<String>();
 		
@@ -51,7 +71,7 @@ public class Channel {
 		ResultSet resultSet = Globals.execute(Globals.SELECT_SUBSCRIPTON_BY_CHANNEL, values, where);
 		try {
 			while (resultSet.next()) {
-				subscribers.add(resultSet.getString("USER"));
+				subscribers.add(resultSet.getString("NICKNAME"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

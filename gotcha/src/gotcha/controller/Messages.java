@@ -114,7 +114,7 @@ public class Messages extends HttpServlet {
 		ResultSet resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_SENDER, values, where);
 		try {
 			while (resultSet.next()) {
-				String receiver = resultSet.getString("TO");
+				String receiver = resultSet.getString("RECEIVER");
 				if (!users.contains(receiver) && !channels.contains(receiver)) {
 					users.add(receiver);
 				}
@@ -126,7 +126,7 @@ public class Messages extends HttpServlet {
 		resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_RECEIVER, values, where);
 		try {
 			while (resultSet.next()) {
-				String sender = resultSet.getString("FROM");
+				String sender = resultSet.getString("SENDER");
 				if (!users.contains(sender)) {
 					users.add(sender);
 				}

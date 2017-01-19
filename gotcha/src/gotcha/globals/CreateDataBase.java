@@ -46,10 +46,9 @@ public class CreateDataBase implements ServletContextListener {
 
         	database.execute("CREATE TABLE CHANNELS ("
 			 			+ 		"NAME 			VARCHAR(30) PRIMARY KEY,"
-			 			+ 		"DESCRIPTION 	VARCHAR(500) NOT NULL,"
+			 			+ 		"DESCRIPTION 	VARCHAR(500),"
 			 			+ 		"CREATED_BY 	VARCHAR(10) NOT NULL,"
-			 			+ 		"CREATED_TIME 	TIMESTAMP NOT NULL,"
-			 			+ 		"SUBSCRIBERS 	INTEGER"
+			 			+ 		"CREATED_TIME 	TIMESTAMP NOT NULL"
 			 			+ 	  ")"
 					   	     );
 

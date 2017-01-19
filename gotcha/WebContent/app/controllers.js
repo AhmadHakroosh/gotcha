@@ -32,8 +32,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	$scope.login = function () {
 		var user = {
-			'username': $scope.username,
-			'password': $scope.password
+			"username": $scope.username,
+			"password": $scope.password
 		};
 
 		$http({
@@ -66,7 +66,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', '$filter', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, $filter, notifyService, animationService) {
+.controller('registerController', ['$scope', '$rootScope', '$timeout', '$http', '$filter', 'messagingService', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, $filter, messagingService, notifyService, animationService) {
 	// Scope variables
 	$scope.disabled = true;
 
@@ -165,13 +165,21 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 }])
 
 .controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $filter, messagingService, notifyService) {
+	
+	// Prototype modifications
+	$scope.length = function (object) {
+		return Object.keys(object).length;
+	}
+	
 	// Scope variables
 	$scope.user = $rootScope.user;
 	$scope.channels = $rootScope.channels;
 	$scope.directMessages = $rootScope.directMessages;
+	$scope.activeChat = $rootScope.lastOpenChat;
 
 	$scope.showDropdown = false;
 	$scope.oppositeStatus;
+	$scope.disableChannelCreation = true;
 
 	// Scope watchers
 	$scope.$watch(function () {
@@ -189,7 +197,17 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$(".glyphicon-send").css("color", "#007AB8");
 		}
 	});
+	
+	$scope.$watch(function () {
+		if ($scope.channelName !== undefined && $scope.channelName !== "" && /^[a-zA-Z\d\-_.,]+$/.test($scope.channelName) && $scope.valid == "glyphicon glyphicon-ok-circle") {
+			$scope.disableChannelCreation = false;
+		} else {
+			$scope.disableChannelCreation = true;
+		}
+	});
 
+	// Private scope methods
+	
 	// Scope event binding
 	$("#profile-dropdown-menu-toggle").bind('click', function(event) {
 		event.stopPropagation();
@@ -266,6 +284,31 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
+	
+	// Channel name validation
+	$scope.validate = function () {
+		if ($scope.channelName !== undefined && $scope.channelName != "") {
+			$http({
+				method: 'POST',
+				url: 'validate',
+				headers: {'Content-Type' : "application/json; charset=utf-8"},
+				data: {"name": $scope.channelName}
+			}).then(
+				function (success) {
+					if (/^[a-zA-Z\d\-_.,]+$/.test($scope.channelName)) {
+						$scope.valid = "glyphicon glyphicon-" + success.data.valid + "-circle";
+					} else {
+						$scope.valid = "glyphicon glyphicon-ban-circle";
+					}
+				},
+				function (failure) {
+					console.log(failure.data);
+				}
+			);
+		} else {
+			$scope.valid = "";
+		}
+	}
 
 	// Channel creation method
 	$scope.createChannel = function () {
@@ -290,11 +333,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"message": data.notification.message
 				});
 				if (data.status == "success") {
+					$scope.subscribe(data.channel.name);
 					$timeout(function () {
 						$("#create-channel-form").css({display: 'none'});
 						$(".modal-backdrop").css({display: 'none'});
 						$rootScope.route = data.route;
-						$scope.subscribe(data.channel.name);					
+						$scope.channelName = "";
+						$scope.channelDescription = "";
 					}, 2500);
 				}
 			},
@@ -325,10 +370,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"message": data.notification.message
 				});
 				if (data.status == "success") {
+					$rootScope.route = data.route;
+					$rootScope.channels.push(data.subscription.channel);
 					$timeout(function () {
-						$(".modal-backdrop").css({display: 'none'});
-						$rootScope.route = data.route;
-						$rootScope.channels.push(data.subscription.channel);					
+						$(".modal-backdrop").css({display: 'none'});					
 					}, 2500);
 				}
 			},
@@ -359,9 +404,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"message": data.notification.message
 				});
 				if (data.status == "success") {
+					$rootScope.channels.splice($rootScope.channels.indexOf(channel), 1);
 					$timeout(function () {
-						$rootScope.route = data.route;
-						$rootScope.channels.splice($rootScope.channels.indexOf(channel), 1);					
+						$rootScope.route = data.route;					
 					}, 2500);
 				}
 			},
@@ -369,6 +414,53 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				console.log("Cannot unsubscribe from the channel!");
 			}
 		);
+	};
+	
+	// Open channel chat method
+	$scope.openChannel = function (channel) {
+		$("#channels-list li").removeClass("active-chat");
+		$("#direct-messages-list li").removeClass("active-chat");
+		$("#channel-" + channel).addClass("active-chat");
+		$scope.isChannel = true;
+		$scope.isDirectMessage = false;
+		$scope.getChannelData(channel);
+	};
+	
+	// Open direct chat method
+	$scope.openDirectMessage = function (nickname) {
+		$("#channels-list li").removeClass("active-chat");
+		$("#direct-messages-list li").removeClass("active-chat");
+		$("#message-" + nickname).addClass("active-chat");
+		$scope.isChannel = false;
+		$scope.isDirectMessage = true;
+		$scope.getUserData(nickname);
+	};
+	
+	// Retrieve given channel data
+	$scope.getChannelData = function (name) {
+		var channel = {
+				"name": name
+		};
+		
+		$http({
+			method: 'POST',
+			url: 'channelData',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: channel
+		}).then(
+			function (success) {
+				$scope.activeChat = success.data;
+				console.log($scope.activeChat);
+			},
+			function (failure) {
+				
+			}
+		);
+	};
+	
+	// Retrieve user data
+	$scope.getUserData = function (name) {
+		
 	};
 }])
 

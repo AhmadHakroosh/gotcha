@@ -73,7 +73,7 @@ public class Login extends HttpServlet {
 				+ 			"\"selector\": \".login-notification\","
 				+ 			"\"message\": \"Logged in successfully\""
 				+ 		"},"
-				+ 		"\"user\":"
+				+ 		"\"user\": "
 				+			jsonUser
 				;
 

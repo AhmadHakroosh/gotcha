@@ -64,6 +64,10 @@ li.divider {
 	font-weight: bold;
 }
 
+.italic {
+	font-style: italic;
+}
+
 // Login page styling
 #login-page {
 	padding-top: 15px;
@@ -99,6 +103,30 @@ li.divider {
 }
 
 #main-header .icon:hover {
+	cursor: pointer;
+	color: #007AB8;
+}
+
+.chat-header-info div {
+	display: inline;
+	padding: 0 5px 0 5px;
+}
+
+.chat-header-info div:first-child {
+	padding: 0 5px 0 0;
+}
+
+.chat-header-info div:last-child {
+	padding: 0 0 0 5px;
+}
+
+#header-member-count.icon {
+	font-size: 0.8em;
+	margin: 0;
+	padding-right: 4px;
+}
+
+.chat-header-info .chat-members:hover, .chat-header-info .chat-members:hover #header-member-count.icon {
 	cursor: pointer;
 	color: #007AB8;
 }
@@ -233,12 +261,12 @@ li.divider {
 #channels-list ul li {
 	padding: 3px 0 3px 20px;
 	margin-right: -5px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 #channels-list ul li:hover {
 	padding-left: 20px;
-	border-radius: 4px;
 	background: #FCFCFD;
 	cursor: pointer;
 }
@@ -253,8 +281,30 @@ li.divider {
 	display: inline;
 }
 
+#channels-list ul li.active-chat {
+	background: #CAD1D9;
+	color: #FFFFFF;
+}
+
+#channels-list ul li.active-chat .icon.remove {
+	color: #FFFFFF;
+}
+
+#channels-list ul li.active-chat .icon.remove:hover {
+	color: grey;
+}
+
 #active-chat {
 	height: 100%;
+}
+
+.chat-header .chat-title {
+	padding-left: 20px;
+}
+
+#chat-name-container {
+	margin: 5px 0 2px 0;
+	font-size: 1.2em;
 }
 
 #chat-console {

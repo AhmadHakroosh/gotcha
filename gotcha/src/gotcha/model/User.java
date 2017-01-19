@@ -102,6 +102,10 @@ public class User {
 		this.lastSeen = time;
 	}
 	
+	public boolean isEmpty () {
+		return this.username == null && this.nickName == null;
+	}
+	
 	// User attributes update method
 	public void update (HashMap<String, String> attributes) {
 		for (Entry<String, String> attribute : attributes.entrySet()) {

@@ -1,6 +1,5 @@
 package gotcha.controller;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -8,7 +7,6 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import javax.websocket.Session;
 
 import gotcha.globals.Globals;
 import gotcha.model.User;
