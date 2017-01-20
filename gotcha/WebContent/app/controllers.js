@@ -201,6 +201,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		} else {
 			$scope.directMessages[message.from].messages.push(message);
 		}
+		$scope.$apply();
 	};
 
 	// Ifi functions
