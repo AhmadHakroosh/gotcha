@@ -17,7 +17,6 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import gotcha.model.Channel;
 import gotcha.model.Message;
 import gotcha.globals.Globals;
 
@@ -30,8 +29,6 @@ public class GotChaServerEndpoint {
 	
 	// Track online users in the system
 	private static Map<String, Session> active = Collections.synchronizedMap(new HashMap<String, Session>()); 
-	// Track system channels
-	private static ArrayList<String> channels = new ArrayList<String>();
 	
 	// Decoder & Encoder
 	MessageDecoder decoder = new MessageDecoder();
@@ -53,20 +50,18 @@ public class GotChaServerEndpoint {
 	 */
 	@OnMessage
 	public void send (String jsonMessage) throws IOException {
-		// Refresh channels list
-		updateChannelsList();
 		// Convert the retrieved message into Message object
 		try {
 			if (decoder.willDecode(jsonMessage)) {
 				Message message = decoder.decode(jsonMessage);
 				// The message must be sent to a channel
-				if (channels.contains(message.to())) {
+				if (Globals.channels.keySet().contains(message.to())) {
 					broadcast(message.to(), encoder.encode(message));
 				// The message must be sent to a specific user
 				} else {
 					notify(message.to(), encoder.encode(message));
 				}
-				store(message);
+				//store(message);
 			}
 		} catch (DecodeException | messageDeliveryException | EncodeException e) {
 			e.printStackTrace();
@@ -93,15 +88,8 @@ public class GotChaServerEndpoint {
 	/**
 	 * 
 	 */
-	private void updateChannelsList () {
-		channels = Channel.getAllChannels();
-	}
-
-	/**
-	 * 
-	 */
 	private void broadcast (String channel, String jsonMessage) throws messageDeliveryException {
-		ArrayList<String> subscribers = Channel.getSubscribersList(channel);
+		ArrayList<String> subscribers = Globals.channels.get(channel);
 		for (String subscriber : subscribers) {
 			notify(subscriber, jsonMessage);
 		}		
@@ -125,7 +113,7 @@ public class GotChaServerEndpoint {
 	/**
 	 * 
 	 */
-	private void store (Message message) {
+	/*private void store (Message message) {
 		ArrayList<Object> values = new ArrayList<Object>();
 		ArrayList<Object> where = new ArrayList<Object>();
 
@@ -135,5 +123,5 @@ public class GotChaServerEndpoint {
 		values.add(message.time());
 		
 		Globals.execute(Globals.INSERT_MESSAGE, values, where);
-	}
+	}*/
 }

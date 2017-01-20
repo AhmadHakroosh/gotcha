@@ -2,7 +2,8 @@ package gotcha.globals;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.*;
@@ -11,6 +12,9 @@ public final class Globals {
 	public static final String dbName = "gotchaDB";
 	public static Context context = null;
 	
+	// Public system properties
+	public static HashMap<String, ArrayList<String>> channels = new HashMap<String, ArrayList<String>>();
+
 	// Public variables and statements for SQL queries
 	// USERS TABLE STATEMENTS
 	public static final String SELECT_ALL_USERS = "SELECT * FROM USERS";

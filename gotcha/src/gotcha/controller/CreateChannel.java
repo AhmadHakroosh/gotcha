@@ -94,6 +94,9 @@ public class CreateChannel extends HttpServlet {
 		
 		int rows = Globals.executeUpdate(Globals.INSERT_CHANNEL, values, where);
 		
-		return rows > 0 ? true : false;
+		if (rows > 0) {
+			Globals.channels.put(channel.name(), new ArrayList<String>());
+		}
+		return rows > 0;
 	}
 }

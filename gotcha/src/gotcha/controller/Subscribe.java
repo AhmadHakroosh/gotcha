@@ -89,6 +89,10 @@ public class Subscribe extends HttpServlet {
 		
 		int rows = Globals.executeUpdate(Globals.INSERT_SUBSCRIPTON, values, where);
 		
-		return rows > 0 ? true : false;
+		if (rows > 0) {
+			Globals.channels.get(subscription.channel()).add(subscription.nickname());
+		}
+		
+		return rows > 0;
 	}
 }

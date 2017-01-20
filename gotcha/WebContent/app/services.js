@@ -84,7 +84,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	};
 
 	var unpack = function (message) {
-		console.log("Unpacking message!");
+		console.log("Server: " + message);
 	};
 
 	return {
@@ -114,7 +114,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		},
 		// Deliver a message
 		send: function (message) {
-			$rootScope.session.send(message);
+			$rootScope.session.send(JSON.stringify(message));
 		},
 		// Close connection
 		close: function () {

@@ -87,6 +87,10 @@ public class Unsubscribe extends HttpServlet {
 		
 		int rows = Globals.executeUpdate(Globals.DELETE_SUBSCRIPTON, values, where);
 		
-		return rows > 0 ? true : false;
+		if (rows > 0) {
+			Globals.channels.get(subscription.channel()).remove(subscription.nickname());
+		}
+		
+		return rows > 0;
 	}
 }

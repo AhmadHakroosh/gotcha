@@ -1,10 +1,13 @@
 package gotcha.globals;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import gotcha.model.Channel;
 
 import javax.naming.*;
 
@@ -76,6 +79,10 @@ public class CreateDataBase implements ServletContextListener {
 				System.out.println("The database is already existing, you're now connected to it.");
 				try {
 					Globals.context.bind(Globals.dbName, database);
+					ArrayList<String> allChannels = Channel.getAllChannels();
+					for (String channel : allChannels) {
+						Globals.channels.put(channel, Channel.getSubscribersList(channel));
+					}
 				} catch (NamingException n) {
 					n.printStackTrace();
 				}

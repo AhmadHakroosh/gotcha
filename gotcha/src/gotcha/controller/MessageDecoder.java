@@ -12,21 +12,29 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
 	@Override
 	public Message decode (String textMessage) throws DecodeException {
-		Gson gson = new GsonBuilder().create();
-		Message message = gson.fromJson(textMessage, Message.class);
+		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonMessage = parser.parse(textMessage);
+		Message message = gson.fromJson(jsonMessage, Message.class);
 		return message;
 	}
 	
 	@Override
-	public boolean willDecode (String jsonMessage) {
+	public boolean willDecode (String textMessage) {
+
+		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
 		
-		String regex = "(?:,|\\{)?([^:]*):(\"[^\"]*\"|\\{[^}]*\\}|[^},]*)";
+		
+		
 		// Validate JSON
-		if(jsonMessage.matches(regex)) {
+		try {
+			JsonParser parser = new JsonParser();
+			JsonElement jsonMessage = parser.parse(textMessage);
+			gson.fromJson(jsonMessage, Message.class);
 			return true;
+		} catch (com.google.gson.JsonSyntaxException e) {
+			return false;
 		}
-		
-		return false;
 	}
 	
 	@Override
