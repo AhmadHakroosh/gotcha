@@ -84,43 +84,8 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 	};
 
 	var unpack = function (message) {
-		console.log("Server: " + message);
+		console.log(message);
 	};
-
-	return {
-		// Open websocket
-		create: function () {
-			var user = $rootScope.user;
-			var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.nickName;
-			$rootScope.session = new WebSocket(sessionUri);
-			// Define websocket methods
-			// On connection open
-			$rootScope.session.onopen = function (event) {
-				console.log("Connected to server...");
-			};
-			// On received message
-			$rootScope.session.onmessage = function (event) {
-				unpack(event.data);
-			};
-			// On error
-			$rootScope.session.onerror = function (event) {
-				notify("Error: " + event.data);
-			};
-			// On connection close
-			$rootScope.session.onclose = function (event) {
-				$rootScope.session = null;
-				console.log("disconnected from server...");
-			};
-		},
-		// Deliver a message
-		send: function (message) {
-			$rootScope.session.send(JSON.stringify(message));
-		},
-		// Close connection
-		close: function () {
-			$rootScope.session.close();
-		}
-	}
 }])
 // Channel management system service
 .service('channelManagementService', ['restService', 'subscriptionService', function(restService, subscriptionService) {

@@ -55,7 +55,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$rootScope.user = data.user;
 						$rootScope.channels = data.channels;
 						$rootScope.directMessages = data.directMessages;
-						messagingService.create();
 					}, 2500);
 				}
 			},
@@ -110,8 +109,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$rootScope.route = data.route;
 						$rootScope.user = data.user;
 						$rootScope.channels = data.channels;
-						$rootScope.directMessages = data.directMessages;
-						messagingService.create();						
+						$rootScope.directMessages = data.directMessages;		
 					}, 2500);
 				}
 			},
@@ -164,7 +162,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $filter, messagingService, notifyService) {
+.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$location', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $location, $filter, messagingService, notifyService) {
 	
 	$scope.length = function (object) {
 		return Object.keys(object).length;
@@ -181,6 +179,70 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Private scope variables
 	var offset = 0;
+
+	var pack = function () {
+		var to;
+		if ($scope.isChannel) to = $scope.activeChat.name;
+		if ($scope.isDirectMessage) to = $scope.activeChat.nickname;
+		var message = {
+			"from": $scope.user.nickName,
+			"to": to,
+			"text": $scope.inputMessage,
+			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+		};
+
+		return JSON.stringify(message);
+	};
+
+	var unpack = function (json) {
+		var message = JSON.parse(json);
+		if ($scope.channels[message.to] != undefined) {
+			$scope.channels[message.to].messages.push(message);
+		} else {
+			$scope.directMessages[message.from].messages.push(message);
+		}
+	};
+
+	// Ifi functions
+	(function () {
+		$("#main-activity-window").height($(window).height() - $("#top-header").height());
+		$("#activity-window").height(0.9 * $("#main-activity-window").height());
+		$("#typing-area").height(0.1 * $("#main-activity-window").height());
+		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
+	})();
+
+	var user = $scope.user;
+	var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.nickName;
+	$scope.session = new WebSocket(sessionUri);
+	// Define websocket methods
+	// On connection open
+	$scope.session.onopen = function (event) {
+		console.log("Connected to server...");
+	};
+	// On received message
+	$scope.session.onmessage = function (event) {
+		unpack(event.data);
+	};
+	// On error
+	$scope.session.onerror = function (event) {
+		notify("Error: " + event.data);
+	};
+	// On connection close
+	$scope.session.onclose = function (event) {
+		$rootScope.session = null;
+		console.log("disconnected from server...");
+	};
+
+	// Send message
+	$scope.send = function () {
+		var message = pack();
+		$scope.session.send(message);
+		$scope.inputMessage = "";
+	};
+
+	$scope.close = function () {
+		$scope.session.close();
+	};
 
 	// Scope watchers
 	$scope.$watch(function () {
@@ -217,14 +279,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.$apply();
 	});
 
-	// Ifi functions
-	(function () {
-		$("#main-activity-window").height($(window).height() - $("#top-header").height());
-		$("#activity-window").height(0.9 * $("#main-activity-window").height());
-		$("#typing-area").height(0.1 * $("#main-activity-window").height());
-		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
-	})();
-
 	// Toggle dropdown menu
 	$scope.toggleShow = function () {
 		$scope.showDropdown = !$scope.showDropdown;
@@ -241,6 +295,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				var data = success.data;
 				$rootScope.route = data.route;
+				$scope.close();
 			},
 			function (failure) {
 				console.log(failure.data);
@@ -255,23 +310,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		} else {
 			$scope.disabled = true;
 		}
-	};
-
-	// Send message
-	$scope.send = function () {
-		var to;
-		if ($scope.isChannel) to = $scope.activeChat.name;
-		if ($scope.isDirectMessage) to = $scope.activeChat.nickname;
-
-		var message = {
-			"from": $scope.user.nickName,
-			"to": to,
-			"text": $scope.inputMessage,
-			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
-		};
-
-		messagingService.send(message);
-		$scope.chatInput = "";
 	};
 
 	// User status update

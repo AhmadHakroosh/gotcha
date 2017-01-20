@@ -41,7 +41,6 @@ public class GotChaServerEndpoint {
 	public void login (Session session, @PathParam("nickname") String user) throws IOException {
 		if (session.isOpen()) {
 			active.put(user, session);
-			session.getBasicRemote().sendText("Hello, " + user);
 		}
 	}
 	
@@ -55,7 +54,7 @@ public class GotChaServerEndpoint {
 			if (decoder.willDecode(jsonMessage)) {
 				Message message = decoder.decode(jsonMessage);
 				// The message must be sent to a channel
-				if (Globals.channels.keySet().contains(message.to())) {
+				if (Globals.channels.containsKey(message.to())) {
 					broadcast(message.to(), encoder.encode(message));
 				// The message must be sent to a specific user
 				} else {
