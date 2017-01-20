@@ -9,6 +9,7 @@ import javax.naming.*;
 
 public final class Globals {
 	public static final String dbName = "gotchaDB";
+	public static Context context = null;
 	
 	// Public variables and statements for SQL queries
 	// USERS TABLE STATEMENTS
@@ -24,6 +25,8 @@ public final class Globals {
 	// DIRECT_MESSAGES TABLE STATEMENTS
 	public static final String SELECT_MESSAGE_BY_SENDER = "SELECT * FROM MESSAGES WHERE SENDER=?";
 	public static final String SELECT_MESSAGE_BY_RECEIVER = "SELECT * FROM MESSAGES WHERE RECEIVER=?";
+	public static final String SELECT_TEN_CHANNEL_MESSAGES = "SELECT * FROM MESSAGES WHERE RECEIVER=? ORDER BY SENT_TIME OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";
+	public static final String SELECT_TEN_DIRECT_MESSAGES = "SELECT * FROM MESSAGES WHERE (RECEIVER=? AND SENDER=?) OR (RECEIVER=? AND SENDER=?) ORDER BY SENT_TIME OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";
 	public static final String SELECT_MESSAGE_BY_SENDER_AND_RECEIVER = "SELECT * FROM MESSAGES WHERE SENDER=? AND RECEIVER=?";
 	public static final String INSERT_MESSAGE = "INSERT INTO MESSAGES VALUES (?,?,?,?)";
 	
@@ -44,7 +47,6 @@ public final class Globals {
 	// Execute query via calling executeQuery method of Database
 	public static final ResultSet execute (String query, List<Object> values, List<Object> where) {
 		try {
-			Context context = new InitialContext();
 			Database database = (Database)context.lookup(dbName);
 			
 			try {
@@ -63,7 +65,6 @@ public final class Globals {
 	// Execute query via calling executeQuery method of Database
 	public static final int executeUpdate (String query, List<Object> values, List<Object> where) {
 		try {
-			Context context = new InitialContext();
 			Database database = (Database)context.lookup(dbName);
 			
 			try {

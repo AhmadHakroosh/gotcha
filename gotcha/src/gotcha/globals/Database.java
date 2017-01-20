@@ -14,8 +14,9 @@ public class Database {
 	private static final String protocol = "jdbc:derby:";
 	
 	private Connection connection = null;
+	private static Database database;
 	// Create a Database, and connect to it
-	public Database () {
+	private Database () {
 		try {
 			Class.forName(driver);
 			this.connection = DriverManager.getConnection(protocol + dbName + ";create=true");
@@ -26,6 +27,13 @@ public class Database {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	// Get Database instance
+	public static Database getDatabase () {
+		if (database == null) {
+			database = new Database();
+		}
+		return database;
 	}
 	// Get a connection to the database
 	public Connection getConnection () {

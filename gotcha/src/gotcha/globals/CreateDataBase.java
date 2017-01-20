@@ -20,16 +20,14 @@ public class CreateDataBase implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent event)  {
     	
-    	Context context = null;
-    	
-		try {
-			context = new InitialContext();
+    	try {
+			Globals.context = new InitialContext();
 		} catch (NamingException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 		
-        Database database = new Database();
+        Database database = Database.getDatabase();
         
         try {
         	
@@ -70,13 +68,14 @@ public class CreateDataBase implements ServletContextListener {
         	
         	database.commit();
         	
-        	context.bind(Globals.dbName, database);
-        	
+        	System.out.println("The database was created successfully, and you're now connected to it.");
+			Globals.context.bind(Globals.dbName, database);
+			
 		} catch (SQLException e) {
 			if (e.getSQLState().equals("X0Y32")) {
 				System.out.println("The database is already existing, you're now connected to it.");
 				try {
-					context.bind(Globals.dbName, database);
+					Globals.context.bind(Globals.dbName, database);
 				} catch (NamingException n) {
 					n.printStackTrace();
 				}
@@ -93,10 +92,9 @@ public class CreateDataBase implements ServletContextListener {
      */
     public void contextDestroyed(ServletContextEvent event)  {
     	try {
-			Context context = new InitialContext();
-			Database database = (Database)context.lookup(Globals.dbName);
+			Database database = (Database)Globals.context.lookup(Globals.dbName);
 			database.shutdown();
-			context.unbind(Globals.dbName);
+			Globals.context.unbind(Globals.dbName);
     	} catch (NamingException e) {
     		e.printStackTrace();
     	}

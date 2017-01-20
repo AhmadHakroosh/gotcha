@@ -108,7 +108,7 @@ public class Messages extends HttpServlet {
 		ArrayList<Object> values = new ArrayList<Object>();
 		ArrayList<Object> where = new ArrayList<Object>();
 		ArrayList<String> users = new ArrayList<String>();
-		ArrayList<String> channels = new ArrayList<String>(Channel.getAllChannels());
+		ArrayList<String> channels = Channel.getAllChannels();
 		
 		where.add(user.nickName());
 		ResultSet resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_SENDER, values, where);

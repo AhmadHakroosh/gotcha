@@ -166,20 +166,21 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 .controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $filter, messagingService, notifyService) {
 	
-	// Prototype modifications
 	$scope.length = function (object) {
 		return Object.keys(object).length;
 	}
 	
 	// Scope variables
 	$scope.user = $rootScope.user;
-	$scope.channels = $rootScope.channels;
-	$scope.directMessages = $rootScope.directMessages;
+	$scope.channels = {};
+	$scope.directMessages = {};
 	$scope.activeChat = $rootScope.lastOpenChat;
-
 	$scope.showDropdown = false;
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
+	
+	// Private scope variables
+	var offset = 0;
 
 	// Scope watchers
 	$scope.$watch(function () {
@@ -205,8 +206,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.disableChannelCreation = true;
 		}
 	});
-
-	// Private scope methods
 	
 	// Scope event binding
 	$("#profile-dropdown-menu-toggle").bind('click', function(event) {
@@ -260,7 +259,18 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	// Send message
 	$scope.send = function () {
-		messagingService.send($scope.chatInput);
+		var to;
+		if ($scope.isChannel) to = $scope.activeChat.name;
+		if ($scope.isDirectMessage) to = $scope.activeChat.nickname;
+
+		var message = {
+			"from": $scope.user.nickName,
+			"to": to,
+			"text": $scope.inputMessage,
+			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+		};
+
+		messagingService.send(message);
 		$scope.chatInput = "";
 	};
 
@@ -295,7 +305,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				data: {"name": $scope.channelName}
 			}).then(
 				function (success) {
-					if (/^[a-zA-Z\d\-_.,]+$/.test($scope.channelName)) {
+					if (/^[a-zA-Z\d\-_,]+$/.test($scope.channelName)) {
 						$scope.valid = "glyphicon glyphicon-" + success.data.valid + "-circle";
 					} else {
 						$scope.valid = "glyphicon glyphicon-ban-circle";
@@ -340,6 +350,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$rootScope.route = data.route;
 						$scope.channelName = "";
 						$scope.channelDescription = "";
+						$scope.valid = "";
 					}, 2500);
 				}
 			},
@@ -371,7 +382,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				});
 				if (data.status == "success") {
 					$rootScope.route = data.route;
-					$rootScope.channels.push(data.subscription.channel);
+					getChannelData(data.subscription.channel);
 					$timeout(function () {
 						$(".modal-backdrop").css({display: 'none'});					
 					}, 2500);
@@ -404,7 +415,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					"message": data.notification.message
 				});
 				if (data.status == "success") {
-					$rootScope.channels.splice($rootScope.channels.indexOf(channel), 1);
+					delete $scope.channels[channel];
 					$timeout(function () {
 						$rootScope.route = data.route;					
 					}, 2500);
@@ -421,9 +432,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#channels-list li").removeClass("active-chat");
 		$("#direct-messages-list li").removeClass("active-chat");
 		$("#channel-" + channel).addClass("active-chat");
+		offset = 0;
 		$scope.isChannel = true;
 		$scope.isDirectMessage = false;
-		$scope.getChannelData(channel);
+		$scope.activeChat = $scope.channels[channel];
 	};
 	
 	// Open direct chat method
@@ -433,11 +445,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#message-" + nickname).addClass("active-chat");
 		$scope.isChannel = false;
 		$scope.isDirectMessage = true;
-		$scope.getUserData(nickname);
+		$scope.activeChat = $scope.directMessages[nickname];
 	};
 	
 	// Retrieve given channel data
-	$scope.getChannelData = function (name) {
+	var getChannelData = function (name) {
 		var channel = {
 				"name": name
 		};
@@ -449,19 +461,97 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: channel
 		}).then(
 			function (success) {
-				$scope.activeChat = success.data;
-				console.log($scope.activeChat);
+				$scope.channels[name] = success.data;
+				$scope.channels[name].messages = [];
+				getTenChannelMessages(name);
 			},
 			function (failure) {
-				
+				console.log("Error while trying to retrive channel data.");
+			}
+		);
+	};
+	
+	// Retrieve given channel messages
+	var getTenChannelMessages = function (channel) {
+		var message = {
+			"id": $scope.channels[channel].messages.length,
+			"to": channel
+		};
+
+		$http({
+			method: 'POST',
+			url: 'getTenChannelMessages',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				success.data.forEach(function (message) {
+					$scope.channels[channel].messages.push(message);
+				});
+			},
+			function (failure) {
+				console.log("Error while retrieving channel messages.");
 			}
 		);
 	};
 	
 	// Retrieve user data
-	$scope.getUserData = function (name) {
+	var getDirectMessageData = function (nickname) {
+		var user = {
+				"nickName": nickname
+		};
 		
+		$http({
+			method: 'POST',
+			url: 'directMessageData',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: channel
+		}).then(
+			function (success) {
+				$scope.directMessages[nickname] = success.data;
+				$scope.directMessages[nickname].messages = [];
+				getTenDirectChatMessages(nickname);
+			},
+			function (failure) {
+				console.log("Error while trying to retrive channel data.");
+			}
+		);
 	};
+	
+	// Retrieve given channel messages
+	var getTenDirectChatMessages = function (nickname) {
+		var message = {
+			"id": $scope.directMessages[nickname].messages.length,
+			"from": channel,
+			"to": $scope.user.nickName
+		};
+
+		$http({
+			method: 'POST',
+			url: 'getTenDirectChatMessages',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				success.data.forEach(function (message) {
+					$scope.directMessages[nickname].messages.push(message);
+				});
+			},
+			function (failure) {
+				console.log("Error while retrieving channel messages.");
+			}
+		);
+	};
+
+	$rootScope.channels.forEach(function (channel) {
+		getChannelData(channel);
+		
+	});
+	
+	$rootScope.directMessages.forEach(function (directMessage) {
+		getUserData(directMessage);
+		getTenDirectChatMessages(directMessage);
+	});
 }])
 
 .controller('chatController', ['$scope', function($scope) {

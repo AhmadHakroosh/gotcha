@@ -10,6 +10,10 @@ public class Message {
 	private Timestamp time;
 	
 	// Constructor
+	public Message () {
+		
+	}
+	
 	public Message (String from, String to, String text, Timestamp time) {
 		this.from = from;
 		this.to = to;

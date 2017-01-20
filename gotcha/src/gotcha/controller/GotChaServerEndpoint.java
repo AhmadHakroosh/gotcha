@@ -17,9 +17,9 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import gotcha.model.Channel;
 import gotcha.model.Message;
 import gotcha.globals.Globals;
-import gotcha.model.Channel;
 
 @ServerEndpoint(
 	value = "/{nickname}",
@@ -34,8 +34,8 @@ public class GotChaServerEndpoint {
 	private static ArrayList<String> channels = new ArrayList<String>();
 	
 	// Decoder & Encoder
-	MessageDecoder decoder;
-	MessageEncoder encoder;
+	MessageDecoder decoder = new MessageDecoder();
+	MessageEncoder encoder = new MessageEncoder();
 	
 	/**
 	 * 
@@ -44,6 +44,7 @@ public class GotChaServerEndpoint {
 	public void login (Session session, @PathParam("nickname") String user) throws IOException {
 		if (session.isOpen()) {
 			active.put(user, session);
+			session.getBasicRemote().sendText("Hello, " + user);
 		}
 	}
 	
@@ -100,7 +101,7 @@ public class GotChaServerEndpoint {
 	 * 
 	 */
 	private void broadcast (String channel, String jsonMessage) throws messageDeliveryException {
-		ArrayList<String> subscribers = new ArrayList<String>(Channel.getSubscribersList(channel));
+		ArrayList<String> subscribers = Channel.getSubscribersList(channel);
 		for (String subscriber : subscribers) {
 			notify(subscriber, jsonMessage);
 		}		

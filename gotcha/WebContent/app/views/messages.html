@@ -63,15 +63,15 @@
 		<!-- Sidebar & lists -->
 		<div class="sidebar col-md-2 col-sm-2">
 			<div id="channels-list">
-				<span class="list-header">Channels <span class="counter" ng-hide="channels.length == 0">({{channels.length}})</span><span data-toggle="modal" data-target="#create-channel-form" class="icon right glyphicon glyphicon-plus-sign"></span></span>
+				<span class="list-header">Channels <span class="counter" ng-hide="length(channels) == 0">({{length(channels)}})</span><span data-toggle="modal" data-target="#create-channel-form" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li id="channel-{{channel}}" ng-repeat="channel in channels" ng-click="openChannel(channel)"><span class="italic">&#35;</span> {{channel}} <span ng-click="unsubscribe(channel)" class="remove icon right glyphicon glyphicon-remove-circle"></span></li>
+					<li id="channel-{{channel.name}}" ng-repeat="channel in channels" ng-click="openChannel(channel.name)"><span class="italic">&#35;</span> {{channel.name}} <span ng-click="unsubscribe(channel.name)" class="remove icon right glyphicon glyphicon-remove-circle"></span></li>
 				</ul>
 			</div>
 			<div id="direct-messages-list">
 				<span class="list-header">Direct Messages <span id="" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li id="message-{{directMessage}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage)"><span class="italic">&#64;</span> {{directMessage}}</li>
+					<li id="message-{{directMessage.nickname}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage.nickname)"><span class="italic">&#64;</span> {{directMessage.nickname}}</li>
 				</ul>
 			</div>
 		</div>
@@ -79,7 +79,9 @@
 		<div id="activity-window" class="col-md-10 col-sm-10">
 			<!-- Active chat -->
 			<div id="active-chat">
-				<div id="chat-console"></div>
+				<div id="chat-console">
+					<p ng-repeat="message in activeChat.messages">{{message.text}}</p>
+				</div>
 			</div>
 			<!-- Typing area -->
 			<div id="typing-area">
@@ -88,12 +90,12 @@
 						<span class="icon left glyphicon glyphicon-paperclip"></span>
 					</div>
 					<div id="input-message" class="left">
-						<form>
-							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChatPerson}}">
+						<form ng-submit="send()">
+							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat.name}}">
 						</form>
 					</div>
 					<div id="send-button">
-						<span class="icon right glyphicon glyphicon-send"></span>
+						<span class="icon right glyphicon glyphicon-send" ng-click="send()" ng-disabled="inputMessage == undefined || inputMessage == ''"></span>
 					</div>
 				</div>
 			</div>
@@ -113,7 +115,7 @@
 						<form name="create-channel-form" ng-submit="createChannel()">
 							<div class="form-group">
 								<label for="channel-name">Channel Name</label>
-								<input type="text" ng-model="channelName" id="channel-name" maxlength="30" class="form-control" ng-keyup="validate()" ng-pattern="regex">
+								<input type="text" ng-model="channelName" id="channel-name" maxlength="30" class="form-control" ng-keyup="validate()">
 								<span ng-class="valid" aria-hidden="true"></span>
 							</div>
 							<div class="form-group">

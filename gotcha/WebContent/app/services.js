@@ -83,14 +83,9 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		console.log(message);
 	};
 
-	var pack = function (message) {
-		return {
-			"from": $rootScope.user.profile.nickName,
-			"to": "",
-			"text": message,
-			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
-		};
-	}
+	var unpack = function (message) {
+		console.log("Unpacking message!");
+	};
 
 	return {
 		// Open websocket
@@ -105,7 +100,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 			};
 			// On received message
 			$rootScope.session.onmessage = function (event) {
-				notify(event.data);
+				unpack(event.data);
 			};
 			// On error
 			$rootScope.session.onerror = function (event) {
@@ -119,8 +114,7 @@ gotcha.service('restService', ['$http', '$q', 'dataSharingService', function($ht
 		},
 		// Deliver a message
 		send: function (message) {
-			var packedMessage = pack(message);
-			$rootScope.session.send(packedMessage);
+			$rootScope.session.send(message);
 		},
 		// Close connection
 		close: function () {
