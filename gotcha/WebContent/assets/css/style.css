@@ -309,8 +309,14 @@ li.divider {
 	font-size: 1.2em;
 }
 
+#activity-window {
+	padding: 0 15px;
+}
+
 #chat-console {
 	height: 100%;
+	overflow: auto;
+	padding: 5px 0;
 }
 
 #typing-area .icon {
@@ -344,7 +350,7 @@ li.divider {
 }
 
 .messages-item {
-	padding: 4px 0;
+	padding: 6px 0;
 }
 
 .messages-item .photo {
@@ -371,4 +377,28 @@ li.divider {
 
 .message-item .message.text {
 	word-wrap: break-word;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    padding: 5px -5px 5px 0;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #D9D9DE; 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #D9D9DE; 
+    -webkit-box-shadow: inset 0 0 6px #D9D9DE; 
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: #D9D9DE; 
 }

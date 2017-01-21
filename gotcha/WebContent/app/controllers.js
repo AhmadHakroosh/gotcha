@@ -172,13 +172,23 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.user = $rootScope.user;
 	$scope.channels = {};
 	$scope.directMessages = {};
-	$scope.activeChat = $rootScope.lastOpenChat;
+	$scope.activeChat;
 	$scope.showDropdown = false;
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
 	
 	// Private scope variables
 	var offset = 0;
+	
+	var setLastOpenChat = function (chat) {
+		$scope.user.lastOpenChat = chat;
+		$http({
+			method: 'POST',
+			url: 'setLastOpenChat',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: $scope.user
+		});
+	};
 
 	var pack = function () {
 		var to;
@@ -227,6 +237,16 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#typing-area").height(0.1 * $("#main-activity-window").height());
 		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
 	})();
+	
+	$("#chat-console").on('scroll', function () {
+		if (this.scrollTop <= 0) {
+			if ($scope.isChannel) {
+				getTenChannelMessages($scope.activeChat.name);
+			} else {
+				getTenDirectChatMessages($scope.activeChat.nickname);
+			}
+		}
+	});
 
 	var user = $scope.user;
 	var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.nickName;

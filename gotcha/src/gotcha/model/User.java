@@ -12,6 +12,7 @@ public class User {
 	private String description;
 	private String photoUrl;
 	private String status;
+	private String lastOpenChat;
 	private Timestamp lastSeen;
 	
 	// Default constructor
@@ -70,6 +71,10 @@ public class User {
 		return this.status;
 	}
 	
+	public String lastOpenChat () {
+		return this.lastOpenChat;
+	}
+	
 	public Timestamp lastSeen () {
 		return this.lastSeen;
 	}
@@ -96,6 +101,10 @@ public class User {
 	
 	public void status (String status) {
 		this.status = status;
+	}
+	
+	public void lastOpenChat (String lastOpenChat) {
+		this.lastOpenChat = lastOpenChat;
 	}
 	
 	public void latSeen (Timestamp time) {
