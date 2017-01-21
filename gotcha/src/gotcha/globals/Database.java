@@ -21,10 +21,8 @@ public class Database {
 			Class.forName(driver);
 			this.connection = DriverManager.getConnection(protocol + dbName + ";create=true");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -48,7 +46,7 @@ public class Database {
 	public ResultSet executeQuery (String query, List<Object> values, List<Object> where) throws SQLException {
 		int i, j;
 		
-		PreparedStatement statement = connection.prepareStatement(query);
+		PreparedStatement statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		
 		for (i = 0; i < values.size(); i++) {
 			statement.setObject(i+1, values.get(i));
@@ -64,7 +62,7 @@ public class Database {
 	public int executeUpdate (String query, List<Object> values, List<Object> where) throws SQLException {
 		int i, j;
 		
-		PreparedStatement statement = connection.prepareStatement(query);
+		PreparedStatement statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		
 		for (i = 0; i < values.size(); i++) {
 			statement.setObject(i+1, values.get(i));

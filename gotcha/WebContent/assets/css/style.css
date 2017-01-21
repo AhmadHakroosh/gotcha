@@ -342,3 +342,33 @@ li.divider {
 	padding: 2px;
 	margin: 0;
 }
+
+.messages-item {
+	padding: 4px 0;
+}
+
+.messages-item .photo {
+	padding: 5px 10px 5px 0;	
+}
+
+.messages-item div {
+	display: block;	
+}
+
+.messages-item .photo .sender-photo {
+	width: 35px;
+	height: 35px;
+}
+
+.sender.nickname {
+	padding-top: 8px;
+	line-height: 0.9em;
+}
+
+.message-sender {
+	padding-right: 10px;
+}
+
+.message-item .message.text {
+	word-wrap: break-word;
+}

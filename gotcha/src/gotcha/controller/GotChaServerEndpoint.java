@@ -63,7 +63,7 @@ public class GotChaServerEndpoint {
 				//store(message);
 			}
 		} catch (DecodeException | messageDeliveryException | EncodeException e) {
-			e.printStackTrace();
+			System.out.println("Something went wrong!");
 		}	
 	}
 

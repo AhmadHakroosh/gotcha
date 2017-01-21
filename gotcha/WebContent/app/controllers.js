@@ -203,6 +203,22 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}
 		$scope.$apply();
 	};
+	
+	var store = function (message) {
+		$http({
+			method: 'POST',
+			url: 'storeMessage',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				console.log("stored: " + message + " successfully!");
+			},
+			function (failure) {
+
+			} 
+		);
+	};
 
 	// Ifi functions
 	(function () {
@@ -238,6 +254,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.send = function () {
 		var message = pack();
 		$scope.session.send(message);
+		store(message);
 		$scope.inputMessage = "";
 	};
 

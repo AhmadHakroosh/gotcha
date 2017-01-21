@@ -61,6 +61,10 @@ public class GetTenChannelMessages extends HttpServlet {
 		String data = "[";
 		int i = 1;
 		try {
+			resultSet.last();
+			int rows = resultSet.getRow();
+			resultSet.beforeFirst();
+			
 			while (resultSet.next()) {
 				Message message = new Message();
 				message.id(resultSet.getInt("ID"));
@@ -69,10 +73,10 @@ public class GetTenChannelMessages extends HttpServlet {
 				message.text(resultSet.getString("TEXT"));
 				message.time(resultSet.getTimestamp("SENT_TIME"));
 				String jsonMessage = gson.toJson(message, Message.class);
-				data += i < resultSet.getFetchSize() ? jsonMessage + "," : jsonMessage;
+				data += i++ < rows ? jsonMessage + "," : jsonMessage;
 			}
 		} catch (SQLException e) {
-			
+			System.out.println("An unknown error has occurred while trying to retrieve messages from the system.");
 		}
 		data += "]";
 		

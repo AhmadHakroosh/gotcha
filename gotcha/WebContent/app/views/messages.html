@@ -80,9 +80,13 @@
 			<!-- Active chat -->
 			<div id="active-chat">
 				<div id="chat-console">
-					<p ng-repeat="message in activeChat.messages">
-						{{message.text}}
-					</p>
+					<div ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
+						<div class="media-left photo left">
+					    	<img class="sender-photo media-object" src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
+					  	</div>
+			    		<div class="sender nickname"><span class="bold message-sender">{{message.from}}</span><span class="message-time">{{message.time}}</span></div>
+						<div class="message-text">{{message.text}}</div>
+					</div>
 				</div>
 			</div>
 			<!-- Typing area -->
