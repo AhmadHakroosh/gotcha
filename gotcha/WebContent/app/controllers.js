@@ -177,16 +177,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
 	
-	var setLastOpenChat = function (chat) {
-		$scope.user.lastOpenChat = chat;
-		$http({
-			method: 'POST',
-			url: 'setLastOpenChat',
-			headers: {'Content-Type' : "application/json; charset=utf-8"},
-			data: $scope.user
-		});
-	};
-
 	var pack = function () {
 		var to;
 		if ($scope.isChannel) to = $scope.activeChat.name;
@@ -251,7 +241,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				getTenDirectChatMessages($scope.activeChat.user.nickName);
 			}
 		}
-		$scope.activeChat.newMessages = 0;
 	});
 
 	var user = $scope.user;
@@ -571,7 +560,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.channels[channel].messages.push(message);
-					if (message.time > $scope.user.lastSeen && message.from != $scope.user.nickName) {
+					if (Date(message.time) > Date($scope.user.lastSeen) && message.from != $scope.user.nickName) {
 						$scope.channels[channel].newMessages += 1;
 					}
 				});
@@ -623,7 +612,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.directMessages[nickname].messages.push(message);
-					if (message.time > $scope.user.lastSeen && message.from != $scope.user.nickName) {
+					if (Date(message.time) > Date($scope.user.lastSeen) && message.from != $scope.user.nickName) {
 						$scope.directMessages[nickname].newMessages += 1;
 					}
 				});
@@ -661,9 +650,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 					$scope.directMessages[nickname].user.status = status;
 					$scope.directMessages[nickname].user.lastSeen = lastSeen;
-				},
-				function (failure) {
-
 				}
 			);
 		});

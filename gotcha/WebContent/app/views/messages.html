@@ -86,7 +86,7 @@
 			<!-- Active chat -->
 			<div id="active-chat">
 				<div id="chat-console">
-					<div ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
+					<div data-index="{{$index}}" ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
 						<div class="media-left photo left">
 					    	<img class="sender-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
 					  	</div>
