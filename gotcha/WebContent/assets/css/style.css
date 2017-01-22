@@ -315,6 +315,11 @@ span#other-user-status.status {
 	border: 2px solid #63D259;
 }
 
+.badge {
+	background: lightgrey;
+	margin: 1px 1px 0 0;
+}
+
 #active-chat {
 	height: 100%;
 }

@@ -177,9 +177,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
 	
-	// Private scope variables
-	var offset = 0;
-	
 	var setLastOpenChat = function (chat) {
 		$scope.user.lastOpenChat = chat;
 		$http({
@@ -208,13 +205,17 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		var message = JSON.parse(json);
 		if ($scope.channels[message.to] != undefined) {
 			$scope.channels[message.to].messages.push(message);
+			$scope.channels[message.to].newMessages += 1;
 		} else {
 			if ($scope.directMessages[message.from] !== undefined) {
 				$scope.directMessages[message.from].messages.push(message);
+				$scope.directMessages[message.from].newMessages += 1;
 			} else {
 				$scope.directMessages[message.to].messages.push(message);
+				$scope.directMessages[message.to].newMessages += 1;
 			}
 		}
+		$scope.activeChat.newMessages = 0;
 		$scope.$apply();
 	};
 	
@@ -250,6 +251,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				getTenDirectChatMessages($scope.activeChat.user.nickName);
 			}
 		}
+		$scope.activeChat.newMessages = 0;
 	});
 
 	var user = $scope.user;
@@ -515,6 +517,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isChannel = true;
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
+		$scope.channels[channel].newMessages = 0;
 	};
 	
 	// Open direct chat method
@@ -525,6 +528,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isChannel = false;
 		$scope.isDirectMessage = true;
 		$scope.activeChat = $scope.directMessages[nickname];
+		$scope.directMessages[nickname].newMessages = 0;
 	};
 	
 	// Retrieve given channel data
@@ -542,6 +546,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				$scope.channels[name] = success.data;
 				$scope.channels[name].messages = [];
+				$scope.channels[name].newMessages = 0;
 				getTenChannelMessages(name);
 			},
 			function (failure) {
@@ -566,6 +571,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.channels[channel].messages.push(message);
+					if (message.time > $scope.user.lastSeen && message.from != $scope.user.nickName) {
+						$scope.channels[channel].newMessages += 1;
+					}
 				});
 			},
 			function (failure) {
@@ -589,6 +597,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				$scope.directMessages[nickname] = success.data;
 				$scope.directMessages[nickname].messages = [];
+				$scope.directMessages[nickname].newMessages = 0;
 				getTenDirectChatMessages(nickname);
 			},
 			function (failure) {
@@ -614,6 +623,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.directMessages[nickname].messages.push(message);
+					if (message.time > $scope.user.lastSeen && message.from != $scope.user.nickName) {
+						$scope.directMessages[nickname].newMessages += 1;
+					}
 				});
 			},
 			function (failure) {
@@ -631,7 +643,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	});
 
 	$interval(function () {
-		$("#direct-messages-list ul li").each(function () {
+		$("#direct-messages-list ul li .other-user-nickName").each(function () {
 			var user = {
 				"nickName": this.innerText
 			};
