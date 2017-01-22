@@ -193,7 +193,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	var pack = function () {
 		var to;
 		if ($scope.isChannel) to = $scope.activeChat.name;
-		if ($scope.isDirectMessage) to = $scope.activeChat.nickname;
+		if ($scope.isDirectMessage) to = $scope.activeChat.user.nickName;
 		var message = {
 			"from": $scope.user.nickName,
 			"to": to,
@@ -209,7 +209,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if ($scope.channels[message.to] != undefined) {
 			$scope.channels[message.to].messages.push(message);
 		} else {
-			$scope.directMessages[message.from].messages.push(message);
+			if ($scope.directMessages[message.from] !== undefined) {
+				$scope.directMessages[message.from].messages.push(message);
+			} else {
+				$scope.directMessages[message.to].messages.push(message);
+			}
 		}
 		$scope.$apply();
 	};
@@ -508,7 +512,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#channels-list li").removeClass("active-chat");
 		$("#direct-messages-list li").removeClass("active-chat");
 		$("#channel-" + channel).addClass("active-chat");
-		offset = 0;
 		$scope.isChannel = true;
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
@@ -579,9 +582,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		
 		$http({
 			method: 'POST',
-			url: 'directMessageData',
+			url: 'getDirectMessageData',
 			headers: {'Content-Type' : "application/json; charset=utf-8"},
-			data: channel
+			data: user
 		}).then(
 			function (success) {
 				$scope.directMessages[nickname] = success.data;
@@ -598,7 +601,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	var getTenDirectChatMessages = function (nickname) {
 		var message = {
 			"id": $scope.directMessages[nickname].messages.length,
-			"from": channel,
+			"from": nickname,
 			"to": $scope.user.nickName
 		};
 
@@ -621,12 +624,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$rootScope.channels.forEach(function (channel) {
 		getChannelData(channel);
-		
 	});
 	
 	$rootScope.directMessages.forEach(function (directMessage) {
-		getUserData(directMessage);
-		getTenDirectChatMessages(directMessage);
+		getDirectMessageData(directMessage);
 	});
 }])
 

@@ -59,8 +59,8 @@ public class GotChaServerEndpoint {
 				// The message must be sent to a specific user
 				} else {
 					notify(message.to(), encoder.encode(message));
+					notify(message.from(), encoder.encode(message));
 				}
-				//store(message);
 			}
 		} catch (DecodeException | messageDeliveryException | EncodeException e) {
 			System.out.println("Something went wrong!");
@@ -97,7 +97,7 @@ public class GotChaServerEndpoint {
 	/**
 	 * 
 	 */
-	private void notify (String user, String jsonMessage) throws messageDeliveryException {
+	private boolean notify (String user, String jsonMessage) throws messageDeliveryException {
 		if (active.containsKey(user)) {
 			Session session = active.get(user);
 			try {
@@ -106,21 +106,9 @@ public class GotChaServerEndpoint {
 				messageDeliveryException exception = new messageDeliveryException("Something went wrong, the message was not delivered to: @" + user);
 				throw exception;
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	/*private void store (Message message) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-
-		values.add(message.from());
-		values.add(message.to());
-		values.add(message.text());
-		values.add(message.time());
-		
-		Globals.execute(Globals.INSERT_MESSAGE, values, where);
-	}*/
 }

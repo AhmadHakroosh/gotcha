@@ -107,7 +107,7 @@ public class User {
 		this.lastOpenChat = lastOpenChat;
 	}
 	
-	public void latSeen (Timestamp time) {
+	public void lastSeen (Timestamp time) {
 		this.lastSeen = time;
 	}
 	

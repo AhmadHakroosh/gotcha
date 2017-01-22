@@ -80,6 +80,10 @@ li.divider {
 	border-radius: 5px;
 }
 
+#login-page .sign-up-area div button {
+	margin-top: 15px;
+}
+
 #top-header {
 	height: 60px;
 }
@@ -211,6 +215,13 @@ li.divider {
 	padding-top: 12px;
 }
 
+span#other-user-status.status {
+	width: 10px;
+	height: 10px;
+	display: inline-block;
+	margin: 0 5px -1px 0;
+}
+
 #top-header .sidebar:hover {
 	cursor: pointer;
 }
@@ -254,20 +265,20 @@ li.divider {
 	text-transform: uppercase;
 }
 
-#channels-list ul {
+#channels-list ul, #direct-messages-list ul {
 	list-style: none;
 	margin-left: -15px;
 	padding: 0;
 }
 
-#channels-list ul li {
+#channels-list ul li, #direct-messages-list ul li {
 	padding: 3px 0 3px 20px;
 	margin-right: -5px;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
 }
 
-#channels-list ul li:hover {
+#channels-list ul li:hover, #direct-messages-list ul li:hover {
 	padding-left: 20px;
 	background: #FCFCFD;
 	cursor: pointer;
@@ -283,7 +294,7 @@ li.divider {
 	display: inline;
 }
 
-#channels-list ul li.active-chat {
+#channels-list ul li.active-chat, #direct-messages-list ul li.active-chat {
 	background: #CAD1D9;
 	color: #FFFFFF;
 }

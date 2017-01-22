@@ -28,11 +28,17 @@
 				<div class="chat-header left col-md-9 col-sm-9">
 					<div class="chat-title left">
 						<h5 id="chat-name-container" class="chat-name-container bold">
-							<span class="chat-name"><span ng-show="isChannel" class="italic">&#35;</span><span ng-show="isDirectMessage" class="italic">&#64;</span> {{activeChat.name}}</span>
+							<span class="chat-name" ng-show="isChannel"><span class="italic">&#35;</span> {{activeChat.name}}</span>
+							<span class="chat-name" ng-show="isDirectMessage"><span class="italic">&#64;</span> {{activeChat.user.nickName}}</span>
 						</h5>
-						<div class="chat-header-info">
-							<div class="chat-header-info-item chat-members" ng-show="isChannel"><span id="header-member-count" class="icon glyphicon glyphicon-user"></span>{{activeChat.subscribers.length}}</div>
-							<div class="chat-header-info-item chat-purpose" ng-show="isChannel">{{activeChat.description}}</div>
+						<div class="chat-header-info" ng-show="isChannel">
+							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user"></span>{{activeChat.subscribers.length}}</div>
+							<div class="chat-header-info-item chat-purpose">{{activeChat.description}}</div>
+						</div>
+						<div class="chat-header-info" ng-show="isDirectMessage">
+							
+							<div class="chat-header-info-item"><span id="other-user-status" class="status {{activeChat.user.status}}"></span> {{activeChat.user.status}}</div>
+							<div class="chat-header-info-item">{{activeChat.user.description}}</div>
 						</div>
 					</div>
 					<div class="divider-bar right"></div>
@@ -71,7 +77,7 @@
 			<div id="direct-messages-list">
 				<span class="list-header">Direct Messages <span id="" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li id="message-{{directMessage.nickname}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage.nickname)"><span class="italic">&#64;</span> {{directMessage.nickname}}</li>
+					<li id="message-{{directMessage.user.nickName}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage.user.nickName)"><span class="italic">&#64;</span> {{directMessage.user.nickName}}</li>
 				</ul>
 			</div>
 		</div>
@@ -82,7 +88,7 @@
 				<div id="chat-console">
 					<div ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
 						<div class="media-left photo left">
-					    	<img class="sender-photo media-object" src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
+					    	<img class="sender-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
 					  	</div>
 			    		<div class="sender nickname"><span class="bold message-sender">{{message.from}}</span><span class="message-time">{{message.time}}</span></div>
 						<div class="message-text">{{message.text}}</div>
