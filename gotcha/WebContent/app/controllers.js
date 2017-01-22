@@ -162,7 +162,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 }])
 
-.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$location', '$filter', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $location, $filter, messagingService, notifyService) {
+.controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$location', '$filter', '$interval', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $location, $filter, $interval, messagingService, notifyService) {
 	
 	$scope.length = function (object) {
 		return Object.keys(object).length;
@@ -247,7 +247,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			if ($scope.isChannel) {
 				getTenChannelMessages($scope.activeChat.name);
 			} else {
-				getTenDirectChatMessages($scope.activeChat.nickname);
+				getTenDirectChatMessages($scope.activeChat.user.nickName);
 			}
 		}
 	});
@@ -311,7 +311,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}
 	});
 	
-	// Scope event binding
+	// Scope event binding	
 	$("#profile-dropdown-menu-toggle").bind('click', function(event) {
 		event.stopPropagation();
 	});
@@ -629,8 +629,31 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$rootScope.directMessages.forEach(function (directMessage) {
 		getDirectMessageData(directMessage);
 	});
-}])
 
-.controller('chatController', ['$scope', function($scope) {
-	
-}]);
+	$interval(function () {
+		$("#direct-messages-list ul li").each(function () {
+			var user = {
+				"nickName": this.innerText
+			};
+
+			$http({
+				method: 'POST',
+				url: 'getStatus',
+				headers: {'Content-Type' : "application/json; charset=utf-8"},
+				data: user
+			}).then(
+				function (success) {
+					var nickname = success.data.user.nickName;
+					var status = success.data.user.status;
+					var lastSeen = success.data.user.lastSeen;
+
+					$scope.directMessages[nickname].user.status = status;
+					$scope.directMessages[nickname].user.lastSeen = lastSeen;
+				},
+				function (failure) {
+
+				}
+			);
+		});
+	}, 3000);
+}])

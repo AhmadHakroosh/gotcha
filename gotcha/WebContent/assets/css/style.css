@@ -307,6 +307,14 @@ span#other-user-status.status {
 	color: grey;
 }
 
+#direct-messages-list ul li.active-chat span#other-user-status.status {
+	border: 2px solid white;
+}
+
+#direct-messages-list ul li.active-chat span#other-user-status.status.active {
+	border: 2px solid #63D259;
+}
+
 #active-chat {
 	height: 100%;
 }
