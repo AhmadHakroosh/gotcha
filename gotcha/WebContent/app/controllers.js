@@ -1,5 +1,5 @@
 // Main application controller
-gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http', 'animationService', function($scope, $rootScope, $location, $http, animationService) {
+gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$filter', 'animationService', function($scope, $rootScope, $location, $http, $filter, animationService) {
 	
 	$rootScope.route = "login";
 
