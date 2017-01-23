@@ -66,7 +66,7 @@ public class GetChannelData extends HttpServlet {
 		
 		int i = 1;
 		for (String someone : subscribers) {
-			data += i < subscribers.size() ? "\"" + someone + "\"," : "\"" + someone + "\"";
+			data += i++ < subscribers.size() ? "\"" + someone + "\"," : "\"" + someone + "\"";
 		}
 		
 		data += 	"]"
