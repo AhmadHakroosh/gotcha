@@ -12,7 +12,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
 
 	@Override
 	public String encode (Message message) throws EncodeException {
-		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		String jsonMessage = gson.toJson(message, Message.class);
 		return jsonMessage;
 	}

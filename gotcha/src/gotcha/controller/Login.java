@@ -50,7 +50,7 @@ public class Login extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to User object
 		User user = gson.fromJson(request.getReader(), User.class);
 		// Get the user from Database (if exists)

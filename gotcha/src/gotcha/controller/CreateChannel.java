@@ -46,7 +46,7 @@ public class CreateChannel extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to Channel object
 		Channel channel = gson.fromJson(request.getReader(), Channel.class);
 		// Prepare a JSON to be returned in the response

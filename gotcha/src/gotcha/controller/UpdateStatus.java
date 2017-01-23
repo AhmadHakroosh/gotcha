@@ -50,7 +50,7 @@ public class UpdateStatus extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("user");
 		User tempUser = gson.fromJson(request.getReader(), User.class);

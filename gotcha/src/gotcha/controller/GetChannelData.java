@@ -48,7 +48,7 @@ public class GetChannelData extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		Channel inputChannel = gson.fromJson(request.getReader(), Channel.class);
 		Channel channel = getChannelData(inputChannel.name());
 		// Retrieve list of channel subscribers

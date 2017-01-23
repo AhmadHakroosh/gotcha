@@ -48,7 +48,7 @@ public class StoreMessage extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Retrieve sent message from request
 		Message message = gson.fromJson(request.getReader(), Message.class);
 		insert(message);

@@ -54,9 +54,13 @@ public class Messages extends HttpServlet {
 		String data = (String)session.getAttribute("data");
 		User user = (User)session.getAttribute("user");
 		// 1. Find user subscriptions:
-		ArrayList<String> channels = getUserSubscriptions(user);
-		// 2. Find user direct chats
-		ArrayList<String> users = getUserDirectChats(user);
+		ArrayList<String> channels = new ArrayList<String>();
+		ArrayList<String> users = new ArrayList<String>();
+		if (user != null) {
+			channels = getUserSubscriptions(user);
+			// 2. Find user direct chats
+			users = getUserDirectChats(user);
+		}
 		
 		// 3. Append the found data with the forwarded data and return into response
 		int i = 1;

@@ -48,7 +48,7 @@ public class GetTenDirectChatMessages extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		Message input = gson.fromJson(request.getReader(), Message.class);
 		// Set query parameters
 		ArrayList<Object> values = new ArrayList<Object>();

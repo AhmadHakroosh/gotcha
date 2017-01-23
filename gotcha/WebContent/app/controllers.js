@@ -12,6 +12,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		function (success) {
 			$rootScope.route = success.data.route;
 			$rootScope.user = success.data.user;
+			if (success.data.user !== undefined) {
+				$rootScope.user.lastSeen = $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss");
+			}
 			$rootScope.channels = success.data.channels;
 			$rootScope.directMessages = success.data.directMessages;
 		},
@@ -87,7 +90,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"description": $scope.description,
 			"photoUrl": $scope.photoUrl,
 			"status" : "active",
-			"lastSeen": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+			"lastSeen": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
 		$http({
@@ -185,7 +188,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"from": $scope.user.nickName,
 			"to": to,
 			"text": $scope.inputMessage,
-			"time": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+			"time": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
 		return JSON.stringify(message);
@@ -202,7 +205,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.directMessages[message.from].newMessages += 1;
 			} else {
 				$scope.directMessages[message.to].messages.push(message);
-				$scope.directMessages[message.to].newMessages += 1;
 			}
 		}
 		$scope.activeChat.newMessages = 0;
@@ -215,14 +217,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			url: 'storeMessage',
 			headers: {'Content-Type' : "application/json; charset=utf-8"},
 			data: message
-		}).then(
-			function (success) {
-				console.log("stored: " + message + " successfully!");
-			},
-			function (failure) {
-
-			} 
-		);
+		});
 	};
 
 	// Ifi functions
@@ -397,7 +392,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"name": $scope.channelName,
 			"description": $scope.channelDescription,
 			"createdBy": $scope.user.username,
-			"createdTime": $filter('date')(Date.now(), "dd/MM/yyyy HH:mm")
+			"createdTime": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
 		$http({
@@ -454,9 +449,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				if (data.status == "success") {
 					$rootScope.route = data.route;
 					getChannelData(data.subscription.channel);
-					$timeout(function () {
-						$(".modal-backdrop").css({display: 'none'});					
-					}, 2500);
 				}
 			},
 			function (failure) {
@@ -507,6 +499,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
 		$scope.channels[channel].newMessages = 0;
+		$scope.channels[channel].lastRead = Date.now();
 	};
 	
 	// Open direct chat method
@@ -518,6 +511,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isDirectMessage = true;
 		$scope.activeChat = $scope.directMessages[nickname];
 		$scope.directMessages[nickname].newMessages = 0;
+		$scope.directMessages[nickname].lastRead = Date.now();
 	};
 	
 	// Retrieve given channel data
@@ -536,6 +530,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.channels[name] = success.data;
 				$scope.channels[name].messages = [];
 				$scope.channels[name].newMessages = 0;
+				$scope.channels[name].lastRead = $scope.user.lastSeen;
 				getTenChannelMessages(name);
 			},
 			function (failure) {
@@ -560,7 +555,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.channels[channel].messages.push(message);
-					if (Date(message.time) > Date($scope.user.lastSeen) && message.from != $scope.user.nickName) {
+					var messageTime = Date.parse(message.time);
+					var lastRead = Date.parse($scope.channels[channel].lastRead);
+					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.channels[channel].newMessages += 1;
 					}
 				});
@@ -587,6 +584,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.directMessages[nickname] = success.data;
 				$scope.directMessages[nickname].messages = [];
 				$scope.directMessages[nickname].newMessages = 0;
+				$scope.directMessages[nickname].lastRead = $scope.user.lastSeen;
 				getTenDirectChatMessages(nickname);
 			},
 			function (failure) {
@@ -612,7 +610,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				success.data.forEach(function (message) {
 					$scope.directMessages[nickname].messages.push(message);
-					if (Date(message.time) > Date($scope.user.lastSeen) && message.from != $scope.user.nickName) {
+					var messageTime = Date.parse(message.time);
+					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
+					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.directMessages[nickname].newMessages += 1;
 					}
 				});

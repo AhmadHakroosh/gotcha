@@ -51,7 +51,7 @@ public class GetStatus extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		User user = gson.fromJson(request.getReader(), User.class);
 		user = getStatus(user);
 		PrintWriter out = response.getWriter();

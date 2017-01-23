@@ -47,7 +47,7 @@ public class Register extends HttpServlet {
 	}
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to User object
 		User user = gson.fromJson(request.getReader(), User.class);
 		// Prepare a JSON to be forwarded to a new servlet or returned in the response
@@ -105,6 +105,6 @@ public class Register extends HttpServlet {
 		
 		int rows = Globals.executeUpdate(Globals.INSERT_USER, values, where);
 		
-		return rows > 0 ? true : false;
+		return rows > 0;
 	}
 }

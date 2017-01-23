@@ -51,7 +51,7 @@ public class GetDirectMessageData extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
+		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		User user = gson.fromJson(request.getReader(), User.class);
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
