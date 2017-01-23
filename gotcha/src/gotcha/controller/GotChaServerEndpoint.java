@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.websocket.DecodeException;
-import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -55,14 +54,14 @@ public class GotChaServerEndpoint {
 				Message message = decoder.decode(jsonMessage);
 				// The message must be sent to a channel
 				if (Globals.channels.containsKey(message.to())) {
-					broadcast(message.to(), encoder.encode(message));
+					broadcast(message.to(), jsonMessage);
 				// The message must be sent to a specific user
 				} else {
-					notify(message.to(), encoder.encode(message));
-					notify(message.from(), encoder.encode(message));
+					notify(message.to(), jsonMessage);
+					notify(message.from(), jsonMessage);
 				}
 			}
-		} catch (DecodeException | messageDeliveryException | EncodeException e) {
+		} catch (DecodeException | messageDeliveryException e) {
 			System.out.println("Something went wrong!");
 		}	
 	}

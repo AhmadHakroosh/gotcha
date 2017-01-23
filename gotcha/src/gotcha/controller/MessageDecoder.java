@@ -15,6 +15,14 @@ public class MessageDecoder implements Decoder.Text<Message> {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		JsonParser parser = new JsonParser();
 		JsonElement jsonMessage = parser.parse(textMessage);
+		JsonObject messageObject = new JsonObject();
+		JsonObject sender = new JsonObject();
+		// Modify message structure
+		messageObject.add("message", jsonMessage);
+		messageObject = messageObject.getAsJsonObject("message");
+		sender = messageObject.getAsJsonObject("from");
+		messageObject.remove("from");
+		messageObject.add("from", sender.get("nickName"));
 		Message message = gson.fromJson(jsonMessage, Message.class);
 		return message;
 	}
@@ -26,6 +34,15 @@ public class MessageDecoder implements Decoder.Text<Message> {
 		try {
 			JsonParser parser = new JsonParser();
 			JsonElement jsonMessage = parser.parse(textMessage);
+			JsonObject messageObject = new JsonObject();
+			JsonObject sender = new JsonObject();
+			// Modify message structure
+			messageObject.add("message", jsonMessage);
+			messageObject = messageObject.getAsJsonObject("message");
+			sender = messageObject.getAsJsonObject("from");
+			messageObject.remove("from");
+			messageObject.add("from", sender.get("nickName"));
+			// Try to parse as a Message object
 			gson.fromJson(jsonMessage, Message.class);
 			return true;
 		} catch (com.google.gson.JsonSyntaxException e) {

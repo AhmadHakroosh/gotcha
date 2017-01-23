@@ -88,9 +88,9 @@
 				<div id="chat-console">
 					<div data-index="{{$index}}" ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
 						<div class="media-left photo left">
-					    	<img class="sender-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
+					    	<img class="sender-photo media-object" ng-src="{{message.from.photoUrl}}" alt="{{message.from.nickName}} profile picture">
 					  	</div>
-			    		<div class="sender nickname"><span class="bold message-sender">{{message.from}}</span><span class="message-time">{{message.time}}</span></div>
+			    		<div class="sender nickname"><span class="bold message-sender">{{message.from.nickName}}</span><span class="message-time">{{message.time}}</span></div>
 						<div class="message-text">{{message.text}}</div>
 					</div>
 				</div>
@@ -103,7 +103,7 @@
 					</div>
 					<div id="input-message" class="left">
 						<form name="inputMessageForm" novalidate ng-submit="inputMessageForm.$valid && send()" >
-							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat.name}}" required>
+							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat.name}}{{activeChat.user.nickName}}" required>
 						</form>
 					</div>
 					<div id="send-button">

@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Channel;
+import gotcha.model.User;
 
 /**
  * Servlet implementation class GetUserMessages
@@ -66,7 +67,8 @@ public class GetChannelData extends HttpServlet {
 		
 		int i = 1;
 		for (String someone : subscribers) {
-			data += i++ < subscribers.size() ? "\"" + someone + "\"," : "\"" + someone + "\"";
+			someone = gson.toJson(getUserData(someone), User.class);
+			data += i++ < subscribers.size() ? someone + "," : someone;
 		}
 		
 		data += 	"]"
@@ -91,6 +93,35 @@ public class GetChannelData extends HttpServlet {
 				channel.description(resultSet.getString("DESCRIPTION"));
 				
 				return channel;
+			// He is not existing, return null
+			} else {
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private User getUserData (String nickname) {
+		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> where = new ArrayList<Object>();
+		
+		where.add(nickname);
+		
+		ResultSet resultSet = Globals.execute(Globals.SELECT_USER_BY_NICKNAME, values, where);
+		try {
+			// The user exists in our system, get his data
+			if (resultSet.next()) {
+				User tempUser = new User();
+				tempUser.nickName(resultSet.getString("NICKNAME"));
+				tempUser.description(resultSet.getString("DESCRIPTION"));
+				tempUser.status(resultSet.getString("STATUS"));
+				tempUser.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
+				tempUser.photoUrl(resultSet.getString("PHOTO_URL"));
+				
+				return tempUser;
 			// He is not existing, return null
 			} else {
 				return null;

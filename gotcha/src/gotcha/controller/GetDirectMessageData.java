@@ -84,6 +84,7 @@ public class GetDirectMessageData extends HttpServlet {
 				tempUser.description(resultSet.getString("DESCRIPTION"));
 				tempUser.status(resultSet.getString("STATUS"));
 				tempUser.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
+				tempUser.photoUrl(resultSet.getString("PHOTO_URL"));
 				
 				return tempUser;
 			// He is not existing, return null

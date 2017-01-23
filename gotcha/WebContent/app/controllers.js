@@ -185,7 +185,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if ($scope.isChannel) to = $scope.activeChat.name;
 		if ($scope.isDirectMessage) to = $scope.activeChat.user.nickName;
 		var message = {
-			"from": $scope.user.nickName,
+			"from": {
+				"nickName": $scope.user.nickName,
+				"description": $scope.user.description,
+				"status": $scope.user.status,
+				"lastSeen": $scope.user.lastSeen,
+				"photoUrl": $scope.user.photoUrl
+			},
 			"to": to,
 			"text": $scope.inputMessage,
 			"time": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
@@ -200,9 +206,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.channels[message.to].messages.push(message);
 			$scope.channels[message.to].newMessages += 1;
 		} else {
-			if ($scope.directMessages[message.from] !== undefined) {
-				$scope.directMessages[message.from].messages.push(message);
-				$scope.directMessages[message.from].newMessages += 1;
+			if ($scope.directMessages[message.from.nickName] !== undefined) {
+				$scope.directMessages[message.from.nickName].messages.push(message);
+				$scope.directMessages[message.from.nickName].newMessages += 1;
 			} else {
 				$scope.directMessages[message.to].messages.push(message);
 			}
@@ -212,6 +218,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 	
 	var store = function (message) {
+		message = JSON.parse(message);
+		message.from = message.from.nickName;
 		$http({
 			method: 'POST',
 			url: 'storeMessage',
@@ -554,6 +562,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				success.data.forEach(function (message) {
+					message.from = JSON.parse(message.from);
 					$scope.channels[channel].messages.push(message);
 					var messageTime = Date.parse(message.time);
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
@@ -609,6 +618,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				success.data.forEach(function (message) {
+					message.from = JSON.parse(message.from);
 					$scope.directMessages[nickname].messages.push(message);
 					var messageTime = Date.parse(message.time);
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
