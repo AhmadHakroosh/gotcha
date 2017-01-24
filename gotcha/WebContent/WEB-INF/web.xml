@@ -5,8 +5,8 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   <listener>
-    <description>Database Creation Listener</description>
-    <listener-class>gotcha.globals.CreateDataBase</listener-class>
+    <description>Server Startup Listener</description>
+    <listener-class>gotcha.globals.Startup</listener-class>
   </listener>
   <listener>
     <description>Session Management Listener</description>

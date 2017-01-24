@@ -512,14 +512,28 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Open direct chat method
 	$scope.openDirectMessage = function (nickname) {
-		$("#channels-list li").removeClass("active-chat");
-		$("#direct-messages-list li").removeClass("active-chat");
-		$("#message-" + nickname).addClass("active-chat");
-		$scope.isChannel = false;
-		$scope.isDirectMessage = true;
-		$scope.activeChat = $scope.directMessages[nickname];
-		$scope.directMessages[nickname].newMessages = 0;
-		$scope.directMessages[nickname].lastRead = Date.now();
+		if ($scope.directMessages[nickname] == undefined) {
+			getDirectMessageData(nickname);
+			$timeout(function () {
+				$("#channels-list li").removeClass("active-chat");
+				$("#direct-messages-list li").removeClass("active-chat");
+				$("#message-" + nickname).addClass("active-chat");
+				$scope.isChannel = false;
+				$scope.isDirectMessage = true;
+				$scope.activeChat = $scope.directMessages[nickname];
+				$scope.directMessages[nickname].newMessages = 0;
+				$scope.directMessages[nickname].lastRead = Date.now();
+			}, 1000);
+		} else {
+			$("#channels-list li").removeClass("active-chat");
+			$("#direct-messages-list li").removeClass("active-chat");
+			$("#message-" + nickname).addClass("active-chat");
+			$scope.isChannel = false;
+			$scope.isDirectMessage = true;
+			$scope.activeChat = $scope.directMessages[nickname];
+			$scope.directMessages[nickname].newMessages = 0;
+			$scope.directMessages[nickname].lastRead = Date.now();
+		}
 	};
 	
 	// Retrieve given channel data
@@ -664,4 +678,38 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			);
 		});
 	}, 3000);
+
+	$(window).unload(function () {
+		$scope.logout();
+	});
 }])
+
+.controller('searchController', ['$scope', '$http', function($scope, $http) {
+	
+	$scope.channels = [];
+	$scope.people = [];
+	$scope.messages = [];
+	// Returned search results
+	$scope.results = [];
+
+	$scope.search = function () {
+		var query = {
+			"query": $scope.searchQuery
+		};
+
+		$http({
+			method: 'POST',
+			url: 'search',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: query
+		}).then(
+			function (success) {
+				console.log("searched: " + $scope.searchQuery);
+			},
+			function (failure) {
+				
+			}
+		);
+	};
+
+}]);

@@ -8,9 +8,14 @@ import java.util.List;
 
 import javax.naming.*;
 
+import gotcha.controller.search.GotchaSearchEngine;
+
 public final class Globals {
 	public static final String dbName = "gotchaDB";
 	public static Context context = null;
+	
+	// System search engine instantiation
+	public static GotchaSearchEngine searchEngine;
 	
 	// Public system properties
 	public static HashMap<String, ArrayList<String>> channels = new HashMap<String, ArrayList<String>>();
@@ -28,6 +33,7 @@ public final class Globals {
 	public static final String SET_LAST_OPEN_CHAT = "UPDATE USERS SET LAST_OPEN=? WHERE USERNAME=?";
 	
 	// DIRECT_MESSAGES TABLE STATEMENTS
+	public static final String SELECT_ALL_MESSAGES = "SELECT * FROM MESSAGES";
 	public static final String SELECT_MESSAGE_BY_SENDER = "SELECT * FROM MESSAGES WHERE SENDER=?";
 	public static final String SELECT_MESSAGE_BY_RECEIVER = "SELECT * FROM MESSAGES WHERE RECEIVER=?";
 	public static final String SELECT_TEN_CHANNEL_MESSAGES = "SELECT * FROM MESSAGES WHERE RECEIVER=? ORDER BY SENT_TIME DESC OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";

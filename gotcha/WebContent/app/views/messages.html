@@ -48,8 +48,8 @@
 					</div>
 				</div>
 				<div class="global-header col-md-3 col-sm-3">
-					<div id="search-container" class="col-md-10 col-sm-10">
-						<form role="search" accept-charset="utf-8" id="global-search-form">
+					<div ng-controller="searchController" id="search-container" class="col-md-10 col-sm-10">
+						<form role="search" accept-charset="utf-8" id="global-search-form" ng-submit="search()">
 							<div class="search-icon left"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
 							<div class="search-input left">
 								<input type="text" ng-model="searchQuery" name="query" placeholder="Search" autocomplete="off" maxlength="120">
@@ -90,7 +90,7 @@
 						<div class="media-left photo left">
 					    	<img class="sender-photo media-object" ng-src="{{message.from.photoUrl}}" alt="{{message.from.nickName}} profile picture">
 					  	</div>
-			    		<div class="sender nickname"><span class="bold message-sender">{{message.from.nickName}}</span><span class="message-time">{{message.time}}</span></div>
+			    		<div class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">{{message.from.nickName}}</span><span class="message-time">{{message.time}}</span></div>
 						<div class="message-text">{{message.text}}</div>
 					</div>
 				</div>
