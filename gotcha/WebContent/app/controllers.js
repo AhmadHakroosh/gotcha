@@ -167,6 +167,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 .controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$location', '$filter', '$interval', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $location, $filter, $interval, messagingService, notifyService) {
 	
+	$scope.mentions = 0;
 	$scope.length = function (object) {
 		return Object.keys(object).length;
 	}
@@ -206,13 +207,21 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.channels[message.to].messages.push(message);
 			$scope.channels[message.to].newMessages += 1;
 		} else {
-			if ($scope.directMessages[message.from.nickName] !== undefined) {
+			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName !== undefined]) {
 				$scope.directMessages[message.from.nickName].messages.push(message);
 				$scope.directMessages[message.from.nickName].newMessages += 1;
+			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
+				getDirectMessageData(message.from.nickName);
 			} else {
 				$scope.directMessages[message.to].messages.push(message);
 			}
 		}
+		// Check for mention
+		if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
+			$scope.mentions += 1;
+			message.mention = true;
+		}
+
 		$scope.activeChat.newMessages = 0;
 		$scope.$apply();
 	};
@@ -425,7 +434,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$scope.channelName = "";
 						$scope.channelDescription = "";
 						$scope.valid = "";
-					}, 2500);
+					}, 1500);
 				}
 			},
 			function (failure) {
@@ -457,6 +466,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				if (data.status == "success") {
 					$rootScope.route = data.route;
 					getChannelData(data.subscription.channel);
+					$timeout(function () {
+						$scope.openChannel(data.subscription.channel);
+					}, 1000);
 				}
 			},
 			function (failure) {
@@ -489,7 +501,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					delete $scope.channels[channel];
 					$timeout(function () {
 						$rootScope.route = data.route;					
-					}, 2500);
+					}, 1000);
 				}
 			},
 			function (failure) {
@@ -582,6 +594,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
 					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.channels[channel].newMessages += 1;
+						if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
+							$scope.mentions += 1;
+						}
+					}
+					if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
+						message.mention = true;
 					}
 				});
 			},
@@ -638,6 +656,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
 					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.directMessages[nickname].newMessages += 1;
+						if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
+							$scope.mentions += 1;
+						}
+					}
+					if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
+						message.mention = true;
 					}
 				});
 			},
@@ -645,6 +669,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				console.log("Error while retrieving channel messages.");
 			}
 		);
+	};
+
+	$scope.showMentions = function () {
+		$scope.mentions = 0;
+		// TODO
 	};
 
 	$rootScope.channels.forEach(function (channel) {
@@ -694,7 +723,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.search = function () {
 		var query = {
-			"query": $scope.searchQuery
+			"in": "channel OR user",
+			"what": $scope.query
 		};
 
 		$http({
@@ -704,7 +734,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: query
 		}).then(
 			function (success) {
-				console.log("searched: " + $scope.searchQuery);
+				console.log("searched: " + $scope.query);
 			},
 			function (failure) {
 				

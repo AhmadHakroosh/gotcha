@@ -57,8 +57,12 @@ public class GotChaServerEndpoint {
 					broadcast(message.to(), jsonMessage);
 				// The message must be sent to a specific user
 				} else {
-					notify(message.to(), jsonMessage);
-					notify(message.from(), jsonMessage);
+					if (!message.from().equals(message.to())) {
+						notify(message.to(), jsonMessage);
+						notify(message.from(), jsonMessage);
+					} else {
+						notify(message.to(), jsonMessage);
+					}
 				}
 			}
 		} catch (DecodeException | messageDeliveryException e) {

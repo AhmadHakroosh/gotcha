@@ -141,6 +141,16 @@ li.divider {
 	color: #EB4D5C;
 }
 
+#recent-mentions .icon .badge {
+	display: inline-block;
+	position: absolute;
+	z-index: 1002;
+	top: 15px;
+	right: -15px;
+	background: #EB4D5C;
+	font-size: 0.5em;
+}
+
 .divider-bar {
     width: 1px;
     height: 2.4rem;
@@ -410,6 +420,21 @@ span#other-user-status.status {
 
 .message-time {
 	color: lightgrey;
+}
+
+#chat-console .messages-item .message-body {
+	background: #F8F8FA;
+	margin: 5px 15px 0 40px;
+	border-radius: 5px;
+	padding: 0 10px 5px 10px;
+}
+
+.messages-item .message-body.mention-true {
+	border-left: 4px solid #EB4D5C;
+}
+
+.message-text span.user-mention {
+	color: blue;
 }
 
 ::-webkit-scrollbar {

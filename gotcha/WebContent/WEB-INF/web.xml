@@ -6,11 +6,11 @@
   </welcome-file-list>
   <listener>
     <description>Server Startup Listener</description>
-    <listener-class>gotcha.globals.Startup</listener-class>
+    <listener-class>gotcha.controller.listeners.Startup</listener-class>
   </listener>
   <listener>
     <description>Session Management Listener</description>
-    <listener-class>gotcha.controller.SessionManager</listener-class>
+    <listener-class>gotcha.controller.listeners.SessionManager</listener-class>
   </listener>
   <resource-ref>
     <description>GotCha! Database Connection</description>

@@ -21,8 +21,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -46,7 +46,6 @@ public class GotchaSearchEngine {
 	private Directory directory;
 	private IndexWriter indexWriter;
 	private IndexReader indexReader;
-	private QueryParser parser;
 	private DirectoryReader directoryReader;
 	private IndexSearcher indexSearcher;
 	
@@ -87,7 +86,6 @@ public class GotchaSearchEngine {
 		try {
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("id", resultSet.getString("USERNAME"), Field.Store.YES));
 				document.add(new StringField("type", "User", Field.Store.YES));
 				document.add(new StringField("username", resultSet.getString("USERNAME"), Field.Store.YES));
 				document.add(new StringField("nickname", resultSet.getString("NICKNAME"), Field.Store.YES));
@@ -98,7 +96,6 @@ public class GotchaSearchEngine {
 			resultSet = Globals.execute(Globals.SELECT_ALL_CHANNELS, values, where);
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("id", resultSet.getString("NAME"), Field.Store.YES));
 				document.add(new StringField("type", "Channel", Field.Store.YES));
 				document.add(new StringField("name", resultSet.getString("NAME"), Field.Store.YES));
 				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.YES));
@@ -108,12 +105,11 @@ public class GotchaSearchEngine {
 			resultSet = Globals.execute(Globals.SELECT_ALL_MESSAGES, values, where);
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("id", resultSet.getString("ID"), Field.Store.YES));
 				document.add(new StringField("type", "Message", Field.Store.YES));
 				document.add(new StringField("from", resultSet.getString("SENDER"), Field.Store.YES));
 				document.add(new StringField("to", resultSet.getString("RECEIVER"), Field.Store.YES));
 				document.add(new TextField("text", resultSet.getString("TEXT"), Field.Store.YES));
-				document.add(new StringField("time", (resultSet.getTimestamp("SENT_TIME")).toString(), Field.Store.YES));
+				document.add(new StringField("time", Long.toString((resultSet.getTimestamp("SENT_TIME")).getTime()), Field.Store.YES));
 				indexWriter.addDocument(document);
 			}
 			
@@ -130,8 +126,7 @@ public class GotchaSearchEngine {
 		ArrayList<Object> found = new ArrayList<Object>();
 		
 		try {
-			parser = new QueryParser(gotchaQuery.parse(), analyzer);
-			Query query = parser.parse(QueryParser.escape(gotchaQuery.what()));
+			Query query = MultiFieldQueryParser.parse(gotchaQuery.queries(), gotchaQuery.fields(), gotchaQuery.flags(), analyzer);
 			directoryReader = DirectoryReader.open(directory);
 			indexSearcher = new IndexSearcher(directoryReader);
 			indexSearcher.setSimilarity(similarity);
@@ -165,16 +160,14 @@ public class GotchaSearchEngine {
 						message.to(document.get("to"));
 						message.text(document.get("text"));
 						// Format the date string of the message
-						DateFormat format = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
-						Date time = format.parse(document.get("time"));
-						Timestamp timestamp = new Timestamp(time.getTime());
-						message.time(timestamp);
+						long longDate = Long.parseLong(document.get("time"));
+						message.time(new Timestamp(longDate));
 						found.add(message);
 						break;
 				}
 			}
 			
-		} catch (ParseException | IOException | java.text.ParseException e) {
+		} catch (ParseException | IOException e) {
 			System.out.println("An unknown error has occured while trying to parse the query.");
 		}
 		
