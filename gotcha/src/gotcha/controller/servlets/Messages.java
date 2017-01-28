@@ -2,6 +2,8 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -88,20 +90,23 @@ public class Messages extends HttpServlet {
 	 * 
 	 */
 	private ArrayList<String> getUserSubscriptions (User user) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		ArrayList<String> channels = new ArrayList<String>();
 		
-		where.add(user.nickName());
-		ResultSet resultSet = Globals.execute(Globals.SELECT_SUBSCRIPTON_BY_USER, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_SUBSCRIPTON_BY_USER);
+			
+			statement.setString(1, user.nickName());
+			
+			ResultSet resultSet = statement.executeQuery();
+			
 			while (resultSet.next()) {
 				channels.add(resultSet.getString("CHANNEL"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return channels;
 	}
 
@@ -109,26 +114,28 @@ public class Messages extends HttpServlet {
 	 * 
 	 */
 	private ArrayList<String> getUserDirectChats (User user) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		ArrayList<String> users = new ArrayList<String>();
 		ArrayList<String> channels = Channel.getAllChannels();
-		
-		where.add(user.nickName());
-		ResultSet resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_SENDER, values, where);
+		PreparedStatement statement;
+		ResultSet resultSet;
+
 		try {
+			Connection connection = Globals.database.getConnection();
+			statement = connection.prepareStatement(Globals.SELECT_MESSAGE_BY_SENDER);
+			statement.setString(1, user.nickName());
+			resultSet = statement.executeQuery();
+			
 			while (resultSet.next()) {
 				String receiver = resultSet.getString("RECEIVER");
 				if (!users.contains(receiver) && !channels.contains(receiver)) {
 					users.add(receiver);
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+			statement = connection.prepareStatement(Globals.SELECT_MESSAGE_BY_RECEIVER);
+			statement.setString(1, user.nickName());
+			resultSet = statement.executeQuery();
 		
-		resultSet = Globals.execute(Globals.SELECT_MESSAGE_BY_RECEIVER, values, where);
-		try {
 			while (resultSet.next()) {
 				String sender = resultSet.getString("SENDER");
 				if (!users.contains(sender)) {
@@ -136,9 +143,9 @@ public class Messages extends HttpServlet {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 		}
-		
+
 		return users;
 	}
 }

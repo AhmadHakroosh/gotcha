@@ -232,6 +232,11 @@ span#other-user-status.status {
 	margin: 0 5px -1px 0;
 }
 
+span.user-mention.glyphicon.glyphicon-tag {
+	color: #EB4D5C;
+	margin: 2px;
+}
+
 #top-header .sidebar:hover {
 	cursor: pointer;
 }
@@ -430,11 +435,7 @@ span#other-user-status.status {
 }
 
 .messages-item .message-body.mention-true {
-	border-left: 4px solid #EB4D5C;
-}
-
-.message-text span.user-mention {
-	color: blue;
+	border-left: 5px solid #EB4D5C;
 }
 
 ::-webkit-scrollbar {

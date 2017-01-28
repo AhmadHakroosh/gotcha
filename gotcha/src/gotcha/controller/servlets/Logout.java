@@ -2,8 +2,10 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,18 +67,25 @@ public class Logout extends HttpServlet {
 	}
 	
 	private void updateUserStatus (HttpSession session) {
-		User user = (User)session.getAttribute("user");
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
+		User user = (User)session.getAttribute("user");		
 		String status = "away";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
 		
-		values.add(status);
-		values.add(last_seen);
-		
-		where.add(user.username());
-		
-		Globals.executeUpdate(Globals.UPDATE_USER_STATUS, values, where);
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.UPDATE_USER_STATUS);
+			
+			statement.setString(1, status);
+			statement.setTimestamp(2, last_seen);
+			statement.setString(3, user.username());
+			
+			statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
 	}
 }

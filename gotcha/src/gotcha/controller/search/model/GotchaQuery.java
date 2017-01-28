@@ -44,10 +44,8 @@ public class GotchaQuery {
 		if (in.equals("message")) {
 			fields.add("text");
 		} else {
-			fields.add("username");
 			fields.add("nickname");
 			fields.add("name");
-			fields.add("description");
 		}
 		
 		String [] fieldArray = new String [fields.size()];
@@ -62,18 +60,13 @@ public class GotchaQuery {
 		if (in != null) {
 			queries.add(in);
 			flagsList.add(BooleanClause.Occur.MUST);
-			
 		}
 		
 		if (in.equals("Channel OR User")) {
 			queries.add(what);
-			flagsList.add(BooleanClause.Occur.SHOULD);
+			flagsList.add(BooleanClause.Occur.MUST);
 			queries.add(what);
-			flagsList.add(BooleanClause.Occur.SHOULD);
-			queries.add(what);
-			flagsList.add(BooleanClause.Occur.SHOULD);
-			queries.add(what);
-			flagsList.add(BooleanClause.Occur.SHOULD);
+			flagsList.add(BooleanClause.Occur.MUST);
 		} else {
 			queries.add(what);
 			flagsList.add(BooleanClause.Occur.MUST);

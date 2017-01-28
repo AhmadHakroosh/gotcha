@@ -12,10 +12,24 @@
     <description>Session Management Listener</description>
     <listener-class>gotcha.controller.listeners.SessionManager</listener-class>
   </listener>
+  <context-param>
+  	<param-name>gotchaDB</param-name>
+  	<param-value>java:comp/env/jdbc/gotchaDB</param-value>
+  </context-param>
+  <context-param>
+  	<param-name>DatabaseName</param-name>
+  	<param-value>gotchaDB</param-value>
+  </context-param>
   <resource-ref>
-    <description>GotCha! Database Connection</description>
-    <res-ref-name>jdbc/gotchaDB</res-ref-name>
-    <res-type>gotcha.globals.Database</res-type>
+    <description>GotCha! Database Connection Open</description>
+    <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+  <resource-ref>
+    <description>GotCha! Database Connection Close</description>
+    <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
   <session-config>

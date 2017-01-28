@@ -203,26 +203,34 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	var unpack = function (json) {
 		var message = JSON.parse(json);
-		if ($scope.channels[message.to] != undefined) {
-			$scope.channels[message.to].messages.push(message);
-			$scope.channels[message.to].newMessages += 1;
-		} else {
-			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName !== undefined]) {
-				$scope.directMessages[message.from.nickName].messages.push(message);
-				$scope.directMessages[message.from.nickName].newMessages += 1;
-			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
-				getDirectMessageData(message.from.nickName);
-			} else {
-				$scope.directMessages[message.to].messages.push(message);
-			}
-		}
 		// Check for mention
 		if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
 			$scope.mentions += 1;
 			message.mention = true;
+		} else {
+			message.mention = false;
+		}
+
+		if ($scope.channels[message.to] != undefined) {
+			$scope.channels[message.to].messages.push(message);
+			$scope.channels[message.to].newMessages += 1;
+			$scope.channels[message.to].mentions += message.mention ? 1 : 0;
+		} else {
+			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
+				$scope.directMessages[message.from.nickName].messages.push(message);
+				$scope.directMessages[message.from.nickName].newMessages += 1;
+				$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
+			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
+				getDirectMessageData(message.from.nickName);
+			} else {
+				$scope.directMessages[message.to].messages.push(message);
+				$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
+			}
 		}
 
 		$scope.activeChat.newMessages = 0;
+		$scope.mentions -= $scope.activeChat.mentions;
+		$scope.activeChat.mentions = 0;
 		$scope.$apply();
 	};
 	
@@ -519,6 +527,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
 		$scope.channels[channel].newMessages = 0;
+		$scope.channels[channel].mentions = 0;
 		$scope.channels[channel].lastRead = Date.now();
 	};
 	
@@ -534,6 +543,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.isDirectMessage = true;
 				$scope.activeChat = $scope.directMessages[nickname];
 				$scope.directMessages[nickname].newMessages = 0;
+				$scope.directMessages[nickname].mentions = 0;
 				$scope.directMessages[nickname].lastRead = Date.now();
 			}, 1000);
 		} else {
@@ -544,6 +554,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.isDirectMessage = true;
 			$scope.activeChat = $scope.directMessages[nickname];
 			$scope.directMessages[nickname].newMessages = 0;
+			$scope.directMessages[nickname].mentions = 0;
 			$scope.directMessages[nickname].lastRead = Date.now();
 		}
 	};
@@ -564,6 +575,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.channels[name] = success.data;
 				$scope.channels[name].messages = [];
 				$scope.channels[name].newMessages = 0;
+				$scope.channels[name].mentions = 0;
 				$scope.channels[name].lastRead = $scope.user.lastSeen;
 				getTenChannelMessages(name);
 			},
@@ -596,6 +608,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$scope.channels[channel].newMessages += 1;
 						if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
 							$scope.mentions += 1;
+							$scope.channels[channel].mentions += 1;
 						}
 					}
 					if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
@@ -625,6 +638,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.directMessages[nickname] = success.data;
 				$scope.directMessages[nickname].messages = [];
 				$scope.directMessages[nickname].newMessages = 0;
+				$scope.directMessages[nickname].mentions = 0;
 				$scope.directMessages[nickname].lastRead = $scope.user.lastSeen;
 				getTenDirectChatMessages(nickname);
 			},
@@ -658,6 +672,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$scope.directMessages[nickname].newMessages += 1;
 						if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
 							$scope.mentions += 1;
+							$scope.directMessages[nickname].mentions += 1;
 						}
 					}
 					if (message.text.indexOf("@" + $scope.user.nickName) != -1) {
@@ -723,7 +738,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.search = function () {
 		var query = {
-			"in": "channel OR user",
+			"in": "Channel OR User",
 			"what": $scope.query
 		};
 

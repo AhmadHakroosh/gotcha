@@ -2,9 +2,10 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -70,13 +71,14 @@ public class GetDirectMessageData extends HttpServlet {
 	}
 	
 	private User getUserData (User user) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
-		where.add(user.nickName());
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_USER_BY_NICKNAME, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_NICKNAME);
+			
+			statement.setString(1, user.nickName());
+			
+			ResultSet resultSet = statement.executeQuery();
 			// The user exists in our system, get his data
 			if (resultSet.next()) {
 				User tempUser = new User();
@@ -86,14 +88,18 @@ public class GetDirectMessageData extends HttpServlet {
 				tempUser.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
 				tempUser.photoUrl(resultSet.getString("PHOTO_URL"));
 				
+				statement.close();
+				connection.close();
 				return tempUser;
 			// He is not existing, return null
 			} else {
+				statement.close();
+				connection.close();
 				return null;
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 			return null;
 		}
 	}

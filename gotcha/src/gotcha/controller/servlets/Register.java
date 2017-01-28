@@ -2,7 +2,9 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -92,18 +94,28 @@ public class Register extends HttpServlet {
 	}
 	
 	private boolean insert (User user) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
+		int rows = 0;
 		
-		values.add(user.username());
-		values.add(user.password());
-		values.add(user.nickName());
-		values.add(user.description());
-		values.add(user.photoUrl());
-		values.add(user.status());
-		values.add(user.lastSeen());
-		
-		int rows = Globals.executeUpdate(Globals.INSERT_USER, values, where);
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_USER);
+			
+			statement.setString(1, user.username());
+			statement.setString(2, user.password());
+			statement.setString(3, user.nickName());
+			statement.setString(4, user.description());
+			statement.setString(5, user.photoUrl());
+			statement.setString(6, user.status());
+			statement.setTimestamp(7, user.lastSeen());
+			
+			rows = statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
 		
 		return rows > 0;
 	}

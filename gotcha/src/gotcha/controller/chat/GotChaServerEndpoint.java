@@ -84,7 +84,8 @@ public class GotChaServerEndpoint {
 	
 	@OnError
 	public void log (Session session, Throwable t) {
-		t.printStackTrace();
+		// Generally, this occurs on connection reset
+		System.out.println("Connection reset...");
 	}
 
 	/**

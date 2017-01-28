@@ -2,9 +2,10 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,21 +51,20 @@ public class GetTenDirectChatMessages extends HttpServlet {
 	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
-		Message input = gson.fromJson(request.getReader(), Message.class);
-		// Set query parameters
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
-		where.add(input.from());
-		where.add(input.to());
-		where.add(input.to());
-		where.add(input.from());
-		where.add(input.id());
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_TEN_DIRECT_MESSAGES, values, where);
+		Message input = gson.fromJson(request.getReader(), Message.class);		
 		String data = "[";
 		int i = 1;
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_TEN_DIRECT_MESSAGES, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			statement.setString(1, input.from());
+			statement.setString(2, input.to());
+			statement.setString(3, input.to());
+			statement.setString(4, input.from());
+			statement.setInt(5, input.id());
+			
+			ResultSet resultSet = statement.executeQuery();
 			resultSet.last();
 			int rows = resultSet.getRow();
 			resultSet.beforeFirst();
@@ -81,11 +81,15 @@ public class GetTenDirectChatMessages extends HttpServlet {
 				String jsonMessage = gson.toJson(message, Message.class);
 				data += i++ < rows ? jsonMessage + "," : jsonMessage;
 			}
+			
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
 			System.out.println("An unknown error has occurred while trying to retrieve messages from the system.");
 		}
-		data += "]";
 		
+		data += "]";
+
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json; charset=UTF-8");
 		out.println(data);
@@ -93,13 +97,14 @@ public class GetTenDirectChatMessages extends HttpServlet {
 	}
 	
 	private User getUserData (String nickname) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
-		where.add(nickname);
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_USER_BY_NICKNAME, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_NICKNAME);
+			
+			statement.setString(1, nickname);
+			
+			ResultSet resultSet = statement.executeQuery();
 			// The user exists in our system, get his data
 			if (resultSet.next()) {
 				User tempUser = new User();
@@ -109,14 +114,18 @@ public class GetTenDirectChatMessages extends HttpServlet {
 				tempUser.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
 				tempUser.photoUrl(resultSet.getString("PHOTO_URL"));
 				
+				statement.close();
+				connection.close();
 				return tempUser;
 			// He is not existing, return null
 			} else {
+				statement.close();
+				connection.close();
 				return null;
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 			return null;
 		}
 	}

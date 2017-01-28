@@ -2,7 +2,9 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -81,13 +83,22 @@ public class Subscribe extends HttpServlet {
 	}
 	
 	private boolean insert (Subscription subscription) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
-		values.add(subscription.nickname());
-		values.add(subscription.channel());
-		
-		int rows = Globals.executeUpdate(Globals.INSERT_SUBSCRIPTON, values, where);
+		int rows = 0;
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_SUBSCRIPTON);
+			
+			statement.setString(1, subscription.nickname());
+			statement.setString(2, subscription.channel());
+			
+			rows = statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
 		
 		if (rows > 0) {
 			Globals.channels.get(subscription.channel()).add(subscription.nickname());

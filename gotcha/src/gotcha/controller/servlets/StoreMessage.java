@@ -1,7 +1,9 @@
 package gotcha.controller.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,15 +57,26 @@ public class StoreMessage extends HttpServlet {
 	}
 	
 	private boolean insert (Message message) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
+		int rows = 0;
 		
-		values.add(message.from());
-		values.add(message.to());
-		values.add(message.text());
-		values.add(message.time());
-		
-		int rows = Globals.executeUpdate(Globals.INSERT_MESSAGE, values, where);
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_MESSAGE);
+
+			statement.setString(1, message.from());
+			statement.setString(2, message.to());
+			statement.setString(3, message.text());
+			statement.setTimestamp(4, message.time());
+			
+			rows = statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e ){
+			System.out.println("An error has occured while trying to execute the query!");
+		}
+
 		return rows > 0;
 	}
 }

@@ -3,9 +3,10 @@ package gotcha.controller.servlets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -82,67 +83,76 @@ public class Validate extends HttpServlet {
 	}
 	
 	private boolean checkNicknames (String nickname) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
 		if (nickname == null) return false;
-		
-		where.add(nickname);
-		
-		ResultSet users = Globals.execute(Globals.SELECT_USER_BY_NICKNAME, values, where);
-		
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_NICKNAME);
+			statement.setString(1, nickname);
+			
+			ResultSet users = statement.executeQuery();
+			
 			if (users.next()) {
+				statement.close();
+				connection.close();
 				return true;
 			} else {
+				statement.close();
+				connection.close();
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 			return false;
 		}
 	}
 	
 	private boolean checkUsernames (String username) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
 		if (username == null) return false;
-		
-		where.add(username);
-		
-		ResultSet users = Globals.execute(Globals.SELECT_USER_BY_USERNAME, values, where);
-		
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_USERNAME);
+			statement.setString(1, username);
+			
+			ResultSet users = statement.executeQuery();
+			
 			if (users.next()) {
+				statement.close();
+				connection.close();
 				return true;
 			} else {
+				statement.close();
+				connection.close();
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 			return false;
 		}
 	}
 	
 	private boolean checkChannels (String name) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
+
 		if (name == null) return false;
-		
-		where.add(name);
-		
-		ResultSet channels = Globals.execute(Globals.SELECT_CHANNEL_BY_NAME, values, where);
-		
 		try {
-			if (channels.next()) {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_CHANNEL_BY_NAME);
+			statement.setString(1, name);
+			
+			ResultSet users = statement.executeQuery();
+			
+			if (users.next()) {
+				statement.close();
+				connection.close();
 				return true;
 			} else {
+				statement.close();
+				connection.close();
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to execute the query!");
 			return false;
 		}
 	}

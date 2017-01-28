@@ -2,13 +2,11 @@ package gotcha.controller.search;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -21,8 +19,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -35,7 +33,6 @@ import org.apache.lucene.store.FSDirectory;
 import gotcha.controller.search.model.GotchaQuery;
 import gotcha.globals.Globals;
 import gotcha.model.Channel;
-import gotcha.model.Message;
 import gotcha.model.User;
 
 public class GotchaSearchEngine {
@@ -45,6 +42,7 @@ public class GotchaSearchEngine {
 	private IndexWriterConfig config;
 	private Directory directory;
 	private IndexWriter indexWriter;
+	private QueryParser parser;
 	private IndexReader indexReader;
 	private DirectoryReader directoryReader;
 	private IndexSearcher indexSearcher;
@@ -60,7 +58,7 @@ public class GotchaSearchEngine {
 			config.setSimilarity(similarity);
 			File indexDirectory = new File("gotchaIndex");
 			directory = FSDirectory.open(indexDirectory.toPath());
-			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+			config.setOpenMode(OpenMode.CREATE);
 			indexWriter = new IndexWriter(directory, config);
 			indexDatabase();
 		} catch (IOException e) {
@@ -77,42 +75,33 @@ public class GotchaSearchEngine {
 	}
 	// Perform database indexing
 	private void indexDatabase () {
+		PreparedStatement statement;
 		ResultSet resultSet;
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		// Index all system users
-		resultSet = Globals.execute(Globals.SELECT_ALL_USERS, values, where);
 		
 		try {
+			// Index all system users
+			Connection connection = Globals.database.getConnection();
+			statement = connection.prepareStatement(Globals.SELECT_ALL_USERS);
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("type", "User", Field.Store.YES));
-				document.add(new StringField("username", resultSet.getString("USERNAME"), Field.Store.YES));
 				document.add(new StringField("nickname", resultSet.getString("NICKNAME"), Field.Store.YES));
-				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.YES));
+				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.NO));
+				document.add(new TextField("photoUrl", resultSet.getString("PHOTO_URL"), Field.Store.NO));
 				indexWriter.addDocument(document);
 			}
 			// Index all system channels
-			resultSet = Globals.execute(Globals.SELECT_ALL_CHANNELS, values, where);
+			statement = connection.prepareStatement(Globals.SELECT_ALL_CHANNELS);
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("type", "Channel", Field.Store.YES));
 				document.add(new StringField("name", resultSet.getString("NAME"), Field.Store.YES));
-				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.YES));
-				indexWriter.addDocument(document);
-			}
-			// Index all system messages
-			resultSet = Globals.execute(Globals.SELECT_ALL_MESSAGES, values, where);
-			while (resultSet.next()) {
-				Document document = new Document();
-				document.add(new StringField("type", "Message", Field.Store.YES));
-				document.add(new StringField("from", resultSet.getString("SENDER"), Field.Store.YES));
-				document.add(new StringField("to", resultSet.getString("RECEIVER"), Field.Store.YES));
-				document.add(new TextField("text", resultSet.getString("TEXT"), Field.Store.YES));
-				document.add(new StringField("time", Long.toString((resultSet.getTimestamp("SENT_TIME")).getTime()), Field.Store.YES));
+				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.NO));
 				indexWriter.addDocument(document);
 			}
 			
+			statement.close();
+			connection.close();
 			indexWriter.commit();
 			indexWriter.close();
 			
@@ -124,52 +113,78 @@ public class GotchaSearchEngine {
 	public ArrayList<Object> search (GotchaQuery gotchaQuery) {
 		
 		ArrayList<Object> found = new ArrayList<Object>();
+		PreparedStatement statement;
+		ResultSet resultSet;
 		
 		try {
-			Query query = MultiFieldQueryParser.parse(gotchaQuery.queries(), gotchaQuery.fields(), gotchaQuery.flags(), analyzer);
+			parser = new QueryParser("nickname", analyzer);
+			Query query = parser.parse(QueryParser.escape(gotchaQuery.what()));
 			directoryReader = DirectoryReader.open(directory);
 			indexSearcher = new IndexSearcher(directoryReader);
 			indexSearcher.setSimilarity(similarity);
-			TopDocs result = indexSearcher.search(query, 10);
+			TopDocs result = indexSearcher.search(query, 100);
 			ScoreDoc[] foundDocuments = result.scoreDocs;
 			indexReader = indexSearcher.getIndexReader();
+
+			Connection connection = Globals.database.getConnection();
 			
 			for (ScoreDoc one : foundDocuments) {
 				Document document = indexReader.document(one.doc);
 				
-				switch (document.get("type")) {
+				if (document.get("type").equals("User")) {
+					// Get the user profile and all the channels he's subscribed to
+					statement = connection.prepareStatement(Globals.SELECT_USER_BY_NICKNAME);
+					resultSet = statement.executeQuery();
 					
-					case "User":
-						User user = new User();
-						user.username(document.get("username"));
-						user.nickName(document.get("nickname"));
-						user.description(document.get("description"));
-						found.add(user);
-						break;
-						
-					case "Channel":
-						Channel channel = new Channel();
-						channel.name(document.get("name"));
-						channel.description(document.get("description"));
-						found.add(channel);
-						break;
-						
-					case "Message":
-						Message message = new Message();
-						message.from(document.get("from"));
-						message.to(document.get("to"));
-						message.text(document.get("text"));
-						// Format the date string of the message
-						long longDate = Long.parseLong(document.get("time"));
-						message.time(new Timestamp(longDate));
-						found.add(message);
-						break;
+					statement.setString(1, document.get("nickname"));
+					resultSet = statement.executeQuery();
+					try {
+						while (resultSet.next()) {
+							User user = new User();
+							user.photoUrl(resultSet.getString("PHOTO_URL"));
+							user.nickName(resultSet.getString("NICKNAME"));
+							user.description(resultSet.getString("DESCRIPTON"));
+							found.add(user);
+						}
+						/*
+						for (Object someone : found) {
+							
+						}
+						*/						
+					} catch (SQLException e) {
+						System.out.println("An error has occured while trying to retrieve data from database.");
+					}
+					
+					statement.close();
+					
+				} else {
+					// Get the channel details
+					statement = connection.prepareStatement(Globals.SELECT_CHANNEL_BY_NAME);
+					resultSet = statement.executeQuery();
+					
+					statement.setString(1, document.get("name"));
+					resultSet = statement.executeQuery();
+					try {
+						while (resultSet.next()) {
+							Channel channel = new Channel();
+							channel.name(resultSet.getString("NAME"));
+							channel.description(resultSet.getString("DESCRIPTION"));
+							found.add(channel);
+						}
+					} catch (SQLException e) {
+						System.out.println("An error has occured while trying to retrieve data from database.");
+					}
+
+					statement.close();
 				}
 			}
 			
-		} catch (ParseException | IOException e) {
+			connection.close();
+			
+		} catch (ParseException | IOException | SQLException e) {
 			System.out.println("An unknown error has occured while trying to parse the query.");
 		}
+		
 		
 		return found;
 	}

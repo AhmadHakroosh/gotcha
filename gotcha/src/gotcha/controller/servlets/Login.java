@@ -2,10 +2,11 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import java.lang.Object;
 
 import com.google.gson.*;
 
@@ -53,6 +52,7 @@ public class Login extends HttpServlet {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to User object
 		User user = gson.fromJson(request.getReader(), User.class);
+		// Connect to database
 		// Get the user from Database (if exists)
 		User registered = get(user);
 		// Prepare a JSON to be forwarded to a new servlet or returned in the response
@@ -101,14 +101,15 @@ public class Login extends HttpServlet {
 	}
 	
 	private User get (User user) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
-		where.add(user.username());
-		where.add(user.password());
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_USER_BY_USERNAME_AND_PASSWORD, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_USERNAME_AND_PASSWORD);
+			
+			statement.setString(1, user.username());
+			statement.setString(2, user.password());
+			
+			ResultSet resultSet = statement.executeQuery();
+			
 			// The user exists in our system, get his data
 			if (resultSet.next()) {
 				User registered = new User();
@@ -120,31 +121,42 @@ public class Login extends HttpServlet {
 				registered.status(resultSet.getString("STATUS"));
 				registered.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
 				
+				statement.close();
+				connection.close();
 				return registered;
 			// He is not existing, return null
 			} else {
+				statement.close();
+				connection.close();
 				return null;
 			}
-			
+
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occured while trying to connect to database!");
 			return null;
 		}
 	}
 	
 	private void updateUserStatus (HttpSession session) {
 		User user = (User)session.getAttribute("user");
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
 		String status = "active";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
-		
-		values.add(status);
-		values.add(last_seen);
-		
-		where.add(user.username());
-		
-		Globals.executeUpdate(Globals.UPDATE_USER_STATUS, values, where);
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.UPDATE_USER_STATUS);
+			
+			statement.setString(1, status);
+			statement.setTimestamp(2, last_seen);
+			statement.setString(3, user.username());
+			statement.executeUpdate();
+			
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
 	}
 }

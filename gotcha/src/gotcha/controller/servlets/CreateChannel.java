@@ -2,6 +2,9 @@ package gotcha.controller.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -84,19 +87,32 @@ public class CreateChannel extends HttpServlet {
 	}
 	
 	private boolean insert (Channel channel) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
 		
-		values.add(channel.name());
-		values.add(channel.description());
-		values.add(channel.createdBy());
-		values.add(channel.createdTime());
+		int rows = 0;
 		
-		int rows = Globals.executeUpdate(Globals.INSERT_CHANNEL, values, where);
-		
-		if (rows > 0) {
-			Globals.channels.put(channel.name(), new ArrayList<String>());
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_USERNAME_AND_PASSWORD);
+			
+			statement.setString(1, channel.name());
+			statement.setString(2, channel.description());
+			statement.setString(3, channel.createdBy());
+			statement.setTimestamp(4, channel.createdTime());
+			
+			rows = statement.executeUpdate();
+			
+			if (rows > 0) {
+				Globals.channels.put(channel.name(), new ArrayList<String>());
+			}
+			
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
 		}
+
 		return rows > 0;
 	}
 }

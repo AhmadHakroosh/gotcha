@@ -1,5 +1,7 @@
 package gotcha.model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -63,37 +65,45 @@ public class Channel {
 	public static ArrayList<String> getSubscribersList (String channel) {
 		ArrayList<String> subscribers = new ArrayList<String>();
 		
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
-		where.add(channel);
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_SUBSCRIPTON_BY_CHANNEL, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_SUBSCRIPTON_BY_CHANNEL);
+			statement.setString(1, channel);
+			
+			ResultSet resultSet = statement.executeQuery();
+		
 			while (resultSet.next()) {
 				subscribers.add(resultSet.getString("NICKNAME"));
 			}
+			
+			statement.close();
+			connection.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return subscribers;
 	}
 	
 	public static ArrayList<String> getAllChannels () {
 		ArrayList<String> channels = new ArrayList<String>();
-		
-		ArrayList<Object> values = new ArrayList<Object>();
-		ArrayList<Object> where = new ArrayList<Object>();
-		
-		ResultSet resultSet = Globals.execute(Globals.SELECT_ALL_CHANNELS, values, where);
 		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_ALL_CHANNELS);
+			ResultSet resultSet = statement.executeQuery();
+			
 			while (resultSet.next()) {
 				channels.add(resultSet.getString("NAME"));
 			}
+			
+			statement.close();
+			connection.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return channels;
 	}
 }

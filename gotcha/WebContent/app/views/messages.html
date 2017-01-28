@@ -74,13 +74,13 @@
 			<div id="channels-list">
 				<span class="list-header">Channels <span class="counter" ng-hide="length(channels) == 0">({{length(channels)}})</span><span data-toggle="modal" data-target="#create-channel-form" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li id="channel-{{channel.name}}" ng-repeat="channel in channels" ng-click="openChannel(channel.name)"><span class="italic">&#35;</span> {{channel.name}} <span class="right badge" ng-show="channel.newMessages > 0">{{channel.newMessages}}<span ng-show="channel.newMessages >= 10">+</span></span><span ng-click="unsubscribe(channel.name)" class="remove icon right glyphicon glyphicon-remove-circle"></span></li>
+					<li id="channel-{{channel.name}}" ng-repeat="channel in channels" ng-click="openChannel(channel.name)"><span class="italic">&#35;</span> {{channel.name}} <span class="right user-mention glyphicon glyphicon-tag" ng-show="channel.mentions > 0"></span><span class="right badge" ng-show="channel.newMessages > 0">{{channel.newMessages}}<span ng-show="channel.newMessages >= 10">+</span></span><span ng-click="unsubscribe(channel.name)" class="remove icon right glyphicon glyphicon-remove-circle"></span></li>
 				</ul>
 			</div>
 			<div id="direct-messages-list">
 				<span class="list-header">Direct Messages <span id="" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
-					<li id="message-{{directMessage.user.nickName}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage.user.nickName)"><span id="other-user-status" class="status {{directMessage.user.status}}"></span><span class="other-user-nickName">{{directMessage.user.nickName}}</span><span class="right badge" ng-show="directMessage.newMessages > 0">{{directMessage.newMessages}}<span ng-show="directMessage.newMessages >= 10">+</span></span></li>
+					<li id="message-{{directMessage.user.nickName}}" ng-repeat="directMessage in directMessages" ng-click="openDirectMessage(directMessage.user.nickName)"><span id="other-user-status" class="status {{directMessage.user.status}}"></span><span class="other-user-nickName">{{directMessage.user.nickName}}</span><span class="right user-mention glyphicon glyphicon-tag" ng-show="directMessage.mentions > 0"></span><span class="right badge" ng-show="directMessage.newMessages > 0">{{directMessage.newMessages}}<span ng-show="directMessage.newMessages >= 10">+</span></span></li>
 				</ul>
 			</div>
 		</div>

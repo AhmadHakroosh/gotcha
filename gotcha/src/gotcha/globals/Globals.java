@@ -1,10 +1,7 @@
 package gotcha.globals;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.naming.*;
 
@@ -13,10 +10,9 @@ import gotcha.controller.search.GotchaSearchEngine;
 public final class Globals {
 	public static final String dbName = "gotchaDB";
 	public static Context context = null;
-	
+	public static Database database;
 	// System search engine instantiation
 	public static GotchaSearchEngine searchEngine;
-	
 	// Public system properties
 	public static HashMap<String, ArrayList<String>> channels = new HashMap<String, ArrayList<String>>();
 
@@ -52,42 +48,7 @@ public final class Globals {
 	// SUBSCRIPTIONS TABLE STATEMENTS
 	public static final String SELECT_SUBSCRIPTON_BY_USER = "SELECT * FROM SUBSCRIPTIONS WHERE NICKNAME=?";
 	public static final String SELECT_SUBSCRIPTON_BY_CHANNEL = "SELECT * FROM SUBSCRIPTIONS WHERE CHANNEL=?";
+	public static final String SELECT_ALL_SUBSCRIPTIONS = "SELECT * FROM SUBSCRIPTIONS";
 	public static final String DELETE_SUBSCRIPTON = "DELETE FROM SUBSCRIPTIONS WHERE NICKNAME=? AND CHANNEL=?";
 	public static final String INSERT_SUBSCRIPTON = "INSERT INTO SUBSCRIPTIONS (NICKNAME, CHANNEL) VALUES (?,?)";
-	
-	// Execute query via calling executeQuery method of Database
-	public static final ResultSet execute (String query, List<Object> values, List<Object> where) {
-		try {
-			Database database = (Database)context.lookup(dbName);
-			
-			try {
-				return database.executeQuery(query, values, where);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
-			}
-			
-		} catch (NamingException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	// Execute query via calling executeQuery method of Database
-	public static final int executeUpdate (String query, List<Object> values, List<Object> where) {
-		try {
-			Database database = (Database)context.lookup(dbName);
-			
-			try {
-				return database.executeUpdate(query, values, where);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return 0;
-			}
-			
-		} catch (NamingException e) {
-			e.printStackTrace();
-			return 0;
-		}
-	}
 }
