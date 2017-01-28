@@ -7,6 +7,8 @@ public class Message {
 	private String from;
 	private String to;
 	private String text;
+	private String reply_for;
+	private String reply_text;
 	private Timestamp time;
 	
 	// Constructor
@@ -14,10 +16,12 @@ public class Message {
 		
 	}
 	
-	public Message (String from, String to, String text, Timestamp time) {
+	public Message (String from, String to, String text, String reply_for, String reply_text, Timestamp time) {
 		this.from = from;
 		this.to = to;
 		this.text = text;
+		this.reply_for = reply_for;
+		this.reply_text = reply_text;
 		this.time = time;
 	}
 	
@@ -35,6 +39,14 @@ public class Message {
 	
 	public String text () {
 		return this.text;
+	}
+	
+	public String reply_for () {
+		return this.reply_for;
+	}
+	
+	public String reply_text () {
+		return this.reply_text;
 	}
 	
 	public Timestamp time () {
@@ -55,6 +67,14 @@ public class Message {
 	
 	public void text (String text) {
 		this.text = text;
+	}
+	
+	public void reply_for (String reply_for) {
+		this.reply_for = reply_for;
+	}
+	
+	public void reply_text (String reply_text) {
+		this.reply_text = reply_text;
 	}
 	
 	public void time (Timestamp time) {

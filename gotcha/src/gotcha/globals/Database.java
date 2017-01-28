@@ -12,8 +12,6 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 public class Database {
 	private BasicDataSource dataSource;
 	
-	private static Database database = null;
-	
 	// Create a Database, and connect to it
 	private Database (ServletContext servletContext) {
 		try {
@@ -27,11 +25,10 @@ public class Database {
 		}
 	}
 	// Get Database instance
-	public static Database getDatabase (ServletContext servletContext) {
-		if (database == null) {
-			database = new Database(servletContext);
+	public static void setDatabase (ServletContext servletContext) {
+		if (Globals.database == null) {
+			Globals.database = new Database(servletContext);
 		}
-		return database;
 	}
 	// Get a connection to the database
 	public Connection getConnection () {
@@ -50,10 +47,10 @@ public class Database {
 		try {
 			String gotchaDB = servletContext.getInitParameter(Globals.dbName);
 			dataSource = (BasicDataSource) Globals.context.lookup(gotchaDB + "Close");
-			Connection connection = getConnection();
-			connection.close();
+			dataSource.getConnection();
 			dataSource = null;
-		} catch (SQLException | NamingException e) {
+			Globals.database = null;
+		} catch (NamingException | SQLException e) {
 			System.out.println("An error has occured while trying to shutdown gotchaDB!");
 		}
 	}

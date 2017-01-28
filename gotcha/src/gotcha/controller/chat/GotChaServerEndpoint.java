@@ -1,6 +1,9 @@
 package gotcha.controller.chat;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,6 +43,7 @@ public class GotChaServerEndpoint {
 	public void login (Session session, @PathParam("nickname") String user) throws IOException {
 		if (session.isOpen()) {
 			active.put(user, session);
+			System.out.println("The user \"" + user + "\" is now connected.");
 		}
 	}
 	
@@ -64,6 +68,7 @@ public class GotChaServerEndpoint {
 						notify(message.to(), jsonMessage);
 					}
 				}
+				store(message);
 			}
 		} catch (DecodeException | messageDeliveryException e) {
 			System.out.println("Something went wrong!");
@@ -85,7 +90,7 @@ public class GotChaServerEndpoint {
 	@OnError
 	public void log (Session session, Throwable t) {
 		// Generally, this occurs on connection reset
-		System.out.println("Connection reset...");
+		System.out.println("Server Endpoint is disconnected.");
 	}
 
 	/**
@@ -113,6 +118,31 @@ public class GotChaServerEndpoint {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void store (Message message) {
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_MESSAGE);
+
+			statement.setString(1, message.from());
+			statement.setString(2, message.to());
+			statement.setString(3, message.text());
+			statement.setString(4, message.reply_for());
+			statement.setString(5, message.reply_text());
+			statement.setTimestamp(6, message.time());
+			
+			statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e ){
+			System.out.println("An error has occured while trying to execute the query!");
 		}
 	}
 }

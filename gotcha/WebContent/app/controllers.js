@@ -233,17 +233,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.activeChat.mentions = 0;
 		$scope.$apply();
 	};
-	
-	var store = function (message) {
-		message = JSON.parse(message);
-		message.from = message.from.nickName;
-		$http({
-			method: 'POST',
-			url: 'storeMessage',
-			headers: {'Content-Type' : "application/json; charset=utf-8"},
-			data: message
-		});
-	};
 
 	// Ifi functions
 	(function () {
@@ -289,7 +278,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.send = function () {
 		var message = pack();
 		$scope.session.send(message);
-		store(message);
 		$scope.inputMessage = "";
 	};
 

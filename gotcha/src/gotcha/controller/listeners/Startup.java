@@ -13,7 +13,6 @@ import javax.servlet.annotation.WebListener;
 import gotcha.controller.search.GotchaSearchEngine;
 import gotcha.globals.Database;
 import gotcha.globals.Globals;
-import gotcha.model.Channel;
 
 /**
  * Application Lifecycle Listener implementation class CreateDataBase
@@ -27,7 +26,7 @@ public class Startup implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent event)  {
     	ServletContext servletContext = event.getServletContext();
-    	Globals.database = Database.getDatabase(servletContext);
+    	Database.setDatabase(servletContext);
         
         try {
         	Connection connection = Globals.database.getConnection();
@@ -63,6 +62,8 @@ public class Startup implements ServletContextListener {
 								+ 		"SENDER 		VARCHAR(20) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 								+ 		"RECEIVER 		VARCHAR(30) NOT NULL,"
 								+ 		"TEXT 			VARCHAR(500) NOT NULL,"
+								+ 		"REPLY_FOR		VARCHAR(20) REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
+								+ 		"REPLY_TEXT		VARCHAR(500),"
 								+ 		"SENT_TIME 		TIMESTAMP NOT NULL"
 								+ 	  ")"
 								     );
@@ -76,9 +77,9 @@ public class Startup implements ServletContextListener {
 		} catch (SQLException e) {
 			if (e.getSQLState().equals("X0Y32")) {
 				System.out.println("The database is already existing, you're now connected to it.");
-				ArrayList<String> allChannels = Channel.getAllChannels();
+				ArrayList<String> allChannels = Globals.getAllChannels();
 				for (String channel : allChannels) {
-					Globals.channels.put(channel, Channel.getSubscribersList(channel));
+					Globals.channels.put(channel, Globals.getSubscribersList(channel));
 				}
 			} else {
 				System.out.println("An unknown error has occured while trying to create the database.");

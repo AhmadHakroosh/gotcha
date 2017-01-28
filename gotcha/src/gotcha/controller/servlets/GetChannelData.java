@@ -55,7 +55,7 @@ public class GetChannelData extends HttpServlet {
 		Channel inputChannel = gson.fromJson(request.getReader(), Channel.class);
 		Channel channel = getChannelData(inputChannel.name());
 		// Retrieve list of channel subscribers
-		ArrayList<String> subscribers = Channel.getSubscribersList(channel.name());
+		ArrayList<String> subscribers = Globals.getSubscribersList(channel.name());
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		String data;

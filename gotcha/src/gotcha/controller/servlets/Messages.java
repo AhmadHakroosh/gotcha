@@ -115,7 +115,7 @@ public class Messages extends HttpServlet {
 	 */
 	private ArrayList<String> getUserDirectChats (User user) {
 		ArrayList<String> users = new ArrayList<String>();
-		ArrayList<String> channels = Channel.getAllChannels();
+		ArrayList<String> channels = Globals.getAllChannels();
 		PreparedStatement statement;
 		ResultSet resultSet;
 
