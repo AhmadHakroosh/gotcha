@@ -95,10 +95,22 @@
 					  	</div>
 					  	<div class="message-body mention-{{message.mention}}">
 				    		<div class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">{{message.from.nickName}}</span><span class="right message-time">{{message.time}}</span></div>
-							<div class="message-text">{{message.text}}</div>
+							<div class="replied-message-container" ng-show="message.reply_for && message.reply_text">
+								<div class="bold reply-message-sender" ng-click="openDirectMessage(message.reply_for)">{{message.reply_for}}</div>
+								<div class="reply-message-text">{{message.reply_text}}</div>
+							</div>
+							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-share-alt" ng-click="reply(message)"></span></div>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="fadein replied-message" ng-show="repliedMessage">
+				<span class="bold replied-message-sender">{{repliedMessage.from.nickName}}</span>
+				<span>
+					<span class="replied-message-text">{{repliedMessage.text}}
+						<span class="right icon glyphicon glyphicon-remove-circle" ng-click="repliedMessage=undefined"></span>
+					</span>
+				</span>
 			</div>
 			<!-- Typing area -->
 			<div id="typing-area">

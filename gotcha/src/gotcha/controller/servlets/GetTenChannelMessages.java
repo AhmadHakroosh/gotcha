@@ -75,6 +75,8 @@ public class GetTenChannelMessages extends HttpServlet {
 				message.from(resultSet.getString("SENDER"));
 				message.to(resultSet.getString("RECEIVER"));
 				message.text(resultSet.getString("TEXT"));
+				message.reply_for(resultSet.getString("REPLY_FOR"));
+				message.reply_text(resultSet.getString("REPLY_TEXT"));
 				message.time(resultSet.getTimestamp("SENT_TIME"));
 				// Retrieve sender data
 				message.from(gson.toJson(getUserData(message.from()), User.class));

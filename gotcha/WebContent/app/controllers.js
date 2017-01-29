@@ -195,6 +195,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			},
 			"to": to,
 			"text": $scope.inputMessage,
+			"reply_for": $scope.repliedMessage !== undefined ? $scope.repliedMessage.from.nickName : undefined,
+			"reply_text": $scope.repliedMessage !== undefined ? $scope.repliedMessage.text : undefined,
 			"time": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
@@ -278,7 +280,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.send = function () {
 		var message = pack();
 		$scope.session.send(message);
-		$scope.inputMessage = "";
+		$scope.inputMessage = undefined;
+		$scope.repliedMessage = undefined;
 	};
 
 	$scope.close = function () {
@@ -672,6 +675,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				console.log("Error while retrieving channel messages.");
 			}
 		);
+	};
+	
+	$scope.reply = function (message) {
+		$scope.repliedMessage = message;
 	};
 
 	$scope.showMentions = function () {

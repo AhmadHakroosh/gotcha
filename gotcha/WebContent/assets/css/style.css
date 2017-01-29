@@ -350,6 +350,8 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 #activity-window {
 	padding: 0 15px;
+	position: relative;
+	height: 90%;
 }
 
 #chat-console {
@@ -364,6 +366,11 @@ span.user-mention.glyphicon.glyphicon-tag {
 	color: lightgrey;
 }
 
+#typing-area {
+	background: #FFFFFF;
+	border-radius: 8px;
+}
+
 #typing-area .icon:hover {
 	cursor: pointer;
 	color: #007AB8;
@@ -373,6 +380,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 	height: 75%;
 	border: 2px solid lightgrey;
 	border-radius: 8px;
+	background: #FFFFFF;
 }
 
 #input-message {
@@ -414,17 +422,27 @@ span.user-mention.glyphicon.glyphicon-tag {
 	padding-right: 10px;
 }
 
-.message-sender:hover {
+.message-sender:hover, .reply-message-sender:hover {
 	text-decoration: underline;
 	cursor: pointer;
 }
 
-.message-item .message.text {
+.message.text {
 	word-wrap: break-word;
+	width: 80%;
 }
 
 .message-time {
 	color: lightgrey;
+}
+
+.replied-message-container {
+	display: block;
+	border-radius: 5px;
+	border-left: 5px solid #EB4D5C;
+	background: #FFFFFF;
+	padding: 5px 15px;
+	margin: 5px;
 }
 
 #chat-console .messages-item .message-body {
@@ -434,8 +452,47 @@ span.user-mention.glyphicon.glyphicon-tag {
 	padding: 0 10px 5px 10px;
 }
 
+#chat-console .messages-item .message-body:hover .message-text .reply-message-icon {
+	display: block;
+}
+
 .messages-item .message-body.mention-true {
 	border-left: 5px solid #EB4D5C;
+}
+
+.reply-message-icon {
+	display: none;
+	padding: 5px 0 5px 5px;
+	color: lightgrey;
+}
+
+.reply-message-icon:hover {
+	cursor: pointer;
+	color: #007AB8;
+}
+
+.replied-message {
+	position: relative;
+	margin-top: -60px;
+	background: #F8F8FA;
+	padding: 10px;
+	border-left: 5px solid #EB4D5C;
+	border-radius: 5px;
+}
+
+.replied-message-text {
+	display: block;
+}
+
+.replied-message-text .icon {
+	color: lightgrey;
+	margin-top: -5px;
+	vertical-align: middle;
+}
+
+.replied-message-text .icon:hover {
+	color: grey;
+	cursor: pointer;
 }
 
 ::-webkit-scrollbar {
