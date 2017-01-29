@@ -96,7 +96,7 @@
 					  	<div class="message-body mention-{{message.mention}}">
 				    		<div class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">{{message.from.nickName}}</span><span class="right message-time">{{message.time}}</span></div>
 							<div class="replied-message-container" ng-show="message.reply_for && message.reply_text">
-								<div class="bold reply-message-sender" ng-click="openDirectMessage(message.reply_for)">{{message.reply_for}}</div>
+								<div class="reply-message-sender-nickname"><span class="bold reply-message-sender message-sender" ng-click="openDirectMessage(message.reply_for)">{{message.reply_for}}</span></div>
 								<div class="reply-message-text">{{message.reply_text}}</div>
 							</div>
 							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-share-alt" ng-click="reply(message)"></span></div>
