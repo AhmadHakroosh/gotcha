@@ -679,6 +679,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	$scope.reply = function (message) {
 		$scope.repliedMessage = message;
+		$scope.inputMessage = "@" + message.from.nickName + ": ";
 	};
 
 	$scope.showMentions = function () {
