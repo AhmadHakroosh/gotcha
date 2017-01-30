@@ -92,7 +92,7 @@ public class CreateChannel extends HttpServlet {
 		
 		try {
 			Connection connection = Globals.database.getConnection();
-			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_USER_BY_USERNAME_AND_PASSWORD);
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_CHANNEL);
 			
 			statement.setString(1, channel.name());
 			statement.setString(2, channel.description());
@@ -108,6 +108,7 @@ public class CreateChannel extends HttpServlet {
 			connection.commit();
 			statement.close();
 			connection.close();
+			Globals.searchEngine.add(channel);
 			
 		} catch (SQLException e) {
 			System.out.println("An error has occured while trying to execute the query!");

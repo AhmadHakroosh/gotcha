@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
@@ -19,6 +18,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -61,6 +61,7 @@ public class GotchaSearchEngine {
 			config.setOpenMode(OpenMode.CREATE);
 			indexWriter = new IndexWriter(directory, config);
 			indexDatabase();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -85,9 +86,8 @@ public class GotchaSearchEngine {
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("nickname", resultSet.getString("NICKNAME"), Field.Store.YES));
-				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.NO));
-				document.add(new TextField("photoUrl", resultSet.getString("PHOTO_URL"), Field.Store.NO));
+				document.add(new TextField("type", "User", Field.Store.YES));
+				document.add(new TextField("name", resultSet.getString("NICKNAME"), Field.Store.YES));
 				indexWriter.addDocument(document);
 			}
 			// Index all system channels
@@ -95,8 +95,8 @@ public class GotchaSearchEngine {
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Document document = new Document();
-				document.add(new StringField("name", resultSet.getString("NAME"), Field.Store.YES));
-				document.add(new TextField("description", resultSet.getString("DESCRIPTION"), Field.Store.NO));
+				document.add(new TextField("type", "Channel", Field.Store.YES));
+				document.add(new TextField("name", resultSet.getString("NAME"), Field.Store.YES));
 				indexWriter.addDocument(document);
 			}
 			
@@ -117,7 +117,7 @@ public class GotchaSearchEngine {
 		ResultSet resultSet;
 		
 		try {
-			parser = new QueryParser("nickname", analyzer);
+			parser = new QueryParser("name", analyzer);
 			Query query = parser.parse(QueryParser.escape(gotchaQuery.what()));
 			directoryReader = DirectoryReader.open(directory);
 			indexSearcher = new IndexSearcher(directoryReader);
@@ -134,25 +134,19 @@ public class GotchaSearchEngine {
 				if (document.get("type").equals("User")) {
 					// Get the user profile and all the channels he's subscribed to
 					statement = connection.prepareStatement(Globals.SELECT_USER_BY_NICKNAME);
-					resultSet = statement.executeQuery();
-					
-					statement.setString(1, document.get("nickname"));
+					statement.setString(1, document.get("name"));
 					resultSet = statement.executeQuery();
 					try {
 						while (resultSet.next()) {
 							User user = new User();
 							user.photoUrl(resultSet.getString("PHOTO_URL"));
 							user.nickName(resultSet.getString("NICKNAME"));
-							user.description(resultSet.getString("DESCRIPTON"));
+							user.description(resultSet.getString("DESCRIPTION"));
+							user.status(resultSet.getString("STATUS"));
 							found.add(user);
-						}
-						/*
-						for (Object someone : found) {
-							
-						}
-						*/						
+						}					
 					} catch (SQLException e) {
-						System.out.println("An error has occured while trying to retrieve data from database.");
+						System.out.println("An error has occured while trying to retrieve user data from database.");
 					}
 					
 					statement.close();
@@ -160,8 +154,6 @@ public class GotchaSearchEngine {
 				} else {
 					// Get the channel details
 					statement = connection.prepareStatement(Globals.SELECT_CHANNEL_BY_NAME);
-					resultSet = statement.executeQuery();
-					
 					statement.setString(1, document.get("name"));
 					resultSet = statement.executeQuery();
 					try {
@@ -172,7 +164,7 @@ public class GotchaSearchEngine {
 							found.add(channel);
 						}
 					} catch (SQLException e) {
-						System.out.println("An error has occured while trying to retrieve data from database.");
+						System.out.println("An error has occured while trying to retrieve channel data from database.");
 					}
 
 					statement.close();
@@ -185,15 +177,68 @@ public class GotchaSearchEngine {
 			System.out.println("An unknown error has occured while trying to parse the query.");
 		}
 		
-		
 		return found;
 	}
 	
 	public void add (Object object) {
-		
+		try {
+			IndexWriterConfig config = new IndexWriterConfig(analyzer);
+			config.setSimilarity(similarity);
+			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+			indexWriter = new IndexWriter(directory, config);
+			
+			if (object instanceof User) {
+				User user = (User) object;
+				Document document = new Document();
+				document.add(new TextField("type", "User", Field.Store.YES));
+				document.add(new TextField("name", user.nickName(), Field.Store.YES));
+				indexWriter.addDocument(document);
+				
+			} else {
+				Channel channel = (Channel) object;
+				Document document = new Document();
+				document.add(new TextField("type", "Channel", Field.Store.YES));
+				document.add(new TextField("name", channel.name(), Field.Store.YES));
+				indexWriter.addDocument(document);
+			}
+			
+			indexWriter.commit();
+			indexWriter.close();
+			
+		} catch (IOException e) {
+			System.out.println("An unknown error has occurred while trying to open gotchaIndex!");
+		}
 	}
 	
 	public void remove (Object object) {
-		
+		try {
+			IndexWriterConfig config = new IndexWriterConfig(analyzer);
+			config.setSimilarity(similarity);
+			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+			indexWriter = new IndexWriter(directory, config);
+			
+			if (object instanceof User) {
+				User user = (User) object;
+				String [] fields = {"type", "name"};
+				String [] queries = {"User", user.nickName()};
+				Query query = MultiFieldQueryParser.parse(queries, fields, analyzer);
+				indexWriter.deleteDocuments(query);
+				
+			} else {
+				Channel channel = (Channel) object;
+				String [] fields = {"type", "name"};
+				String [] queries = {"Channel", channel.name()};
+				Query query = MultiFieldQueryParser.parse(queries, fields, analyzer);
+				indexWriter.deleteDocuments(query);
+			}
+			
+			indexWriter.commit();
+			indexWriter.close();
+			
+		} catch (IOException e) {
+			System.out.println("An unknown error has occurred while trying to open gotchaIndex!");
+		} catch (ParseException e) {
+			System.out.println("An unknown error has occurred while trying to parse the query!");
+		}
 	}
 }

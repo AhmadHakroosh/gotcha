@@ -112,6 +112,7 @@ public class Register extends HttpServlet {
 			connection.commit();
 			statement.close();
 			connection.close();
+			Globals.searchEngine.add(user);
 			
 		} catch (SQLException e) {
 			System.out.println("An error has occured while trying to execute the query!");

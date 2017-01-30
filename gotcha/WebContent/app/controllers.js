@@ -728,7 +728,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	$scope.channels = [];
 	$scope.people = [];
-	$scope.messages = [];
 	// Returned search results
 	$scope.results = [];
 
