@@ -180,6 +180,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.showDropdown = false;
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
+	$scope.found = {
+		"status": false
+	};
 	
 	var pack = function () {
 		var to;
@@ -520,6 +523,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.channels[channel].newMessages = 0;
 		$scope.channels[channel].mentions = 0;
 		$scope.channels[channel].lastRead = Date.now();
+		$scope.query = undefined;
 	};
 	
 	// Open direct chat method
@@ -548,6 +552,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.directMessages[nickname].mentions = 0;
 			$scope.directMessages[nickname].lastRead = Date.now();
 		}
+		
+		$scope.query = undefined;
 	};
 	
 	// Retrieve given channel data
@@ -718,19 +724,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			);
 		});
 	}, 3000);
-
-	$(window).unload(function () {
-		$scope.logout();
-	});
-}])
-
-.controller('searchController', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.channels = [];
-	$scope.people = [];
-	// Returned search results
-	$scope.results = [];
-
 	$scope.search = function () {
 		var query = {
 			"in": "Channel OR User",
@@ -744,12 +738,21 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: query
 		}).then(
 			function (success) {
-				console.log(success.data);
+				$scope.found.status = true;
+				$scope.found.channels = success.data.channels;
+				$scope.found.channels.forEach(function (channel) {
+					channel.subscribed = $scope.channels[channel.name] !== undefined ? true : false;
+				});
+				$scope.found.users = success.data.users;
 			},
 			function (failure) {
-				
+				$scope.found.status = false;
+				$scope.found.message = "We did not find any matches for your search!"
 			}
 		);
 	};
 
-}]);
+	$(window).unload(function () {
+		$scope.logout();
+	});
+}])

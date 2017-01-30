@@ -10,6 +10,10 @@ body .modal-open {
 	-webkit-filter: blur(5px) grayscale(50%);
 }
 
+.inline {
+	display: inline-block;
+}
+
 input:focus {
 	outline: none;
 }
@@ -493,6 +497,91 @@ span.user-mention.glyphicon.glyphicon-tag {
 .replied-message-text .icon:hover {
 	color: grey;
 	cursor: pointer;
+}
+
+#search-results-container {
+	width: 120%;
+	position: absolute;
+	border-radius: 5px;
+	background: #FFFFFF;
+	border: 1px solid lightgrey;
+	right: -10%;
+	top: 120%;
+	padding: 0 5px;
+	box-shadow: 5px 5px 5px #888888;
+	max-height: 350px;
+	overflow: auto;
+}
+
+#search-results-container ul {
+	list-style: none;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+
+.result {
+	line-height: 1.3em;
+}
+
+.result.channel-name .glyphicon {
+	font-size: 1.2em;
+}
+
+.result.channel-name .glyphicon-star.subscribed-false {
+	color: lightgrey;
+}
+
+.result.channel-name .glyphicon-star.subscribed-true {
+	color: #FFCC00;
+}
+
+.result.channel-name .glyphicon-star.subscribed-false:hover {
+	color: #FFCC00;
+	cursor: pointer;
+}
+
+#found-channels-list {
+	border-bottom: 1px solid lightgrey;
+}
+
+#found-channels-list li, #found-users-list li {
+	margin-top: 5px;
+}
+
+#found-channels-list li .result.channel-name span.icon {
+	font-size: 0.8em;
+	margin: 0 0 0 5px;
+}
+
+#found-channels-list li div.icon {
+	top: -35px;
+}
+
+.user-photo.media-object {
+	height: 35px;
+	width: 35px;
+}
+
+.found-user {
+	width: 85%;
+}
+
+.found-user .photo .status {
+	position: relative;
+	top: -9px;
+	right: -1px;
+	border: 2px solid #FFFFFF;
+}
+
+.found-user .photo .status.away {
+	background: lightgrey;
+}
+
+#found-users-list li .chat.icon {
+	display: inline;
+	margin: 0;
+	top: 8px;
+	font-size: 1.3em;
 }
 
 ::-webkit-scrollbar {

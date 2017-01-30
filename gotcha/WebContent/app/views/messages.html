@@ -48,7 +48,7 @@
 					</div>
 				</div>
 				<div class="global-header col-md-3 col-sm-3">
-					<div ng-controller="searchController" id="search-container" class="col-md-10 col-sm-10">
+					<div id="search-container" class="col-md-10 col-sm-10">
 						<form role="search" accept-charset="utf-8" id="global-search-form">
 							<div class="search-icon left"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
 							<div class="search-input left">
@@ -57,6 +57,35 @@
 							<div class="search-input-clear right" ng-show="query"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true" ng-click="query=''"></span></div>
 							<div class="popover-menu"></div>
 						</form>
+						<div id="search-results-container" ng-show="query && found.status">
+							<ul id="found-channels-list" ng-show="found.channels.length > 0">
+								<span class="">Channels <span>({{found.channels.length}})</span></span>
+								<li ng-repeat="channel in found.channels">
+									<div>
+										<div class="result channel-name">
+											<span class="bold">{{channel.name}} </span>
+											<span><span class="icon glyphicon glyphicon-user"></span> {{channel.subscriptions}}</span>
+											<span class="right glyphicon glyphicon-star subscribed-{{channel.subscribed}}" ng-click="subscribe(channel.name)"></span>
+										</div>
+										<div class="result channel-description">{{channel.description}}</div>
+									</div>
+								</li>
+							</ul>
+							<ul id="found-users-list" ng-show="found.users.length > 0">
+								<span class="">Members <span>({{found.users.length}})</span></span>
+								<li ng-repeat="user in found.users">
+									<div class="left found-user">
+										<div class="media-left photo left">
+									    	<img class="user-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
+									  		<div class="right status {{user.status}}"></div>
+									  	</div>
+										<div class="bold result user-nickname">{{user.nickName}}</div>
+										<div class="result user-description">{{user.description}}</div>
+					  				</div>
+					  				<div class="right chat icon glyphicon glyphicon-comment" ng-click="openDirectMessage(user.nickName)"></div>
+								</li>
+							</ul>
+						</div>
 					</div>
 					<div id="recent-mentions" class="col-md-2 col-sm-2 right">
 						<div class="icon right" ng-click="showMentions()">
