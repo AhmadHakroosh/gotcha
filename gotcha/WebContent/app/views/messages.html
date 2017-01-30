@@ -59,7 +59,7 @@
 						</form>
 						<div id="search-results-container" ng-show="query && found.status">
 							<ul id="found-channels-list" ng-show="found.channels.length > 0">
-								<span class="">Channels <span>({{found.channels.length}})</span></span>
+								<span class="bold">Channels <span>({{found.channels.length}})</span></span>
 								<li ng-repeat="channel in found.channels">
 									<div>
 										<div class="result channel-name">
@@ -72,7 +72,7 @@
 								</li>
 							</ul>
 							<ul id="found-users-list" ng-show="found.users.length > 0">
-								<span class="">Members <span>({{found.users.length}})</span></span>
+								<span class="bold">Members <span>({{found.users.length}})</span></span>
 								<li ng-repeat="user in found.users">
 									<div class="left found-user">
 										<div class="media-left photo left">

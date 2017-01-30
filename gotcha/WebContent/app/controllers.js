@@ -447,6 +447,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	// Subscribe to the given channel
 	$scope.subscribe = function (channel) {
+		
+		if ($scope.channels[channel] !== undefined) return;
+		
 		var subscription = {
 			"nickname": $scope.user.nickName,
 			"channel": channel

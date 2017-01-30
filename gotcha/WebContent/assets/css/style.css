@@ -584,6 +584,10 @@ span.user-mention.glyphicon.glyphicon-tag {
 	font-size: 1.3em;
 }
 
+.result.channel-description, .result.user-description {
+	color: grey;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
     padding: 5px -5px 5px 0;
