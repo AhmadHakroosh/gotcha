@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -110,9 +111,9 @@ public class GotchaSearchEngine {
 		}
 	}
 	
-	public ArrayList<Object> search (GotchaQuery gotchaQuery) {
+	public HashMap<String, Object> search (GotchaQuery gotchaQuery) {
 		
-		ArrayList<Object> found = new ArrayList<Object>();
+		HashMap<String, Object> found = new HashMap<String ,Object>();
 		PreparedStatement statement;
 		ResultSet resultSet;
 		
@@ -143,7 +144,14 @@ public class GotchaSearchEngine {
 							user.nickName(resultSet.getString("NICKNAME"));
 							user.description(resultSet.getString("DESCRIPTION"));
 							user.status(resultSet.getString("STATUS"));
-							found.add(user);
+							found.put(user.nickName(), user);
+							// Add the channels that the user is subscribed to
+							ArrayList<Channel> channels = Globals.getUserSubscriptions(user.nickName());
+							for (Channel channel : channels) {
+								if (!found.containsKey(channel.name())) {
+									found.put(channel.name(), channel);
+								}
+							}
 						}					
 					} catch (SQLException e) {
 						System.out.println("An error has occured while trying to retrieve user data from database.");
@@ -161,7 +169,10 @@ public class GotchaSearchEngine {
 							Channel channel = new Channel();
 							channel.name(resultSet.getString("NAME"));
 							channel.description(resultSet.getString("DESCRIPTION"));
-							found.add(channel);
+							// Check whether the channel has already been found once before
+							if (!found.containsKey(channel.name())) {
+								found.put(channel.name(), channel);
+							}
 						}
 					} catch (SQLException e) {
 						System.out.println("An error has occured while trying to retrieve channel data from database.");

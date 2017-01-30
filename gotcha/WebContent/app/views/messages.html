@@ -49,10 +49,10 @@
 				</div>
 				<div class="global-header col-md-3 col-sm-3">
 					<div ng-controller="searchController" id="search-container" class="col-md-10 col-sm-10">
-						<form role="search" accept-charset="utf-8" id="global-search-form" ng-submit="search()">
+						<form role="search" accept-charset="utf-8" id="global-search-form">
 							<div class="search-icon left"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
 							<div class="search-input left">
-								<input type="text" ng-model="query" placeholder="Search" autocomplete="off" maxlength="120">
+								<input type="text" ng-model="query" placeholder="Search" autocomplete="off" maxlength="120" ng-keyup="search()">
 							</div>
 							<div class="search-input-clear right" ng-show="query"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true" ng-click="query=''"></span></div>
 							<div class="popover-menu"></div>

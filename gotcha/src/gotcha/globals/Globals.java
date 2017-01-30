@@ -10,6 +10,7 @@ import java.util.HashMap;
 import javax.naming.*;
 
 import gotcha.controller.search.GotchaSearchEngine;
+import gotcha.model.Channel;
 
 public final class Globals {
 	public static final String dbName = "gotchaDB";
@@ -61,7 +62,7 @@ public final class Globals {
 		
 		try {
 			Connection connection = Globals.database.getConnection();
-			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_SUBSCRIPTON_BY_CHANNEL);
+			PreparedStatement statement = connection.prepareStatement(SELECT_SUBSCRIPTON_BY_CHANNEL);
 			statement.setString(1, channel);
 			
 			ResultSet resultSet = statement.executeQuery();
@@ -74,7 +75,7 @@ public final class Globals {
 			connection.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occurred while trying to get channel subscriptions data from database!");
 		}
 
 		return subscribers;
@@ -84,7 +85,7 @@ public final class Globals {
 		ArrayList<String> channels = new ArrayList<String>();
 		try {
 			Connection connection = Globals.database.getConnection();
-			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_ALL_CHANNELS);
+			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CHANNELS);
 			ResultSet resultSet = statement.executeQuery();
 			
 			while (resultSet.next()) {
@@ -95,9 +96,56 @@ public final class Globals {
 			connection.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("An error has occurred while trying to get channels data from database!");
 		}
 
 		return channels;
+	}
+	
+	public static ArrayList<Channel> getUserSubscriptions (String nickname) {
+		ArrayList<Channel> channels = new ArrayList<Channel>();
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SELECT_SUBSCRIPTON_BY_USER);
+			statement.setString(1, nickname);
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				channels.add(getChannel(resultSet.getString("CHANNEL")));
+			}
+			
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			System.out.println("An error has occurred while trying to get user subscriptions data from database!");
+		}
+		
+		return channels;
+	}
+	
+	public static Channel getChannel (String name) {
+		Channel channel = new Channel();
+		
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SELECT_CHANNEL_BY_NAME);
+			statement.setString(1, name);
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				
+				channel.name(resultSet.getString("NAME"));
+				channel.description(resultSet.getString("DESCRIPTION"));
+			}
+			
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			System.out.println("An error has occurred while trying to get channel data from database!");
+		}
+		
+		return channel;
 	}
 }

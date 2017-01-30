@@ -744,7 +744,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: query
 		}).then(
 			function (success) {
-				console.log("searched: " + $scope.query);
+				console.log(success.data);
 			},
 			function (failure) {
 				
