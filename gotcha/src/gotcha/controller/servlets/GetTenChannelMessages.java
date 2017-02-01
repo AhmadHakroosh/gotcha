@@ -60,7 +60,8 @@ public class GetTenChannelMessages extends HttpServlet {
 			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_TEN_CHANNEL_MESSAGES, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 			statement.setString(1, input.to());
-			statement.setInt(2, input.id());
+			statement.setTimestamp(2, input.time());
+			statement.setInt(3, input.id());
 			
 			ResultSet resultSet = statement.executeQuery();
 			

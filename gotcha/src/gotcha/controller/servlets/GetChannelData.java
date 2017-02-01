@@ -64,16 +64,17 @@ public class GetChannelData extends HttpServlet {
 				+ "\"name\": \"" + channel.name() + "\","
 				+ "\"description\": \"" + channel.description() + "\","
 				+ "\"messages\": [],"
-				+ "\"subscribers\": ["
+				+ "\"subscribers\": {"
 				;
 		
 		int i = 1;
 		for (String someone : subscribers) {
-			someone = gson.toJson(getUserData(someone), User.class);
+			User user = getUserData(someone);
+			someone = "\"" + user.nickName() + "\": " + gson.toJson(user, User.class);
 			data += i++ < subscribers.size() ? someone + "," : someone;
 		}
 		
-		data += 	"]"
+		data += 	"}"
 			 + "}";
 		
 		out.println(data);

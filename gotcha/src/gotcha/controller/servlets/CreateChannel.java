@@ -47,7 +47,17 @@ public class CreateChannel extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * Handles an HTTP request.
+	 * Gets data for a channel to be created, and inserts it to DB.
+	 * <p>
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to Channel object
@@ -85,7 +95,13 @@ public class CreateChannel extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * Gets a Channel object to be inserted to the database.
+	 * <p>
+	 * @param channel: Channel object.
+	 * @return true: if the channels was inserted successfully.
+	 *         false: otherwise.
+	 */
 	private boolean insert (Channel channel) {
 		
 		int rows = 0;

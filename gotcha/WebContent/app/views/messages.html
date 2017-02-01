@@ -32,11 +32,26 @@
 							<span class="chat-name" ng-show="isDirectMessage"><span class="italic">&#64;</span> {{activeChat.user.nickName}}</span>
 						</h5>
 						<div class="chat-header-info" ng-show="isChannel">
-							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user"></span>{{activeChat.subscribers.length}}</div>
+							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user" ng-click="showSubscribers()"></span>{{isChannel ? length(activeChat.subscribers) : 0}}</div>
 							<div class="chat-header-info-item chat-purpose">{{activeChat.description}}</div>
+							<div ng-show="showSubscribersList" id="channel-subscribers-list">
+								<ul>
+									<span class="bold">Members <span>({{isChannel ? length(activeChat.subscribers) : 0}})</span></span>
+									<li ng-repeat="user in activeChat.subscribers">
+										<div class="left">
+											<div class="media-left photo left">
+										    	<img class="user-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">
+										  		<div class="right status {{user.status}}"></div>
+										  	</div>
+											<div class="bold user-nickname">{{user.nickName}}</div>
+											<div class="user-description">{{user.description}}</div>
+						  				</div>
+						  				<div class="right chat icon glyphicon glyphicon-comment" ng-click="openDirectMessage(user.nickName)"></div>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<div class="chat-header-info" ng-show="isDirectMessage">
-							
 							<div class="chat-header-info-item"><span id="other-user-status" class="status {{activeChat.user.status}}"></span> {{activeChat.user.status}}<span class="last-seen-time" ng-show="activeChat.user.status == 'away'">- last seen: {{activeChat.user.lastSeen}}</span></div>
 							<div class="chat-header-info-item">{{activeChat.user.description}}</div>
 						</div>
@@ -128,21 +143,22 @@
 								<div class="reply-message-sender-nickname"><span class="bold reply-message-sender message-sender" ng-click="openDirectMessage(message.reply_for)">{{message.reply_for}}</span></div>
 								<div class="reply-message-text">{{message.reply_text}}</div>
 							</div>
-							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-share-alt" ng-click="reply(message)"></span></div>
+							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-share-alt" ng-click="reply(message)" ng-show="isChannel && activeChat.subscribers[message.from.nickName] !== undefined"></span></div>
 						</div>
 					</div>
+					<div id="chat-bottom"></div>
 				</div>
 			</div>
 			<div class="fadein replied-message" ng-show="repliedMessage">
 				<span class="bold replied-message-sender">{{repliedMessage.from.nickName}}</span>
 				<span>
 					<span class="replied-message-text">{{repliedMessage.text}}
-						<span class="right icon glyphicon glyphicon-remove-circle" ng-click="repliedMessage=undefined"></span>
+						<span class="right icon glyphicon glyphicon-remove-circle" ng-click="repliedMessage=inputMessage=undefined"></span>
 					</span>
 				</span>
 			</div>
 			<!-- Typing area -->
-			<div id="typing-area">
+			<div id="typing-area" ng-show="activeChat !== undefined">
 				<div id="input-message-container">
 					<div class="addon-button">
 						<span class="icon left glyphicon glyphicon-paperclip"></span>

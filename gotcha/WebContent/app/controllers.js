@@ -88,8 +88,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"password": $scope.password,
 			"nickName": $scope.nickname,
 			"description": $scope.description,
-			"photoUrl": $scope.photoUrl,
+			"photoUrl": $scope.photoUrl !== undefined ? $scope.photoUrl : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSMyKQ_ZaKgbgQ6PE--NyftpawhbFDuv0lIZAslbH_o5QVS3KY9wHo87AqxyQ",
 			"status" : "active",
+			"signedUp": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss"),
 			"lastSeen": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
@@ -178,6 +179,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.directMessages = {};
 	$scope.activeChat;
 	$scope.showDropdown = false;
+	$scope.showSubscribersList = false;
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
 	$scope.found = {
@@ -216,26 +218,32 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			message.mention = false;
 		}
 
+		var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
+				
 		if ($scope.channels[message.to] != undefined) {
-			$scope.channels[message.to].messages.push(message);
+			$scope.channels[message.to].messages.unshift(message);
 			$scope.channels[message.to].newMessages += 1;
 			$scope.channels[message.to].mentions += message.mention ? 1 : 0;
 		} else {
 			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
-				$scope.directMessages[message.from.nickName].messages.push(message);
+				$scope.directMessages[message.from.nickName].messages.unshift(message);
 				$scope.directMessages[message.from.nickName].newMessages += 1;
 				$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
 			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
 				getDirectMessageData(message.from.nickName);
 			} else {
-				$scope.directMessages[message.to].messages.push(message);
+				$scope.directMessages[message.to].messages.unshift(message);
 				$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
 			}
 		}
-
-		$scope.activeChat.newMessages = 0;
-		$scope.mentions -= $scope.activeChat.mentions;
-		$scope.activeChat.mentions = 0;
+		if (scrollPos == 0) {
+			$scope.activeChat.newMessages = 0;
+			$scope.mentions -= $scope.activeChat.mentions;
+			$scope.activeChat.mentions = 0;
+			$timeout(function () {
+				$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
+			}, 1);
+		}
 		$scope.$apply();
 	};
 
@@ -323,6 +331,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$document.bind('click', function () {
 		$scope.showDropdown = false;
+		$scope.showSubscribersList = false;
 		$scope.$apply();
 	});
 
@@ -330,6 +339,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.toggleShow = function () {
 		$scope.showDropdown = !$scope.showDropdown;
 	};
+
+	$scope.showSubscribers = function () {
+		$scope.showSubscribersList = !$scope.showSubscribersList;
+	}
 
 	// Logout from the system
 	$scope.logout = function () {
@@ -527,6 +540,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.channels[channel].mentions = 0;
 		$scope.channels[channel].lastRead = Date.now();
 		$scope.query = undefined;
+		$timeout(function () {
+			$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
+		}, 1);
 	};
 	
 	// Open direct chat method
@@ -543,6 +559,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.directMessages[nickname].newMessages = 0;
 				$scope.directMessages[nickname].mentions = 0;
 				$scope.directMessages[nickname].lastRead = Date.now();
+				$timeout(function () {
+					$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
+				}, 1);
 			}, 1000);
 		} else {
 			$("#channels-list li").removeClass("active-chat");
@@ -554,6 +573,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.directMessages[nickname].newMessages = 0;
 			$scope.directMessages[nickname].mentions = 0;
 			$scope.directMessages[nickname].lastRead = Date.now();
+			$timeout(function () {
+				$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
+			}, 1);
 		}
 		
 		$scope.query = undefined;
@@ -589,7 +611,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	var getTenChannelMessages = function (channel) {
 		var message = {
 			"id": $scope.channels[channel].messages.length,
-			"to": channel
+			"to": channel,
+			"time": $scope.user.signedUp
 		};
 
 		$http({
@@ -599,8 +622,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: message
 		}).then(
 			function (success) {
+				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
+					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
 					$scope.channels[channel].messages.push(message);
 					var messageTime = Date.parse(message.time);
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
@@ -615,6 +640,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						message.mention = true;
 					}
 				});
+
+				if ($scope.activeChat == $scope.channels[channel] && success.data.length > 0) {
+					$timeout(function () {
+						$("#chat-console").scrollTop($("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight") - scrollPos);
+					}, 1);
+				}
 			},
 			function (failure) {
 				console.log("Error while retrieving channel messages.");
@@ -663,8 +694,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: message
 		}).then(
 			function (success) {
+				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
+					message.repliable = true;
 					$scope.directMessages[nickname].messages.push(message);
 					var messageTime = Date.parse(message.time);
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
@@ -679,6 +712,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						message.mention = true;
 					}
 				});
+
+				if ($scope.activeChat == $scope.directMessages[nickname] && success.data.length > 0) {
+					$timeout(function () {
+						$("#chat-console").scrollTop($("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight") - scrollPos);
+					}, 1);
+				}
 			},
 			function (failure) {
 				console.log("Error while retrieving channel messages.");

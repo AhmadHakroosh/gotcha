@@ -119,6 +119,7 @@ public class Login extends HttpServlet {
 				registered.nickName(resultSet.getString("NICKNAME"));
 				registered.photoUrl(resultSet.getString("PHOTO_URL"));
 				registered.status(resultSet.getString("STATUS"));
+				registered.signedUp(resultSet.getTimestamp("SIGNED_UP"));
 				registered.lastSeen(resultSet.getTimestamp("LAST_SEEN"));
 				
 				statement.close();

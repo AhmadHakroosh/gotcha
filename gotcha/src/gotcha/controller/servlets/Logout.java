@@ -45,7 +45,17 @@ public class Logout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * Handles an HTTP request sent from client.
+	 * Logs out the user who sent this request.
+	 * <p>
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response) 
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/JSON; charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -65,7 +75,12 @@ public class Logout extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * Updates the user's status to "away", and updates the last seen time of the user
+	 * when he logs out.
+	 * <p>
+	 * @param session The current HTTP session.
+	 */
 	private void updateUserStatus (HttpSession session) {
 		User user = (User)session.getAttribute("user");		
 		String status = "away";

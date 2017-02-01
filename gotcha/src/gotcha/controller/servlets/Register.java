@@ -106,7 +106,8 @@ public class Register extends HttpServlet {
 			statement.setString(4, user.description());
 			statement.setString(5, user.photoUrl());
 			statement.setString(6, user.status());
-			statement.setTimestamp(7, user.lastSeen());
+			statement.setTimestamp(7, user.signedUp());
+			statement.setTimestamp(8, user.lastSeen());
 			
 			rows = statement.executeUpdate();
 			connection.commit();

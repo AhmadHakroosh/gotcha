@@ -588,6 +588,21 @@ span.user-mention.glyphicon.glyphicon-tag {
 	color: grey;
 }
 
+#channel-subscribers-list {
+	width: 120%;
+	position: absolute;
+	border-radius: 5px;
+	background: #FFFFFF;
+	border: 1px solid lightgrey;
+	right: -10%;
+	top: 120%;
+	padding: 0 5px;
+	box-shadow: 5px 5px 5px #888888;
+	max-height: 350px;
+	overflow: auto;
+	z-index: 1010;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
     padding: 5px -5px 5px 0;
