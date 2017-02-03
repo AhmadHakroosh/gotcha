@@ -3,7 +3,9 @@ package gotcha.controller.chat;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +20,10 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import gotcha.model.Message;
 import gotcha.globals.Globals;
@@ -43,7 +49,8 @@ public class GotChaServerEndpoint {
 	public void login (Session session, @PathParam("nickname") String user) throws IOException {
 		if (session.isOpen()) {
 			active.put(user, session);
-			System.out.println("The user \"" + user + "\" is now connected.");
+			connectUser(user);
+			System.out.println("The user \"" + user + "\" is now active.");
 		}
 	}
 	
@@ -56,20 +63,22 @@ public class GotChaServerEndpoint {
 		try {
 			if (decoder.willDecode(jsonMessage)) {
 				Message message = decoder.decode(jsonMessage);
+				int messageId = store(message);
+				message.id(messageId);
+				String encodedMessage = recreate(jsonMessage, messageId);
 				// The message must be sent to a channel
 				if (Globals.channels.containsKey(message.to())) {
-					broadcast(message.to(), jsonMessage);
+					broadcast(message.to(), encodedMessage);
 				// The message must be sent to a specific user
 				} else {
 					if (!message.from().equals(message.to())) {
-						notify(message.to(), jsonMessage);
-						notify(message.from(), jsonMessage);
+						notify(message.to(), encodedMessage);
+						notify(message.from(), encodedMessage);
 					} else {
-						notify(message.to(), jsonMessage);
+						notify(message.to(), encodedMessage);
 					}
 				}
-				store(message);
-			}
+			} 
 		} catch (DecodeException | messageDeliveryException e) {
 			System.out.println("Something went wrong!");
 		}	
@@ -82,6 +91,7 @@ public class GotChaServerEndpoint {
 	public void logout (Session session) throws IOException {
 		for (Entry<String, Session> user : active.entrySet()) {
 			if (user.getValue().equals(session)) {
+				logoff(user.getKey());
 				active.remove(user.getKey());
 			}
 		}
@@ -90,7 +100,11 @@ public class GotChaServerEndpoint {
 	@OnError
 	public void log (Session session, Throwable t) {
 		// Generally, this occurs on connection reset
-		System.out.println("Server Endpoint is disconnected.");
+		for (Entry<String, Session> one : active.entrySet()) {
+			if (one.getValue().equals(session)) {
+				System.out.println("The user \"" + one.getKey() + "\" has gone away.");
+			}
+		}
 	}
 
 	/**
@@ -124,19 +138,26 @@ public class GotChaServerEndpoint {
 	/**
 	 * 
 	 */
-	private void store (Message message) {
+	private int store (Message message) {
+		int messageId = 1;
 		try {
 			Connection connection = Globals.database.getConnection();
-			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_MESSAGE);
+			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_MESSAGE, messageId);
 
-			statement.setString(1, message.from());
-			statement.setString(2, message.to());
-			statement.setString(3, message.text());
-			statement.setString(4, message.reply_for());
-			statement.setString(5, message.reply_text());
+			statement.setInt(1, message.parentId());
+			statement.setString(2, message.from());
+			statement.setString(3, message.to());
+			statement.setString(4, message.text());
+			statement.setTimestamp(5, message.lastUpdate());
 			statement.setTimestamp(6, message.time());
 			
 			statement.executeUpdate();
+			
+			ResultSet id = statement.getGeneratedKeys();
+			if (id.next()) {
+				messageId = id.getInt(1);
+			}
+			
 			connection.commit();
 			statement.close();
 			connection.close();
@@ -144,5 +165,61 @@ public class GotChaServerEndpoint {
 		} catch (SQLException e ){
 			System.out.println("An error has occured while trying to execute the query!");
 		}
+		
+		return messageId;
 	}
+    
+    private void logoff (String user) {
+    	String status = "away";
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.UPDATE_USER_STATUS);
+			
+			statement.setString(1, status);
+			statement.setTimestamp(2, last_seen);
+			statement.setString(3, user);
+			
+			statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
+    }
+    
+    private void connectUser (String user) {
+    	String status = "active";
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.UPDATE_USER_STATUS);
+			
+			statement.setString(1, status);
+			statement.setTimestamp(2, last_seen);
+			statement.setString(3, user);
+			
+			statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
+    }
+    
+    public String recreate (String textMessage, int id) {
+    	JsonParser parser = new JsonParser();
+    	JsonElement jsonMessage = parser.parse(textMessage);
+    	JsonElement messageId = parser.parse("{\"id\": \"" + id + "\"}");
+    	JsonObject messageIdObject = messageId.getAsJsonObject();
+    	JsonObject messageObject = new JsonObject();
+    	messageObject.add("message", jsonMessage);
+    	messageObject = messageObject.getAsJsonObject("message");
+    	messageObject.add("id", messageIdObject.get("id"));
+    	return messageObject.toString();
+    }
 }

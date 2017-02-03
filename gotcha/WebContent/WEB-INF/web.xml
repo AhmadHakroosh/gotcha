@@ -13,12 +13,12 @@
     <listener-class>gotcha.controller.listeners.SessionManager</listener-class>
   </listener>
   <context-param>
-  	<param-name>gotchaDB</param-name>
-  	<param-value>java:comp/env/jdbc/gotchaDB</param-value>
+    <param-name>gotchaDB</param-name>
+    <param-value>java:comp/env/jdbc/gotchaDB</param-value>
   </context-param>
   <context-param>
-  	<param-name>DatabaseName</param-name>
-  	<param-value>gotchaDB</param-value>
+    <param-name>DatabaseName</param-name>
+    <param-value>gotchaDB</param-value>
   </context-param>
   <resource-ref>
     <description>GotCha! Database Connection Open</description>

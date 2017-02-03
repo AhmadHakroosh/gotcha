@@ -178,6 +178,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.channels = {};
 	$scope.directMessages = {};
 	$scope.activeChat;
+	$scope.activeThread;
 	$scope.showDropdown = false;
 	$scope.showSubscribersList = false;
 	$scope.oppositeStatus;
@@ -191,6 +192,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if ($scope.isChannel) to = $scope.activeChat.name;
 		if ($scope.isDirectMessage) to = $scope.activeChat.user.nickName;
 		var message = {
+			"parentId": $scope.parentId | 0,
 			"from": {
 				"nickName": $scope.user.nickName,
 				"description": $scope.user.description,
@@ -200,8 +202,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			},
 			"to": to,
 			"text": $scope.inputMessage,
-			"reply_for": $scope.repliedMessage !== undefined ? $scope.repliedMessage.from.nickName : undefined,
-			"reply_text": $scope.repliedMessage !== undefined ? $scope.repliedMessage.text : undefined,
+			"lastUpdate": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss"),
 			"time": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
@@ -218,24 +219,31 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			message.mention = false;
 		}
 
+		// Set replies for the message
+		message.replies = {};
+
 		var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
-				
-		if ($scope.channels[message.to] != undefined) {
-			$scope.channels[message.to].messages.unshift(message);
-			$scope.channels[message.to].newMessages += 1;
-			$scope.channels[message.to].mentions += message.mention ? 1 : 0;
-		} else {
-			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
-				$scope.directMessages[message.from.nickName].messages.unshift(message);
-				$scope.directMessages[message.from.nickName].newMessages += 1;
-				$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
-			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
-				getDirectMessageData(message.from.nickName);
+		if (message.parentId == 0) {	
+			if ($scope.channels[message.to] != undefined) {
+				$scope.channels[message.to].messages[message.id] = message;
+				$scope.channels[message.to].newMessages += 1;
+				$scope.channels[message.to].mentions += message.mention ? 1 : 0;
 			} else {
-				$scope.directMessages[message.to].messages.unshift(message);
-				$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
+				if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
+					$scope.directMessages[message.from.nickName].messages[message.id] = message;
+					$scope.directMessages[message.from.nickName].newMessages += 1;
+					$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
+				} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
+					getDirectMessageData(message.from.nickName);
+				} else {
+					$scope.directMessages[message.to].messages[message.id] = message;
+					$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
+				}
 			}
+		} else {
+
 		}
+
 		if (scrollPos == 0) {
 			$scope.activeChat.newMessages = 0;
 			$scope.mentions -= $scope.activeChat.mentions;
@@ -252,6 +260,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#main-activity-window").height($(window).height() - $("#top-header").height());
 		$("#activity-window").height(0.9 * $("#main-activity-window").height());
 		$("#typing-area").height(0.1 * $("#main-activity-window").height());
+		$("#active-thread").height($("#main-activity-window").height());
 		$("#main-activity-window .sidebar").height($("#main-activity-window").height());
 	})();
 	
@@ -262,6 +271,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			} else {
 				getTenDirectChatMessages($scope.activeChat.user.nickName);
 			}
+		}
+
+		if (this.scrollTop == $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")) {
+			$scope.activeChat.newMessages = 0;
+			$scope.activeChat.mentions = 0;
 		}
 	});
 
@@ -291,6 +305,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.send = function () {
 		var message = pack();
 		$scope.session.send(message);
+		$timeout(function () {
+			$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
+			$scope.activeChat.newMessages = 0;
+		}, 2);
 		$scope.inputMessage = undefined;
 		$scope.repliedMessage = undefined;
 	};
@@ -537,6 +555,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
 		$scope.channels[channel].newMessages = 0;
+		$scope.mentions -= $scope.channels[channel].mentions;
 		$scope.channels[channel].mentions = 0;
 		$scope.channels[channel].lastRead = Date.now();
 		$scope.query = undefined;
@@ -557,6 +576,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.isDirectMessage = true;
 				$scope.activeChat = $scope.directMessages[nickname];
 				$scope.directMessages[nickname].newMessages = 0;
+				$scope.mentions -= $scope.directMessages[nickname].mentions;
 				$scope.directMessages[nickname].mentions = 0;
 				$scope.directMessages[nickname].lastRead = Date.now();
 				$timeout(function () {
@@ -571,6 +591,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.isDirectMessage = true;
 			$scope.activeChat = $scope.directMessages[nickname];
 			$scope.directMessages[nickname].newMessages = 0;
+			$scope.mentions -= $scope.directMessages[nickname].mentions;
 			$scope.directMessages[nickname].mentions = 0;
 			$scope.directMessages[nickname].lastRead = Date.now();
 			$timeout(function () {
@@ -595,7 +616,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				$scope.channels[name] = success.data;
-				$scope.channels[name].messages = [];
+				$scope.channels[name].messages = {};
 				$scope.channels[name].newMessages = 0;
 				$scope.channels[name].mentions = 0;
 				$scope.channels[name].lastRead = $scope.user.lastSeen;
@@ -610,7 +631,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	// Retrieve given channel messages
 	var getTenChannelMessages = function (channel) {
 		var message = {
-			"id": $scope.channels[channel].messages.length,
+			"id": $scope.length($scope.channels[channel].messages),
 			"to": channel,
 			"time": $scope.user.signedUp
 		};
@@ -625,9 +646,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
+					message.replies = {};
 					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
-					$scope.channels[channel].messages.push(message);
-					var messageTime = Date.parse(message.time);
+					$scope.channels[channel].messages[message.id] = message;
+					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
 					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.channels[channel].newMessages += 1;
@@ -667,7 +689,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				$scope.directMessages[nickname] = success.data;
-				$scope.directMessages[nickname].messages = [];
+				$scope.directMessages[nickname].messages = {};
 				$scope.directMessages[nickname].newMessages = 0;
 				$scope.directMessages[nickname].mentions = 0;
 				$scope.directMessages[nickname].lastRead = $scope.user.lastSeen;
@@ -682,7 +704,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	// Retrieve given channel messages
 	var getTenDirectChatMessages = function (nickname) {
 		var message = {
-			"id": $scope.directMessages[nickname].messages.length,
+			"id": $scope.length($scope.directMessages[nickname].messages),
 			"from": nickname,
 			"to": $scope.user.nickName
 		};
@@ -697,9 +719,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
+					message.replies = {};
 					message.repliable = true;
-					$scope.directMessages[nickname].messages.push(message);
-					var messageTime = Date.parse(message.time);
+					$scope.directMessages[nickname].messages[message.id] = message;
+					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
 					if (messageTime >= lastRead && message.from != $scope.user.nickName) {
 						$scope.directMessages[nickname].newMessages += 1;
@@ -724,10 +747,25 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
-	
-	$scope.reply = function (message) {
-		$scope.repliedMessage = message;
-		$scope.inputMessage = "@" + message.from.nickName + ": ";
+
+	$scope.openThread = function (message) {
+		$scope.activeThread = message;
+		$("#activity-window").fadeIn('500', function() {
+			$("#activity-window").removeClass("col-md-10 col-sm-10");
+			$("#activity-window").addClass("col-md-6 col-sm-6");
+			$("#active-thread").addClass("col-md-4 col-sm-4");
+		});
+	};
+
+	$scope.closeThread = function () {
+		$scope.activeThread = undefined;
+		$("#activity-window").fadeIn('500', function() {
+			$("#activity-window").removeClass("col-md-6 col-sm-6");
+			$("#activity-window").addClass("col-md-10 col-sm-10");
+		});
+		$("#active-thread").fadeIn('500', function() {
+			$("#active-thread").removeClass("col-md-4 col-sm-4");
+		});
 	};
 
 	$scope.showMentions = function () {
@@ -793,8 +831,4 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
-
-	$(window).unload(function () {
-		$scope.logout();
-	});
 }])

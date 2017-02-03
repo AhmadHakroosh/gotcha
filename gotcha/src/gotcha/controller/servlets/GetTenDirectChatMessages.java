@@ -72,11 +72,11 @@ public class GetTenDirectChatMessages extends HttpServlet {
 			while (resultSet.next()) {
 				Message message = new Message();
 				message.id(resultSet.getInt("ID"));
+				message.parentId(resultSet.getInt("PARENT_ID"));
 				message.from(resultSet.getString("SENDER"));
 				message.to(resultSet.getString("RECEIVER"));
 				message.text(resultSet.getString("TEXT"));
-				message.reply_for(resultSet.getString("REPLY_FOR"));
-				message.reply_text(resultSet.getString("REPLY_TEXT"));
+				message.lastUpdate(resultSet.getTimestamp("LAST_UPDATE"));
 				message.time(resultSet.getTimestamp("SENT_TIME"));
 				// Retrieve sender data
 				message.from(gson.toJson(getUserData(message.from()), User.class));

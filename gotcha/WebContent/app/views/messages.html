@@ -133,29 +133,16 @@
 			<!-- Active chat -->
 			<div id="active-chat">
 				<div id="chat-console">
-					<div data-index="{{$index}}" ng-repeat="message in activeChat.messages | orderBy: message.time: true" class="messages-item">
+					<div data-index="{{$index}}" ng-repeat="(id, message) in activeChat.messages | orderMessagesBy: message.lastUpdate: true" class="messages-item">
 						<div class="media-left photo left">
 					    	<img class="sender-photo media-object" ng-src="{{message.from.photoUrl}}" alt="{{message.from.nickName}} profile picture">
 					  	</div>
 					  	<div class="message-body mention-{{message.mention}}">
 				    		<div class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">{{message.from.nickName}}</span><span class="right message-time">{{message.time}}</span></div>
-							<div class="replied-message-container" ng-show="message.reply_for && message.reply_text">
-								<div class="reply-message-sender-nickname"><span class="bold reply-message-sender message-sender" ng-click="openDirectMessage(message.reply_for)">{{message.reply_for}}</span></div>
-								<div class="reply-message-text">{{message.reply_text}}</div>
-							</div>
-							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-share-alt" ng-click="reply(message)" ng-show="isChannel && activeChat.subscribers[message.from.nickName] !== undefined"></span></div>
+							<div class="message-text">{{message.text}}<span class="reply-message-icon right glyphicon glyphicon-new-window" ng-click="openThread(message)" ng-show="(isChannel && activeChat.subscribers[message.from.nickName] !== undefined) || isDirectMessage"></span></div>
 						</div>
 					</div>
-					<div id="chat-bottom"></div>
 				</div>
-			</div>
-			<div class="fadein replied-message" ng-show="repliedMessage">
-				<span class="bold replied-message-sender">{{repliedMessage.from.nickName}}</span>
-				<span>
-					<span class="replied-message-text">{{repliedMessage.text}}
-						<span class="right icon glyphicon glyphicon-remove-circle" ng-click="repliedMessage=inputMessage=undefined"></span>
-					</span>
-				</span>
 			</div>
 			<!-- Typing area -->
 			<div id="typing-area" ng-show="activeChat !== undefined">
@@ -172,6 +159,23 @@
 						<span class="icon right glyphicon glyphicon-send" ng-click="send()" ng-hide="inputMessage == undefined || inputMessage == ''"></span>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div id="active-thread" ng-show="activeThread">
+			<div id="thread-header">
+				<div>
+					<h4 class="bold">Thread</h4>
+					<h5>{{activeThread.from.nickName}}</h5>
+				</div>
+				<div class="right" id="close-thread">
+					<span class="glyphicon glyphicon-remove" ng-click="closeThread()"></span>
+				</div>
+			</div>
+			<div id="thread-parent">
+				
+			</div>
+			<div id="thread-console">
+				
 			</div>
 		</div>
 	</div>

@@ -1,8 +1,10 @@
 package gotcha.controller.listeners;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
@@ -39,34 +41,34 @@ public class Startup implements ServletContextListener {
 								+ 		"PHOTO_URL 		VARCHAR(150),"
 								+ 		"STATUS 		VARCHAR(6) NOT NULL,"
 								+ 		"LAST_SEEN 		TIMESTAMP NOT NULL"
-								+ 	  ")"
-								     );
+								+   ")"
+								   );
 
         	statement.executeUpdate("CREATE TABLE CHANNELS ("
 					 			+ 		"NAME 			VARCHAR(30) PRIMARY KEY,"
 					 			+ 		"DESCRIPTION 	VARCHAR(500),"
 					 			+ 		"CREATED_BY 	VARCHAR(10) NOT NULL,"
 					 			+ 		"CREATED_TIME 	TIMESTAMP NOT NULL"
-					 			+ 	  ")"
-							   	     );
+					 			+ 	")"
+							   	   );
 
         	statement.executeUpdate("CREATE TABLE SUBSCRIPTIONS ("
 								+ 		"ID 			INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 								+ 		"NICKNAME 		VARCHAR(20) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 								+ 		"CHANNEL 		VARCHAR(30) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE"
-					 			+ 	  ")"
-						   	     	 );
+					 			+ 	")"
+						   	       );
 
         	statement.executeUpdate("CREATE TABLE MESSAGES ("
 								+ 		"ID 			INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
+								+ 		"PARENT_ID 		INTEGER DEFAULT 0,"
 								+ 		"SENDER 		VARCHAR(20) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 								+ 		"RECEIVER 		VARCHAR(30) NOT NULL,"
 								+ 		"TEXT 			VARCHAR(500) NOT NULL,"
-								+ 		"REPLY_FOR		VARCHAR(20) REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
-								+ 		"REPLY_TEXT		VARCHAR(500),"
+								+ 		"LAST_UPDATE	TIMESTAMP NOT NULL,"
 								+ 		"SENT_TIME 		TIMESTAMP NOT NULL"
-								+ 	  ")"
-								     );
+								+ 	")"
+								   );
         	
         	connection.commit();
         	statement.close();
@@ -94,6 +96,27 @@ public class Startup implements ServletContextListener {
      */
     public void contextDestroyed(ServletContextEvent event)  {
     	ServletContext servletContext = event.getServletContext();
+    	logoffAllUsers();
     	Globals.database.shutdown(servletContext);
+    }
+    
+    private void logoffAllUsers () {
+		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.LOGOFF_USERS);
+			
+			statement.setString(1, "away");
+			statement.setTimestamp(2, last_seen);
+			statement.setString(3, "active");
+			
+			statement.executeUpdate();
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("An error has occured while trying to execute the query!");
+		}
     }
 }

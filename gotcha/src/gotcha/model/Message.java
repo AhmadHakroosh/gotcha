@@ -4,11 +4,11 @@ import java.sql.Timestamp;
 
 public class Message {
 	private int id;
+	private int parentId;
 	private String from;
 	private String to;
 	private String text;
-	private String reply_for;
-	private String reply_text;
+	private Timestamp lastUpdate;
 	private Timestamp time;
 	
 	// Constructor
@@ -16,17 +16,21 @@ public class Message {
 		
 	}
 	
-	public Message (String from, String to, String text, String reply_for, String reply_text, Timestamp time) {
+	public Message (int parentId, String from, String to, String text, Timestamp lastUpdate, Timestamp time) {
+		this.parentId = parentId;
 		this.from = from;
 		this.to = to;
 		this.text = text;
-		this.reply_for = reply_for;
-		this.reply_text = reply_text;
+		this.lastUpdate = lastUpdate;
 		this.time = time;
 	}
 	
 	public int id () {
 		return this.id;
+	}
+	
+	public int parentId () {
+		return this.parentId;
 	}
 	
 	public String from () {
@@ -41,12 +45,8 @@ public class Message {
 		return this.text;
 	}
 	
-	public String reply_for () {
-		return this.reply_for;
-	}
-	
-	public String reply_text () {
-		return this.reply_text;
+	public Timestamp lastUpdate () {
+		return this.lastUpdate;
 	}
 	
 	public Timestamp time () {
@@ -55,6 +55,10 @@ public class Message {
 	
 	public void id (int id) {
 		this.id = id;
+	}
+	
+	public void parentId (int id) {
+		this.parentId = id;
 	}
 	
 	public void from (String from) {
@@ -69,12 +73,8 @@ public class Message {
 		this.text = text;
 	}
 	
-	public void reply_for (String reply_for) {
-		this.reply_for = reply_for;
-	}
-	
-	public void reply_text (String reply_text) {
-		this.reply_text = reply_text;
+	public void lastUpdate (Timestamp time) {
+		this.lastUpdate = time;
 	}
 	
 	public void time (Timestamp time) {
