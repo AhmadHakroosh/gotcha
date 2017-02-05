@@ -95,19 +95,21 @@ li.divider {
 
 #top-header {
 	height: 60px;
-	z-index: 101;
 }
 
 #top-header .sidebar, #top-header #main-header {
 	height: 100%;
 	border: none;
-	z-index: 101;
+	z-index: 1002;
 }
 
 #top-header #main-header {
 	padding: 0;
 	border-bottom: 1px solid lightgrey;
 	z-index: 1001;
+	-webkit-box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
 }
 
 #main-header .icon {
@@ -220,9 +222,10 @@ li.divider {
 }
 
 #main-activity-window .sidebar {
-	-webkit-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
-	-moz-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
-	box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 5px 1px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 5px 1px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: 5px 1px 5px 0px rgba(0,0,0,0.2);
+	z-index: 1000;
 }
 
 .sidebar {
