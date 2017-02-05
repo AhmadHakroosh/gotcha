@@ -153,7 +153,9 @@
 								<div class="photo">
 							    	<img class="media-object last-reply-photo" ng-src="{{message.lastReply.from.photoUrl}}" alt="{{message.lastReply.from.nickName}} profile picture">
 							  	</div>
-							  	<span class="message-replies-count" ng-click="openThread(message)">2 replies</span>
+							  	<span class="message-replies-count" ng-click="openThread(message)">
+							  		{{message.replies == 1 ? "1 reply" : message.replies + " replies"}}
+							  	</span>
 							  	<span class="view-thread-messages">View thread</span>
 							  	<span class="last-reply-time">Last reply on: {{message.lastReply.time}}</span>
 							  	<span class="glyphicon glyphicon-chevron-right right"></span>

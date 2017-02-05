@@ -652,8 +652,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					$scope.getLastThreadMessage(message);
+					$scope.getMessageRepliesNumber(message);
+					$scope.threads[message.id] = message;
 					message.from = JSON.parse(message.from);
 					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
+					message.replies = {};
 					$scope.channels[channel].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
@@ -725,8 +728,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					$scope.getLastThreadMessage(message);
+					$scope.getMessageRepliesNumber(message);
+					$scope.threads[message.id] = message;
 					message.from = JSON.parse(message.from);
 					message.repliable = true;
+					message.replies = {};
 					$scope.directMessages[nickname].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);
@@ -789,6 +795,27 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					reply.from = JSON.parse(reply.from);
 					thread.lastReply = reply;
 				}
+			},
+			function (failure) {
+				console.log("An error has occurred while trying to get last reply from server!");
+			}
+		);
+	};
+
+	$scope.getMessageRepliesNumber = function (thread) {
+		var message = {
+			"id": thread.id
+		};
+
+		$http({
+			method: 'POST',
+			url: 'getMessageRepliesNumber',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				var replies = success.data.replies;
+				thread.replies = $scope.length($scope.threads[thread.id].replies) | replies;
 			},
 			function (failure) {
 				console.log("An error has occurred while trying to get last reply from server!");
