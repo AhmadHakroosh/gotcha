@@ -678,6 +678,12 @@ span.user-mention.glyphicon.glyphicon-tag {
 	line-height: 20px;
 }
 
+#thread-message {
+	padding: 0 5px;
+	margin: 10px 0 0 0;
+	font-size: 1em;
+}
+
 #thread-replies-count {
 	position: relative;
 	bottom: -9px;
