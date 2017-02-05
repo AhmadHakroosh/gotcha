@@ -107,9 +107,9 @@ li.divider {
 	padding: 0;
 	border-bottom: 1px solid lightgrey;
 	z-index: 1001;
-	-webkit-box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
-	-moz-box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
-	box-shadow: 2px 5px 5px 0px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 1px 5px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 1px 5px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: 1px 5px 5px 0px rgba(0,0,0,0.2);
 }
 
 #main-header .icon {
