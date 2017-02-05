@@ -655,6 +655,38 @@ span.user-mention.glyphicon.glyphicon-tag {
 	color: grey;
 }
 
+#thread-parent {
+	padding: 15px 0 0 0;
+	border-bottom: 1px solid #F7F7F7;
+}
+
+#thread-sender {
+	padding: 0;
+	line-height: 25px;
+}
+
+#thread-sender .message-sender {
+	padding-right: 5px;
+	font-size: 1.2em;
+}
+
+#thread-time {
+	font-size: 0.8em;
+}
+
+#thread-source {
+	line-height: 20px;
+}
+
+#thread-replies-count {
+	position: relative;
+	bottom: -9px;
+	background: #FFFFFF;
+	padding-right: 5px;
+	color: lightgrey;
+	font-size: 0.8em;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
     padding: 5px -5px 5px 0;

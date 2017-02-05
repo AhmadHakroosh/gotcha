@@ -552,6 +552,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Open channel chat method
 	$scope.openChannel = function (channel) {
+		$scope.closeThread();
 		$("#channels-list li").removeClass("active-chat");
 		$("#direct-messages-list li").removeClass("active-chat");
 		$("#channel-" + channel).addClass("active-chat");
@@ -570,6 +571,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Open direct chat method
 	$scope.openDirectMessage = function (nickname) {
+		$scope.closeThread();
 		if ($scope.directMessages[nickname] == undefined) {
 			getDirectMessageData(nickname);
 			$timeout(function () {

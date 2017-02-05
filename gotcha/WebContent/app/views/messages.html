@@ -172,9 +172,17 @@
 				</div>
 			</div>
 			<div id="thread-parent">
-				
+				<div class="media-left photo left">
+			    	<img class="sender-photo media-object" ng-src="{{activeThread.from.photoUrl}}" alt="{{activeThread.from.nickName}} profile picture">
+			  	</div>
+			  	<div id="thread-sender" class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(activeThread.from.nickName)">{{activeThread.from.nickName}}</span><span id="thread-time" class="message-time">{{activeThread.time}}</span></div>
+			  	<div id="thread-source">{{isChannel ? activeChat.name : "Direct message"}}</div>
+			  	<span id="thread-replies-count"><!--{{length(threads[activeThread.id].replies) == 0 ? "no replies" : ""}}{{length(threads[activeThread.id].replies) == 1 ? "1 reply" : ""}}{{length(threads[activeThread.id].replies) > 1 ? length(threads[activeThread.id].replies) + "replies" : ""}}--> no replies</span>
 			</div>
 			<div id="thread-console">
+				
+			</div>
+			<div id="thread-typing-area">
 				
 			</div>
 		</div>
