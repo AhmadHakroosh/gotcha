@@ -651,6 +651,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
+					$scope.getLastThreadMessage(message);
 					message.from = JSON.parse(message.from);
 					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
 					$scope.channels[channel].messages[message.id] = message;
@@ -723,6 +724,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
+					$scope.getLastThreadMessage(message);
 					message.from = JSON.parse(message.from);
 					message.repliable = true;
 					$scope.directMessages[nickname].messages[message.id] = message;
@@ -768,6 +770,30 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$("#activity-window").addClass("col-md-10 col-sm-10");
 			$("#active-thread").removeClass("col-md-4 col-sm-4");
 		});
+	};
+
+	$scope.getLastThreadMessage = function (thread) {
+		var message = {
+			"id": thread.id
+		};
+
+		$http({
+			method: 'POST',
+			url: 'getLastThreadMessage',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				var reply = success.data;
+				if (reply.id != 0 && reply.parentId != 0) {
+					reply.from = JSON.parse(reply.from);
+					thread.lastReply = reply;
+				}
+			},
+			function (failure) {
+				console.log("An error has occurred while trying to get last reply from server!");
+			}
+		);
 	};
 
 	$scope.getTenThreadMessages = function (thread) {
