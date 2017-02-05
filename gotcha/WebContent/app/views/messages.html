@@ -154,7 +154,7 @@
 							    	<img class="media-object last-reply-photo" ng-src="{{message.lastReply.from.photoUrl}}" alt="{{message.lastReply.from.nickName}} profile picture">
 							  	</div>
 							  	<span class="message-replies-count" ng-click="openThread(message)">
-							  		{{message.replies == 1 ? "1 reply" : message.replies + " replies"}}
+							  		{{message.repliesCount == 1 ? "1 reply" : message.repliesCount + " replies"}}
 							  	</span>
 							  	<span class="view-thread-messages">View thread</span>
 							  	<span class="last-reply-time">Last reply on: {{message.lastReply.time}}</span>
@@ -198,7 +198,7 @@
 			  	<div id="thread-sender" class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(activeThread.from.nickName)">{{activeThread.from.nickName}}</span><span id="thread-time" class="message-time">{{activeThread.time}}</span></div>
 			  	<div id="thread-source">{{isChannel ? activeChat.name : "Direct message"}}</div>
 			  	<blockquote id="thread-message"><p>{{activeThread.text}}</p></blockquote>
-			  	<span id="thread-replies-count"><!--{{length(threads[activeThread.id].replies) == 0 ? "no replies" : ""}}{{length(threads[activeThread.id].replies) == 1 ? "1 reply" : ""}}{{length(threads[activeThread.id].replies) > 1 ? length(threads[activeThread.id].replies) + "replies" : ""}}--> no replies</span>
+			  	<span id="thread-replies-count">{{threads[activeThread.id].repliesCount == 0 ? "no replies" : ""}}{{threads[activeThread.id].repliesCount == 1 ? "1 reply" : ""}}{{threads[activeThread.id].repliesCount > 1 ? threads[activeThread.id].repliesCount + " replies" : ""}}</span>
 			</div>
 			<div id="thread-console">
 				

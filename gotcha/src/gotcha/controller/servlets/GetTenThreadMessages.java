@@ -15,9 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import gotcha.globals.Globals;
 import gotcha.model.Message;
@@ -57,21 +54,18 @@ public class GetTenThreadMessages extends HttpServlet {
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
-		String thread = gson.toJson(request.getReader());
-		JsonParser parser = new JsonParser();
-		JsonElement jsonThread = parser.parse(thread);
-		JsonObject threadObject = jsonThread.getAsJsonObject();
-		JsonElement offset = threadObject.get("offset");
-		JsonElement parentId = threadObject.get("parentId");
+		Message thread = gson.fromJson(request.getReader(), Message.class);
+		int id = thread.id();
+		int offset = thread.parentId();
 		
 		String data = "[";
 		
 		try {
 			Connection connection = Globals.database.getConnection();
-			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_TEN_CHANNEL_MESSAGES, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			PreparedStatement statement = connection.prepareStatement(Globals.SELECT_TEN_THREAD_MESSAGES, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-			statement.setInt(1, parentId.getAsInt());
-			statement.setInt(2, offset.getAsInt());
+			statement.setInt(1, id);
+			statement.setInt(2, offset);
 			
 			ResultSet resultSet = statement.executeQuery();
 			

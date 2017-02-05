@@ -762,6 +762,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.openThread = function (message) {
 		$scope.activeThread = message;
+		if ($scope.length(message.replies) == 0) {
+			$scope.getTenThreadMessages(message);
+		}
 		$("#activity-window").fadeIn('slow', function() {
 			$("#activity-window").removeClass("col-md-10 col-sm-10");
 			$("#activity-window").addClass("col-md-6 col-sm-6");
@@ -815,7 +818,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}).then(
 			function (success) {
 				var replies = success.data.replies;
-				thread.replies = $scope.length($scope.threads[thread.id].replies) | replies;
+				thread.repliesCount = replies;
 			},
 			function (failure) {
 				console.log("An error has occurred while trying to get last reply from server!");
@@ -824,7 +827,28 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.getTenThreadMessages = function (thread) {
+		var message = {
+			"id": thread.id,
+			"parentId": $scope.length(thread.replies)
+		};
 
+		$http({
+			method: 'POST',
+			url: 'getTenThreadMessages',
+			headers: {'Content-Type' : "application/json; charset=utf-8"},
+			data: message
+		}).then(
+			function (success) {
+				success.data.forEach(function (reply) {
+					reply.from = JSON.parse(reply.from);
+					$scope.threads[reply.id] = reply;
+					thread.replies[reply.id] = reply;
+				});
+			},
+			function (failure) {
+				console.log("An error has occurred while trying to get replies from server!");
+			}
+		);
 	};
 
 	$scope.showMentions = function () {
