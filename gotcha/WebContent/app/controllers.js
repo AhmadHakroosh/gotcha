@@ -779,6 +779,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$rootScope.channels.forEach(function (channel) {
 		getChannelData(channel);
+		$timeout(function () {
+			if ($scope.length($scope.channels) > 0) {
+				$scope.openChannel(Object.keys($scope.channels)[0]);
+			} else if ($scope.length($scope.directMessages > 0)) {
+				$scope.openDirectMessage(Object.keys($scope.directMessages)[0]);
+			}
+		}, 100);
 	});
 	
 	$rootScope.directMessages.forEach(function (directMessage) {

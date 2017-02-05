@@ -152,7 +152,7 @@
 					</div>
 					<div id="input-message" class="left">
 						<form name="inputMessageForm" novalidate ng-submit="inputMessageForm.$valid && send()" >
-							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat.name}}{{activeChat.user.nickName}}" required>
+							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat && isChannel ? '#' + activeChat.name : '@' + activeChat.user.nickName}}" required>
 						</form>
 					</div>
 					<div id="send-button">
