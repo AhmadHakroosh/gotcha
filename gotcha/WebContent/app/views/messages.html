@@ -201,7 +201,35 @@
 			  	<span id="thread-replies-count">{{threads[activeThread.id].repliesCount == 0 ? "no replies" : ""}}{{threads[activeThread.id].repliesCount == 1 ? "1 reply" : ""}}{{threads[activeThread.id].repliesCount > 1 ? threads[activeThread.id].repliesCount + " replies" : ""}}</span>
 			</div>
 			<div id="thread-console">
-				
+				<div data-index="{{$index}}" ng-repeat="(id, message) in activeThread.replies | orderMessagesBy: message.lastUpdate: true" class="messages-item">
+					<div class="media-left photo left">
+				    	<img class="sender-photo media-object" ng-src="{{message.from.photoUrl}}" alt="{{message.from.nickName}} profile picture">
+				  	</div>
+				  	<div class="message-body mention-{{message.mention}}">
+			    		<div class="sender nickname">
+			    			<span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">
+			    				{{message.from.nickName}}
+			    			</span>
+			    			<span class="right message-time">{{message.time}}</span>
+			    		</div>
+						<div class="message-text">
+							{{message.text}}
+							<span class="reply-message-icon right glyphicon glyphicon-new-window" ng-click="openThread(message)" ng-show="(isChannel && activeChat.subscribers[message.from.nickName] !== undefined) || isDirectMessage">
+							</span>
+						</div>
+						<div class="message-last-reply" ng-show="message.lastReply" ng-click="openThread(message)">
+							<div class="photo">
+						    	<img class="media-object last-reply-photo" ng-src="{{message.lastReply.from.photoUrl}}" alt="{{message.lastReply.from.nickName}} profile picture">
+						  	</div>
+						  	<span class="message-replies-count" ng-click="openThread(message)">
+						  		{{message.repliesCount == 1 ? "1 reply" : message.repliesCount + " replies"}}
+						  	</span>
+						  	<span class="view-thread-messages">View thread</span>
+						  	<span class="last-reply-time">Last reply on: {{message.lastReply.time}}</span>
+						  	<span class="glyphicon glyphicon-chevron-right right"></span>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div id="thread-typing-area">
 				

@@ -456,6 +456,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 .message-time {
 	color: lightgrey;
+	font-size: 0.8em;
 }
 
 .replied-message-container {
@@ -658,6 +659,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 #thread-parent {
 	padding: 15px 0 0 0;
 	border-bottom: 1px solid #F7F7F7;
+	margin-bottom: 5px;
 }
 
 #thread-sender {
