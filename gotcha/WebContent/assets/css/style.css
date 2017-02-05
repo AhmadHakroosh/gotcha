@@ -95,11 +95,13 @@ li.divider {
 
 #top-header {
 	height: 60px;
+	z-index: 101;
 }
 
 #top-header .sidebar, #top-header #main-header {
 	height: 100%;
 	border: none;
+	z-index: 101;
 }
 
 #top-header #main-header {
@@ -217,8 +219,15 @@ li.divider {
 	padding: 0;
 }
 
+#main-activity-window .sidebar {
+	-webkit-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.2);
+}
+
 .sidebar {
 	background: #F8F8FA;
+	z-index: 100;
 }
 
 .sidebar .icon {
@@ -610,18 +619,18 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 #active-thread {
-	-webkit-box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
-	-moz-box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
-	box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
+	-webkit-box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
 }
 
 #thread-header {
 	background: #F7F7F7;
 	margin: 0 -15px;
 	padding-bottom: 15px;
-	-webkit-box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
-	-moz-box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
-	box-shadow: inset 10px 0px 15px 0px rgba(128,128,128,0.1);
+	-webkit-box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
+	box-shadow: inset 5px 0px 5px 0px rgba(0,0,0,0.2);
 }
 
 #thread-header div {

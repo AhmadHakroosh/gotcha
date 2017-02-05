@@ -177,6 +177,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.user = $rootScope.user;
 	$scope.channels = {};
 	$scope.directMessages = {};
+	$scope.threads = {};
 	$scope.activeChat;
 	$scope.activeThread;
 	$scope.showDropdown = false;
@@ -219,11 +220,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			message.mention = false;
 		}
 
-		// Set replies for the message
-		message.replies = {};
-
 		var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
-		if (message.parentId == 0) {	
+		
+		if (message.parentId == 0) {
 			if ($scope.channels[message.to] != undefined) {
 				$scope.channels[message.to].messages[message.id] = message;
 				$scope.channels[message.to].newMessages += 1;
@@ -240,19 +239,25 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
 				}
 			}
+
+			if (scrollPos == 0) {
+				$scope.activeChat.newMessages = 0;
+				$scope.mentions -= $scope.activeChat.mentions;
+				$scope.activeChat.mentions = 0;
+				$timeout(function () {
+					$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
+				}, 1);
+			}
 		} else {
-
+			threads[message.id] = message;
+			updateThreadParent(message);
 		}
 
-		if (scrollPos == 0) {
-			$scope.activeChat.newMessages = 0;
-			$scope.mentions -= $scope.activeChat.mentions;
-			$scope.activeChat.mentions = 0;
-			$timeout(function () {
-				$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
-			}, 1);
-		}
 		$scope.$apply();
+	};
+
+	var updateThreadParent = function (message) {
+
 	};
 
 	// Ifi functions
@@ -310,7 +315,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.activeChat.newMessages = 0;
 		}, 2);
 		$scope.inputMessage = undefined;
-		$scope.repliedMessage = undefined;
 	};
 
 	$scope.close = function () {
@@ -646,7 +650,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
-					message.replies = {};
 					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
 					$scope.channels[channel].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
@@ -719,7 +722,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
 				success.data.forEach(function (message) {
 					message.from = JSON.parse(message.from);
-					message.replies = {};
 					message.repliable = true;
 					$scope.directMessages[nickname].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
@@ -750,7 +752,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.openThread = function (message) {
 		$scope.activeThread = message;
-		$("#activity-window").fadeIn('500', function() {
+		$("#activity-window").fadeIn('slow', function() {
 			$("#activity-window").removeClass("col-md-10 col-sm-10");
 			$("#activity-window").addClass("col-md-6 col-sm-6");
 			$("#active-thread").addClass("col-md-4 col-sm-4");
@@ -759,13 +761,15 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.closeThread = function () {
 		$scope.activeThread = undefined;
-		$("#activity-window").fadeIn('500', function() {
+		$("#activity-window").fadeIn('slow', function() {
 			$("#activity-window").removeClass("col-md-6 col-sm-6");
 			$("#activity-window").addClass("col-md-10 col-sm-10");
-		});
-		$("#active-thread").fadeIn('500', function() {
 			$("#active-thread").removeClass("col-md-4 col-sm-4");
 		});
+	};
+
+	$scope.getTenThreadMessages = function (thread) {
+
 	};
 
 	$scope.showMentions = function () {
@@ -803,6 +807,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				}
 			);
 		});
+
+		if ($scope.activeChat !== undefined && $scope.isChannel) {
+
+		}
+
 	}, 3000);
 	
 	$scope.search = function () {
