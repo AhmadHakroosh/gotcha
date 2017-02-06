@@ -232,7 +232,16 @@
 				</div>
 			</div>
 			<div id="thread-typing-area">
-				
+				<div id="input-reply-container">
+					<div id="input-reply" class="left">
+						<form name="inputReplyForm" novalidate ng-submit="inputReplyForm.$valid && reply()" >
+							<input type="text" class="left" ng-model="inputReply" autocomplete="off" maxlength="500" placeholder="Reply on {{activeThread.from.nickName}}'s message" required>
+						</form>
+					</div>
+					<div id="send-reply-button">
+						<span class="icon right glyphicon glyphicon-send" ng-click="reply()" ng-hide="inputReply == undefined || inputReply == ''"></span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

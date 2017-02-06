@@ -193,7 +193,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if ($scope.isChannel) to = $scope.activeChat.name;
 		if ($scope.isDirectMessage) to = $scope.activeChat.user.nickName;
 		var message = {
-			"parentId": $scope.parentId | 0,
+			"parentId": 0,
 			"from": {
 				"nickName": $scope.user.nickName,
 				"description": $scope.user.description,
@@ -210,6 +210,28 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		return JSON.stringify(message);
 	};
 
+	var packReply = function () {
+		var to;
+		if ($scope.isChannel) to = $scope.activeChat.name;
+		if ($scope.isDirectMessage) to = $scope.activeChat.user.nickName;
+		var reply = {
+			"parentId": $scope.activeThread.id,
+			"from": {
+				"nickName": $scope.user.nickName,
+				"description": $scope.user.description,
+				"status": $scope.user.status,
+				"lastSeen": $scope.user.lastSeen,
+				"photoUrl": $scope.user.photoUrl
+			},
+			"to": to,
+			"text": $scope.inputReply,
+			"lastUpdate": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss"),
+			"time": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
+		};
+
+		return JSON.stringify(reply);
+	};
+
 	var unpack = function (json) {
 		var message = JSON.parse(json);
 		// Check for mention
@@ -221,43 +243,74 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}
 
 		var scrollPos = $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("scrollTop") - $("#chat-console").prop("clientHeight");
+		var threadScrollPos = $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("scrollTop") - $("#thread-console").prop("clientHeight");
 		
-		if (message.parentId == 0) {
-			if ($scope.channels[message.to] != undefined) {
+		$scope.threads[message.id] = message;
+
+		if ($scope.channels[message.to] != undefined) {
+			if (message.parentId == 0) {
 				$scope.channels[message.to].messages[message.id] = message;
-				$scope.channels[message.to].newMessages += 1;
-				$scope.channels[message.to].mentions += message.mention ? 1 : 0;
 			} else {
-				if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
+				$scope.threads[message.parentId].replies[message.id] = message;
+				$scope.threads[message.parentId].lastUpdate = message.time;
+				$scope.threads[message.parentId].lastReply = message;
+				$scope.threads[message.parentId].repliesCount += 1;
+			}
+			$scope.channels[message.to].newMessages += 1;
+			$scope.channels[message.to].mentions += message.mention ? 1 : 0;
+		} else {
+			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
+				if (message.parentId == 0) {
 					$scope.directMessages[message.from.nickName].messages[message.id] = message;
-					$scope.directMessages[message.from.nickName].newMessages += 1;
-					$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
-				} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
+				} else {
+					$scope.threads[message.parentId].replies[message.id] = message;
+					$scope.threads[message.parentId].lastUpdate = message.time;
+					$scope.threads[message.parentId].lastReply = message;
+					$scope.threads[message.parentId].repliesCount += 1;
+				}
+				$scope.directMessages[message.from.nickName].newMessages += 1;
+				$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
+			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
+				if (message.parentId == 0) {
 					getDirectMessageData(message.from.nickName);
 				} else {
-					$scope.directMessages[message.to].messages[message.id] = message;
-					$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
+					$scope.threads[message.parentId].replies[message.id] = message;
+					$scope.threads[message.parentId].lastUpdate = message.time;
+					$scope.threads[message.parentId].lastReply = message;
+					$scope.threads[message.parentId].repliesCount += 1;
 				}
+			} else {
+				if (message.parentId == 0) {
+					$scope.directMessages[message.to].messages[message.id] = message;
+				} else {
+					$scope.threads[message.parentId].replies[message.id] = message;
+					$scope.threads[message.parentId].lastUpdate = message.time;
+					$scope.threads[message.parentId].lastReply = message;
+					$scope.threads[message.parentId].repliesCount += 1;
+				}
+				$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
 			}
+		}
 
-			if (scrollPos == 0) {
-				$scope.activeChat.newMessages = 0;
-				$scope.mentions -= $scope.activeChat.mentions;
-				$scope.activeChat.mentions = 0;
-				$timeout(function () {
-					$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
-				}, 1);
-			}
-		} else {
-			threads[message.id] = message;
-			updateThreadParent(message);
+		if (scrollPos == 0) {
+			$scope.activeChat.newMessages = 0;
+			$scope.mentions -= $scope.activeChat.mentions;
+			$scope.activeChat.mentions = 0;
+			$timeout(function () {
+				$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 500);
+			}, 1);
+		}
+
+		if (threadScrollPos == 0) {
+			$scope.activeChat.newMessages = 0;
+			$scope.mentions -= $scope.activeChat.mentions;
+			$scope.activeChat.mentions = 0;
+			$timeout(function () {
+				$("#thread-console").animate({scrollTop: $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("clientHeight")}, 500);
+			}, 1);
 		}
 
 		$scope.$apply();
-	};
-
-	var updateThreadParent = function (message) {
-
 	};
 
 	// Ifi functions
@@ -279,6 +332,17 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}
 
 		if (this.scrollTop == $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")) {
+			$scope.activeChat.newMessages = 0;
+			$scope.activeChat.mentions = 0;
+		}
+	});
+	
+	$("#thread-console").on('scroll', function () {
+		if (this.scrollTop <= 0) {
+			$scope.getTenThreadMessages($scope.activeThread);
+		}
+
+		if (this.scrollTop == $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("clientHeight")) {
 			$scope.activeChat.newMessages = 0;
 			$scope.activeChat.mentions = 0;
 		}
@@ -315,6 +379,16 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.activeChat.newMessages = 0;
 		}, 2);
 		$scope.inputMessage = undefined;
+	};
+
+	$scope.reply = function () {
+		var reply = packReply();
+		$scope.session.send(reply);
+		$timeout(function () {
+			$("#thread-console").animate({scrollTop: $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("clientHeight")}, 500);
+			$scope.activeChat.newMessages = 0;
+		}, 2);
+		$scope.inputReply = undefined;
 	};
 
 	$scope.close = function () {
@@ -762,6 +836,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.openThread = function (message) {
 		$scope.activeThread = message;
+		$timeout(function () {
+			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
+		}, 1);
 		if ($scope.length(message.replies) == 0) {
 			$scope.getTenThreadMessages(message);
 		}
@@ -839,11 +916,18 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: message
 		}).then(
 			function (success) {
+				var scrollPos = $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("scrollTop") - $("#thread-console").prop("clientHeight");
 				success.data.forEach(function (reply) {
 					reply.from = JSON.parse(reply.from);
 					$scope.threads[reply.id] = reply;
 					thread.replies[reply.id] = reply;
 				});
+
+				if (success.data.length > 0) {
+					$timeout(function () {
+						$("#thread-console").scrollTop($("#thread-console").prop("scrollHeight") - $("#thread-console").prop("clientHeight") - scrollPos);
+					}, 1);
+				}
 			},
 			function (failure) {
 				console.log("An error has occurred while trying to get replies from server!");

@@ -381,9 +381,21 @@ span.user-mention.glyphicon.glyphicon-tag {
 	padding: 5px 0 5px 5px;
 }
 
+#thread-console {
+	height: 54.5%;
+	overflow: auto;
+	padding: 5px 0 5px 5px;
+}
+
 #typing-area .icon {
 	font-size: 1.8em;
 	margin: 8px 16px 8px 16px;
+	color: lightgrey;
+}
+
+#thread-typing-area .icon {
+	font-size: 1.3em;
+	margin: 8px;
 	color: lightgrey;
 }
 
@@ -393,24 +405,32 @@ span.user-mention.glyphicon.glyphicon-tag {
 	margin-right: 15px;
 }
 
+#thread-typing-area {
+	background: #FFFFFF;
+	border-radius: 8px;
+	margin-right: 15px;
+	height: 10%;
+	top: -5px;
+}
+
 #typing-area .icon:hover {
 	cursor: pointer;
 	color: #007AB8;
 }
 
-#input-message-container {
+#input-message-container, #input-reply-container {
 	height: 75%;
 	border: 2px solid lightgrey;
 	border-radius: 8px;
 	background: #FFFFFF;
 }
 
-#input-message {
+#input-message, #input-reply {
 	height: 100%;
-	width: 89%;
+	width: 82%;
 }
 
-#input-message form, #input-message form input {
+#input-message form, #input-message form input, #input-reply form, #input-reply form input {
 	border: none;
 	height: 100%;
 	width: 100%;
@@ -418,8 +438,20 @@ span.user-mention.glyphicon.glyphicon-tag {
 	margin: 0;
 }
 
+#send-reply-button .icon {
+	color: rgb(0, 122, 184);
+}
+
 .messages-item {
 	padding: 6px 0;
+}
+
+#thread-console .messages-item {
+	margin: 0 15px 0 0;
+}
+
+#thread-console .messages-item .message-body {
+	padding-left: 45px;
 }
 
 .messages-item .photo {

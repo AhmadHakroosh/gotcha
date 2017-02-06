@@ -140,6 +140,8 @@ public class GotChaServerEndpoint {
 	 */
 	private int store (Message message) {
 		int messageId = 1;
+		if (message.parentId() != 0) updateParent(message);
+		
 		try {
 			Connection connection = Globals.database.getConnection();
 			PreparedStatement statement = connection.prepareStatement(Globals.INSERT_MESSAGE, messageId);
@@ -169,6 +171,25 @@ public class GotChaServerEndpoint {
 		return messageId;
 	}
     
+	private void updateParent (Message message) {
+		try {
+			Connection connection = Globals.database.getConnection();
+			PreparedStatement statement = connection.prepareStatement(Globals.UPDATE_MESSAGE_LAST_UPDATE_TIME);
+
+			statement.setTimestamp(1, message.time());
+			statement.setInt(2, message.parentId());
+			
+			statement.executeUpdate();
+			
+			connection.commit();
+			statement.close();
+			connection.close();
+			
+		} catch (SQLException e ){
+			System.out.println("An error has occured while trying to execute the query!");
+		}
+	}
+	
     private void logoff (String user) {
     	String status = "away";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
