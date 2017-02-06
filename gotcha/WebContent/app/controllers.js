@@ -90,7 +90,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"description": $scope.description,
 			"photoUrl": $scope.photoUrl !== undefined ? $scope.photoUrl : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSMyKQ_ZaKgbgQ6PE--NyftpawhbFDuv0lIZAslbH_o5QVS3KY9wHo87AqxyQ",
 			"status" : "active",
-			"signedUp": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss"),
 			"lastSeen": $filter('date')(Date.now(), "MMM dd,yyyy HH:mm:ss")
 		};
 
