@@ -450,6 +450,10 @@ span.user-mention.glyphicon.glyphicon-tag {
 	margin: 0 15px 0 0;
 }
 
+#thread-console .messages-item .message-body:hover .message-text .reply-message-icon {
+	display: block;
+}
+
 #thread-console .messages-item .message-body {
 	padding-left: 45px;
 }
@@ -500,7 +504,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 	margin: 5px;
 }
 
-#chat-console .messages-item .message-body {
+#chat-console .messages-item .message-body, #thread-console .messages-item .message-body {
 	background: #F8F8FA;
 	margin: 5px 15px 0 40px;
 	border-radius: 5px;
@@ -732,6 +736,10 @@ span.user-mention.glyphicon.glyphicon-tag {
 	padding: 2px;
 	border-radius: 5px;
 	height: 31px;
+}
+
+.reply.message-last-reply {
+	width: 90%;
 }
 
 .message-last-reply:hover {

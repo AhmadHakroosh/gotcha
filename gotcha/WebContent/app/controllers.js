@@ -255,6 +255,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.threads[message.parentId].lastReply = message;
 				$scope.threads[message.parentId].repliesCount += 1;
 			}
+			message.replies = {};
+			message.repliable = true;
+			message.repliesCount = 0;
 			$scope.channels[message.to].newMessages += 1;
 			$scope.channels[message.to].mentions += message.mention ? 1 : 0;
 		} else {
@@ -267,6 +270,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					$scope.threads[message.parentId].lastReply = message;
 					$scope.threads[message.parentId].repliesCount += 1;
 				}
+				message.replies = {};
+				message.repliable = true;
+				message.repliesCount = 0;
 				$scope.directMessages[message.from.nickName].newMessages += 1;
 				$scope.directMessages[message.from.nickName].mentions += message.mention ? 1 : 0;
 			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
@@ -278,6 +284,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					$scope.threads[message.parentId].lastReply = message;
 					$scope.threads[message.parentId].repliesCount += 1;
 				}
+				message.replies = {};
+				message.repliesCount = 0;
+				message.repliable = true;
 			} else {
 				if (message.parentId == 0) {
 					$scope.directMessages[message.to].messages[message.id] = message;
@@ -287,6 +296,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					$scope.threads[message.parentId].lastReply = message;
 					$scope.threads[message.parentId].repliesCount += 1;
 				}
+				message.replies = {};
+				message.repliesCount = 0;
+				message.repliable = true;
 				$scope.directMessages[message.to].mentions += message.mention ? 1 : 0;
 			}
 		}
@@ -387,7 +399,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$("#thread-console").animate({scrollTop: $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("clientHeight")}, 500);
 			$scope.activeChat.newMessages = 0;
 		}, 2);
-		$scope.inputReply = undefined;
+		$scope.inputReply = "@" + $scope.activeThread.from.nickName + ": ";
 	};
 
 	$scope.close = function () {
@@ -639,7 +651,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.query = undefined;
 		$timeout(function () {
 			$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
-		}, 1);
+		}, 2);
 	};
 	
 	// Open direct chat method
@@ -660,7 +672,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.directMessages[nickname].lastRead = Date.now();
 				$timeout(function () {
 					$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
-				}, 1);
+				}, 2);
 			}, 1000);
 		} else {
 			$("#channels-list li").removeClass("active-chat");
@@ -675,7 +687,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$scope.directMessages[nickname].lastRead = Date.now();
 			$timeout(function () {
 				$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
-			}, 1);
+			}, 2);
 		}
 		
 		$scope.query = undefined;
@@ -837,7 +849,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$scope.activeThread = message;
 		$timeout(function () {
 			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
-		}, 1);
+		}, 2);
 		if ($scope.length(message.replies) == 0) {
 			$scope.getTenThreadMessages(message);
 		}
@@ -846,6 +858,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$("#activity-window").addClass("col-md-6 col-sm-6");
 			$("#active-thread").addClass("col-md-4 col-sm-4");
 		});
+		$scope.inputReply = "@" + $scope.activeThread.from.nickName + ": ";
 	};
 
 	$scope.closeThread = function () {
@@ -917,9 +930,34 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				var scrollPos = $("#thread-console").prop("scrollHeight") - $("#thread-console").prop("scrollTop") - $("#thread-console").prop("clientHeight");
 				success.data.forEach(function (reply) {
+					$scope.getLastThreadMessage(reply);
+					$scope.getMessageRepliesNumber(reply);
 					reply.from = JSON.parse(reply.from);
 					$scope.threads[reply.id] = reply;
 					thread.replies[reply.id] = reply;
+					reply.replies = {};
+					if ($scope.isChannel) {
+						reply.repliable = $scope.activeChat.subscribers[reply.from.nickName] !== undefined ? true : false;
+					} else {
+						reply.repliable = true;
+					}
+					var replyTime = Date.parse(reply.lastUpdate);
+					var lastRead;
+					if ($scope.isChannel) {
+						lastRead = Date.parse($scope.channels[reply.to].lastRead);
+					} else {
+						lastRead = Date.parse($scope.activeChat.user.nickName.lastRead);
+					}
+					if (replyTime >= lastRead && reply.from != $scope.user.nickName) {
+						$scope.directMessages[nickname].newMessages += 1;
+						if (reply.text.indexOf("@" + $scope.user.nickName) != -1) {
+							$scope.mentions += 1;
+							$scope.directMessages[nickname].mentions += 1;
+						}
+					}
+					if (reply.text.indexOf("@" + $scope.user.nickName) != -1) {
+						reply.mention = true;
+					}
 				});
 
 				if (success.data.length > 0) {

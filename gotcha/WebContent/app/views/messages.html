@@ -217,7 +217,7 @@
 							<span class="reply-message-icon right glyphicon glyphicon-new-window" ng-click="openThread(message)" ng-show="(isChannel && activeChat.subscribers[message.from.nickName] !== undefined) || isDirectMessage">
 							</span>
 						</div>
-						<div class="message-last-reply" ng-show="message.lastReply" ng-click="openThread(message)">
+						<div class="reply message-last-reply" ng-show="message.lastReply" ng-click="openThread(message)">
 							<div class="photo">
 						    	<img class="media-object last-reply-photo" ng-src="{{message.lastReply.from.photoUrl}}" alt="{{message.lastReply.from.nickName}} profile picture">
 						  	</div>
@@ -231,11 +231,11 @@
 					</div>
 				</div>
 			</div>
-			<div id="thread-typing-area">
+			<div id="thread-typing-area" ng-show="activeThread.repliable">
 				<div id="input-reply-container">
 					<div id="input-reply" class="left">
 						<form name="inputReplyForm" novalidate ng-submit="inputReplyForm.$valid && reply()" >
-							<input type="text" class="left" ng-model="inputReply" autocomplete="off" maxlength="500" placeholder="Reply on {{activeThread.from.nickName}}'s message" required>
+							<input type="text" class="left" ng-model="inputReply" autocomplete="off" maxlength="500" placeholder="Reply {{activeThread.from.nickName}}'s message" required>
 						</form>
 					</div>
 					<div id="send-reply-button">

@@ -36,7 +36,7 @@ import gotcha.globals.Globals;
 public class GotChaServerEndpoint {
 	
 	// Track online users in the system
-	private static Map<String, Session> active = Collections.synchronizedMap(new HashMap<String, Session>()); 
+	private static HashMap<String, Session> active = new HashMap<String, Session>(); 
 	
 	// Decoder & Encoder
 	MessageDecoder decoder = new MessageDecoder();
