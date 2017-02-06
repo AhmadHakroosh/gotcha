@@ -11,8 +11,8 @@ gotcha.filter("orderMessagesBy", function () {
 		}
 
 		messages.sort(function (message_a, message_b) {
-			var date_a = Date.parse(message_a.time);
-			var date_b = Date.parse(message_b.time);
+			var date_a = Date.parse(message_a.lastUpdate);
+			var date_b = Date.parse(message_b.lastUpdate);
 			return date_a - date_b;
 		});
 
