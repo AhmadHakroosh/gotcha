@@ -847,18 +847,16 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 	$scope.openThread = function (message) {
 		$scope.activeThread = message;
-		$timeout(function () {
-			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
-		}, 2);
-		if ($scope.length(message.replies) == 0) {
-			$scope.getTenThreadMessages(message);
-		}
 		$("#activity-window").fadeIn('slow', function() {
 			$("#activity-window").removeClass("col-md-10 col-sm-10");
 			$("#activity-window").addClass("col-md-6 col-sm-6");
 			$("#active-thread").addClass("col-md-4 col-sm-4");
 		});
+		$scope.getTenThreadMessages(message);
 		$scope.inputReply = "@" + $scope.activeThread.from.nickName + ": ";
+		$timeout(function () {
+			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
+		}, 2);
 	};
 
 	$scope.closeThread = function () {
