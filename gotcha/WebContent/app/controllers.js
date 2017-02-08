@@ -249,6 +249,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if ($scope.channels[message.to] != undefined) {
 			if (message.parentId == 0) {
 				$scope.channels[message.to].messages[message.id] = message;
+				message.isMain = true;
 			} else {
 				$scope.threads[message.parentId].replies[message.id] = message;
 				$scope.threads[message.parentId].lastUpdate = message.time;
@@ -264,6 +265,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] !== undefined) {
 				if (message.parentId == 0) {
 					$scope.directMessages[message.from.nickName].messages[message.id] = message;
+					message.isMain = true;
 				} else {
 					$scope.threads[message.parentId].replies[message.id] = message;
 					$scope.threads[message.parentId].lastUpdate = message.time;
@@ -278,6 +280,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			} else if (message.to == $scope.user.nickName && $scope.directMessages[message.from.nickName] == undefined) {
 				if (message.parentId == 0) {
 					getDirectMessageData(message.from.nickName);
+					message.isMain = true;
 				} else {
 					$scope.threads[message.parentId].replies[message.id] = message;
 					$scope.threads[message.parentId].lastUpdate = message.time;
@@ -290,6 +293,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			} else {
 				if (message.parentId == 0) {
 					$scope.directMessages[message.to].messages[message.id] = message;
+					message.isMain = true;
 				} else {
 					$scope.threads[message.parentId].replies[message.id] = message;
 					$scope.threads[message.parentId].lastUpdate = message.time;
@@ -460,9 +464,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: {}
 		}).then(
 			function (success) {
+				$scope.close();
 				var data = success.data;
 				$rootScope.route = data.route;
-				$scope.close();
 			},
 			function (failure) {
 				console.log(failure.data);
@@ -742,6 +746,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					message.from = JSON.parse(message.from);
 					message.repliable = $scope.channels[channel].subscribers[message.from.nickName] !== undefined ? true : false;
 					message.replies = {};
+					message.isMain = true;
 					$scope.channels[channel].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.channels[channel].lastRead);
@@ -818,6 +823,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 					message.from = JSON.parse(message.from);
 					message.repliable = true;
 					message.replies = {};
+					message.isMain = true;
 					$scope.directMessages[nickname].messages[message.id] = message;
 					var messageTime = Date.parse(message.lastUpdate);
 					var lastRead = Date.parse($scope.directMessages[nickname].lastRead);

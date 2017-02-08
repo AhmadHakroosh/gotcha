@@ -195,7 +195,7 @@
 				<div class="media-left photo left">
 			    	<img class="sender-photo media-object" ng-src="{{activeThread.from.photoUrl}}" alt="{{activeThread.from.nickName}} profile picture">
 			  	</div>
-			  	<div id="thread-sender" class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(activeThread.from.nickName)">{{activeThread.from.nickName}}</span><span id="thread-time" class="message-time">{{activeThread.time}}</span></div>
+			  	<div id="thread-sender" class="sender nickname"><span class="bold message-sender" ng-click="openDirectMessage(activeThread.from.nickName)">{{activeThread.from.nickName}}</span><span id="thread-time" class="message-time">{{activeThread.time}}</span><span id="thread-back-button" class="right glyphicon glyphicon-arrow-right" ng-hide="activeThread.isMain" ng-click="openThread(threads[activeThread.parentId])"></span></div>
 			  	<div id="thread-source">{{isChannel ? activeChat.name : "Direct message"}}</div>
 			  	<blockquote id="thread-message"><p>{{activeThread.text}}</p></blockquote>
 			  	<span id="thread-replies-count">{{threads[activeThread.id].repliesCount == 0 ? "no replies" : ""}}{{threads[activeThread.id].repliesCount == 1 ? "1 reply" : ""}}{{threads[activeThread.id].repliesCount > 1 ? threads[activeThread.id].repliesCount + " replies" : ""}}</span>

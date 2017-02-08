@@ -712,6 +712,17 @@ span.user-mention.glyphicon.glyphicon-tag {
 	font-size: 0.8em;
 }
 
+#thread-back-button {
+	color: lightgrey;
+	font-size: 1.2em;
+	padding: 5px 2px;
+}
+
+#thread-back-button:hover {
+	color: grey;
+	cursor: pointer;
+}
+
 #thread-source {
 	line-height: 20px;
 }
