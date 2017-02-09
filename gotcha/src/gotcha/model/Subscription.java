@@ -1,9 +1,12 @@
 package gotcha.model;
 
+import java.sql.Timestamp;
+
 public class Subscription {
 	private int id;
 	private String nickname;
 	private String channel;
+	private Timestamp lastRead;
 
 	// Constructor
 	public Subscription (String nickname, String channel) {
@@ -22,6 +25,10 @@ public class Subscription {
 	public String channel () {
 		return this.channel;
 	}
+	
+	public Timestamp lastRead () {
+		return this.lastRead;
+	}
 
 	public void id (int id) {
 		this.id = id;
@@ -33,5 +40,9 @@ public class Subscription {
 
 	public void channel (String channel) {
 		this.channel = channel;
+	}
+	
+	public void lastRead (Timestamp time) {
+		this.lastRead = time;
 	}
 }

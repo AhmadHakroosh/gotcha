@@ -316,7 +316,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}, 1);
 		}
 
-		if (threadScrollPos == 0) {
+		if ($scope.activeThread && threadScrollPos == 0) {
 			$scope.activeChat.newMessages = 0;
 			$scope.mentions -= $scope.activeChat.mentions;
 			$scope.activeChat.mentions = 0;
@@ -415,16 +415,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		return $scope.user.status;
 	}, function (newValue, oldValue) {
 		$scope.oppositeStatus = newValue == "active" ? "away" : "active";
-	});
-
-	$scope.$watch(function () {
-		return $scope.inputMessage;
-	}, function (newValue, oldValue) {
-		if (newValue === undefined || newValue == "") {
-			$(".glyphicon-send").css("color", "lightgrey");
-		} else {
-			$(".glyphicon-send").css("color", "#007AB8");
-		}
 	});
 	
 	$scope.$watch(function () {
@@ -846,7 +836,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				}
 			},
 			function (failure) {
-				console.log("Error while retrieving channel messages.");
+				console.log("Error while retrieving direct messages.");
 			}
 		);
 	};
@@ -858,11 +848,13 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			$("#activity-window").addClass("col-md-6 col-sm-6");
 			$("#active-thread").addClass("col-md-4 col-sm-4");
 		});
-		$scope.getTenThreadMessages(message);
+		if ($scope.length(message.replies) < 10) {
+			$scope.getTenThreadMessages(message);
+		}
 		$scope.inputReply = "@" + $scope.activeThread.from.nickName + ": ";
 		$timeout(function () {
 			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
-		}, 2);
+		}, 3);
 	};
 
 	$scope.closeThread = function () {

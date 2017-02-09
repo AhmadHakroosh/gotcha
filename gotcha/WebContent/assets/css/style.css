@@ -439,7 +439,13 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 #send-reply-button .icon {
+	color: lightgrey;
+	top: 3px;
+}
+
+#send-reply-button .icon:hover {
 	color: rgb(0, 122, 184);
+	cursor: pointer;
 }
 
 .messages-item {
