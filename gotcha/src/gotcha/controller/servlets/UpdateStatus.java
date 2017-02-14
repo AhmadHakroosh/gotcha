@@ -66,7 +66,7 @@ public class UpdateStatus extends HttpServlet {
 			
 			statement.setString(1, status);
 			statement.setTimestamp(2, last_seen);
-			statement.setString(3, user.username());
+			statement.setString(3, user.nickName());
 			statement.executeUpdate();
 			
 			connection.commit();

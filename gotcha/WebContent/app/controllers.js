@@ -349,6 +349,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		if (this.scrollTop == $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")) {
 			$scope.activeChat.newMessages = 0;
 			$scope.activeChat.mentions = 0;
+			$scope.viewLastMessages = false;
+		}
+
+		if (this.scrollTop < $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight") - 50) {
+			$scope.viewLastMessages = true;
 		}
 	});
 	
@@ -968,6 +973,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		);
 	};
 
+	var getMainParentThread = function (thread) {
+		while (threads[thread.parentId].id != 0) {
+
+		}
+	};
+
 	$scope.showMentions = function () {
 		$scope.mentions = 0;
 		// TODO
@@ -1043,4 +1054,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			}
 		);
 	};
+
+	$scope.showLastMessages = function () {
+		$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
+		$scope.viewLastMessages = false;
+	}
 }])
