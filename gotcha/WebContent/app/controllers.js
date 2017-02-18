@@ -33,6 +33,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 // Login controller that uses 'restService' for restful call
 .controller('loginController', ['$scope', '$rootScope', '$timeout', '$http', 'messagingService', 'notifyService', 'animationService', function($scope, $rootScope, $timeout, $http, messagingService, notifyService, animationService) {
 	
+	$("body").css({
+		"background": "url(assets/images/login.png)",
+		"background-size": "cover"
+	});
+
 	$scope.login = function () {
 		var user = {
 			"username": $scope.username,
@@ -167,6 +172,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 
 .controller('messagesController', ['$document', '$scope', '$http', '$timeout', '$rootScope', '$location', '$filter', '$interval', 'messagingService', 'notifyService', function($document, $scope, $http, $timeout, $rootScope, $location, $filter, $interval, messagingService, notifyService) {
 	
+	$("body").css({
+		"background": "none",
+	});
+
 	$scope.mentions = 0;
 	$scope.length = function (object) {
 		return Object.keys(object).length;
@@ -1056,7 +1065,7 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.showLastMessages = function () {
-		$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 100);
+		$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 1000);
 		$scope.viewLastMessages = false;
 	}
 }])

@@ -56,8 +56,7 @@ public class Startup implements ServletContextListener {
 								+ 		"ID 			INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 								+ 		"NICKNAME 		VARCHAR(20) NOT NULL REFERENCES USERS(NICKNAME) ON DELETE CASCADE,"
 								+ 		"CHANNEL 		VARCHAR(30) NOT NULL REFERENCES CHANNELS(NAME) ON DELETE CASCADE,"
-								+ 		"LAST_READ		TIMESTAMP NOT NULL"
-					 			+ 	")"
+								+ 	")"
 						   	       );
 
         	statement.executeUpdate("CREATE TABLE MESSAGES ("

@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.websocket.DecodeException;
@@ -34,7 +36,7 @@ import gotcha.globals.Globals;
 public class GotChaServerEndpoint {
 	
 	// Track online users in the system
-	private static HashMap<String, Session> active = new HashMap<String, Session>(); 
+	private static Map<String, Session> active = Collections.synchronizedMap(new HashMap<String, Session>()); 
 	
 	// Decoder & Encoder
 	MessageDecoder decoder = new MessageDecoder();

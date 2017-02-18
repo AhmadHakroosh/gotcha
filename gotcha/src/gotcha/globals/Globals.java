@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.*;
 
@@ -19,7 +21,7 @@ public final class Globals {
 	// System search engine instantiation
 	public static GotchaSearchEngine searchEngine;
 	// Public system properties
-	public static HashMap<String, ArrayList<String>> channels = new HashMap<String, ArrayList<String>>();
+	public static Map<String, ArrayList<String>> channels = Collections.synchronizedMap(new HashMap<String, ArrayList<String>>());
 
 	// Public variables and statements for SQL queries
 	// USERS TABLE STATEMENTS

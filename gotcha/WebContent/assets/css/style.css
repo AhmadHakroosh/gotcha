@@ -83,10 +83,15 @@ li.divider {
 }
 
 #login-page #login-form {
+	background: #FFFFFF;
 	padding: 15px;
 	margin-top: 130px;
 	border: 1px solid lightgrey;
 	border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 20px 0px black;
+	-moz-box-shadow: 0px 0px 20px 0px black;
+	box-shadow: 0px 0px 20px 0px black;
+	opacity: 0.9;
 }
 
 #login-page .sign-up-area div button {
@@ -549,6 +554,13 @@ span.user-mention.glyphicon.glyphicon-tag {
 	padding: 0 10px 5px 10px;
 }
 
+#thread-console .messages-item .message-body, #thread-console .messages-item .message-body {
+	background: #F8F8FA;
+	margin: 5px 0 0 40px;
+	border-radius: 5px;
+	padding: 0 10px 5px 10px;
+}
+
 #chat-console .messages-item .message-body:hover .message-text .reply-message-icon {
 	display: block;
 }
@@ -781,7 +793,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 .message-last-reply {
-	width: 50%;
+	width: 80%;
 	padding: 2px;
 	border-radius: 5px;
 	height: 31px;
@@ -795,6 +807,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 	background: #FFFFFF;
 	border: 1px solid lightgrey;
 	cursor: pointer;
+	width: 60%;
 }
 
 .message-last-reply .photo {
