@@ -26,8 +26,20 @@ input:focus {
 	float: left;
 }
 
+.align-left {
+	text-align: left;
+}
+
+.align-right {
+	text-align: right;
+}
+
 .absolute-postion {
 	position: absolute;
+}
+
+.no-right-padding {
+	padding-right: 0 !important;
 }
 
 .media-object {
@@ -379,15 +391,15 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 #activity-window {
-	padding: 0 0 0 15px;
 	position: relative;
 	height: 90%;
+	padding: 0;
 }
 
 #chat-console {
 	height: 100%;
 	overflow: auto;
-	padding: 5px 0 5px 5px;
+	padding: 0 15px;
 }
 
 #view-last-messages {
@@ -395,7 +407,8 @@ span.user-mention.glyphicon.glyphicon-tag {
 	height: 35px;
 	position: absolute;
 	border-radius: 17.5px;
-	bottom: 15px;
+	bottom: 5px;
+	left: 15px;
 	background: #F8F8FA;
 	-webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
@@ -419,9 +432,8 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 #thread-console {
-	height: 54.5%;
 	overflow: auto;
-	padding: 5px 0 5px 5px;
+	margin: 5px -15px 0 -15px;
 }
 
 #typing-area .icon {
@@ -437,17 +449,17 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 #typing-area {
-	background: #FFFFFF;
 	border-radius: 8px;
-	margin-right: 15px;
+	position: fixed;
+	bottom: 0;
 }
 
 #thread-typing-area {
-	background: #FFFFFF;
 	border-radius: 8px;
-	margin-right: 15px;
-	height: 10%;
-	top: -5px;
+	height: 9%;
+	position: fixed;
+	bottom: 0;
+	right: 0px;
 }
 
 #typing-area .icon:hover {
@@ -486,11 +498,11 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 .messages-item {
-	padding: 6px 0;
+	padding: 6px 15px;
 }
 
 #thread-console .messages-item {
-	margin: 0 15px 0 0;
+	
 }
 
 #thread-console .messages-item .message-body:hover .message-text .reply-message-icon {
@@ -502,11 +514,11 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 .messages-item .photo {
-	padding: 5px 10px 5px 0;	
+		
 }
 
 .messages-item div {
-	display: block;	
+	
 }
 
 .messages-item .photo .sender-photo {
@@ -515,8 +527,11 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 .sender.nickname {
-	padding-top: 8px;
-	line-height: 0.9em;
+	padding: 0 15px;
+}
+
+#thread-console .messages-item .message-body .sender.nickname {
+	padding: 0;
 }
 
 .message-sender {
@@ -549,16 +564,16 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 #chat-console .messages-item .message-body, #thread-console .messages-item .message-body {
 	background: #F8F8FA;
-	margin: 5px 15px 0 40px;
 	border-radius: 5px;
-	padding: 0 10px 5px 10px;
+	padding: 5px 10px;
+	margin-left: 45px;
 }
 
 #thread-console .messages-item .message-body, #thread-console .messages-item .message-body {
 	background: #F8F8FA;
-	margin: 5px 0 0 40px;
 	border-radius: 5px;
-	padding: 0 10px 5px 10px;
+	padding: 5px 10px;
+	margin-left: 45px;
 }
 
 #chat-console .messages-item .message-body:hover .message-text .reply-message-icon {
@@ -571,8 +586,13 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 .reply-message-icon {
 	display: none;
-	padding: 5px 0 5px 5px;
+	padding-right: 0;
 	color: lightgrey;
+	left: -15px;
+}
+
+#thread-console .messages-item .message-body .message-text .reply-message-icon {
+	left: 0;
 }
 
 .reply-message-icon:hover {
@@ -793,21 +813,19 @@ span.user-mention.glyphicon.glyphicon-tag {
 }
 
 .message-last-reply {
-	width: 80%;
 	padding: 2px;
 	border-radius: 5px;
 	height: 31px;
+	margin: 0;
 }
 
 .reply.message-last-reply {
-	width: 90%;
 }
 
 .message-last-reply:hover {
 	background: #FFFFFF;
 	border: 1px solid lightgrey;
 	cursor: pointer;
-	width: 60%;
 }
 
 .message-last-reply .photo {
@@ -873,7 +891,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 ::-webkit-scrollbar {
     width: 5px;
-    padding: 5px -5px 5px 0;
+    padding: 5px 5px 5px 0;
 }
  
 ::-webkit-scrollbar-track {
@@ -892,3 +910,30 @@ span.user-mention.glyphicon.glyphicon-tag {
 ::-webkit-scrollbar-thumb:window-inactive {
 	background: #D9D9DE; 
 }
+
+/* Mobile related style */
+
+#mobile-menu-icon {
+	padding: 17px 10px;
+    font-size: 1.9em;
+    color: lightgrey;
+    text-align: center;
+    top: -1px;
+}
+
+#mobile-menu-icon:hover {
+	color: grey;
+    cursor: pointer;
+}
+
+@media (max-width: 767px) {
+	.chat-header .chat-title {
+	    padding-left: 0;
+	}
+
+	#top-header #main-header {
+		height: 60px;
+	}
+}
+
+	

@@ -377,6 +377,12 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		}
 	});
 
+	$("#mobile-menu-icon").on("click", function () {
+		$(".sidebar").toggleClass('hidden-xs').toggleClass('col-xs-10');
+		$("#top-header #main-header").css({'position':'absolute', 'z-index':'1000'});
+		$("#activity-window").css({'position':'absolute', 'z-index':'0'});
+	});
+
 	var user = $scope.user;
 	var sessionUri = "ws://" + $location.host() + ":" + $location.port() + "/gotcha/" + user.nickName;
 	$scope.session = new WebSocket(sessionUri);
@@ -649,6 +655,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 		$("#channels-list li").removeClass("active-chat");
 		$("#direct-messages-list li").removeClass("active-chat");
 		$("#channel-" + channel).addClass("active-chat");
+		$(".sidebar").addClass('hidden-xs').removeClass('col-xs-10');
+		$("#top-header #main-header").css({'position':'', 'z-index':'1001'});
+		$("#activity-window").css({'position':'relative', 'z-index':'0'});
 		$scope.isChannel = true;
 		$scope.isDirectMessage = false;
 		$scope.activeChat = $scope.channels[channel];
@@ -665,6 +674,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	// Open direct chat method
 	$scope.openDirectMessage = function (nickname) {
 		$scope.closeThread();
+		$(".sidebar").addClass('hidden-xs').removeClass('col-xs-10');
+		$("#top-header #main-header").css({'position':'', 'z-index':'1001'});
+		$("#activity-window").css({'position':'relative', 'z-index':'0'});
 		if ($scope.directMessages[nickname] == undefined) {
 			getDirectMessageData(nickname);
 			$timeout(function () {
@@ -858,25 +870,39 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.openThread = function (message) {
 		$scope.activeThread = message;
 		$("#activity-window").fadeIn('slow', function() {
-			$("#activity-window").removeClass("col-md-10 col-sm-10");
-			$("#activity-window").addClass("col-md-6 col-sm-6");
-			$("#active-thread").addClass("col-md-4 col-sm-4");
+			$("#activity-window").removeClass("col-lg-10 col-md-10 col-sm-9");
+			$("#activity-window").addClass("col-lg-6 col-md-6 col-sm-5");
+			$("#typing-area").removeClass("col-lg-10 col-md-10 col-sm-9");
+			$("#typing-area").addClass("col-lg-6 col-md-6 col-sm-5");
+			$("#active-thread").addClass("col-lg-4 col-md-4 col-sm-4 col-xs-10");
+			if ($(window).width() < 768) {
+				$("#activity-window").css({'right': '83.3333333%'});
+				$("#typing-area").css({'right': '83.3333333%'});
+				$("#active-thread").css({'right': '0', 'position': 'absolute'});
+			}
 		});
 		if ($scope.length(message.replies) < 10) {
 			$scope.getTenThreadMessages(message);
 		}
 		$scope.inputReply = "@" + $scope.activeThread.from.nickName + ": ";
 		$timeout(function () {
-			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.179 * $("#main-activity-window").height()));
+			$("#thread-console").height($("#active-thread").height() - $("#thread-parent").height() - $("#thread-header").height() - (0.1625 * $("#main-activity-window").height()));
 		}, 3);
 	};
 
 	$scope.closeThread = function () {
 		$scope.activeThread = undefined;
 		$("#activity-window").fadeIn('slow', function() {
-			$("#activity-window").removeClass("col-md-6 col-sm-6");
-			$("#activity-window").addClass("col-md-10 col-sm-10");
-			$("#active-thread").removeClass("col-md-4 col-sm-4");
+			$("#activity-window").removeClass("col-lg-6 col-md-6 col-sm-5");
+			$("#activity-window").addClass("col-lg-10 col-md-10 col-sm-9");
+			$("#typing-area").removeClass("col-lg-6 col-md-6 col-sm-5");
+			$("#typing-area").addClass("col-lg-10 col-md-10 col-sm-9");
+			$("#active-thread").removeClass("col-lg-4 col-md-4 col-sm-4");
+			if ($(window).width() < 768) {
+				$("#activity-window").css({'right': ''});
+				$("#typing-area").css({'right': ''});
+				$("#active-thread").css({'right': '', 'position': ''});
+			}
 		});
 	};
 

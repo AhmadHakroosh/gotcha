@@ -1,7 +1,7 @@
 <div ng-controller="messagesController">
 	<div id="top-header" class="row">
 		<!-- Profile area -->
-		<div class="sidebar col-md-2 col-sm-2" id="profile-dropdown-menu-toggle" ng-click="toggleShow()">
+		<div class="sidebar hidden-xs col-lg-2 col-md-2 col-sm-3" id="profile-dropdown-menu-toggle" ng-click="toggleShow()">
 			<div id="profile-area">
 				<div class="media">
 					<div class="media-left">
@@ -23,9 +23,10 @@
 			</div>
 		</div>
 		<!-- Main activity menu -->
-		<div id="main-header" class="col-md-10 col-sm-10">
+		<div id="main-header" class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
 			<header id="gotcha-header">
-				<div class="chat-header left col-md-9 col-sm-9">
+				<span id="mobile-menu-icon" class="left visible-xs col-xs-2 glyphicon glyphicon-menu-hamburger"></span>
+				<div class="chat-header left col-lg-9 col-md-9 col-sm-9 col-xs-10">
 					<div class="chat-title left">
 						<h5 id="chat-name-container" class="chat-name-container bold">
 							<span class="chat-name" ng-show="isChannel"><span class="italic">&#35;</span> {{activeChat.name}}</span>
@@ -56,14 +57,14 @@
 							<div class="chat-header-info-item">{{activeChat.user.description}}</div>
 						</div>
 					</div>
-					<div class="divider-bar right"></div>
-					<div class="chat-header-actions right">
+					<div class="hidden-xs divider-bar right"></div>
+					<div class="hidden-xs chat-header-actions right">
 						<div class="icon right"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
 						<div class="icon right"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
 					</div>
 				</div>
-				<div class="global-header col-md-3 col-sm-3">
-					<div id="search-container" class="col-md-10 col-sm-10">
+				<div class="hidden-xs global-header col-lg-3 col-md-3 col-sm-3">
+					<div id="search-container" class="col-lg-10 col-md-10 col-sm-10">
 						<form role="search" accept-charset="utf-8" id="global-search-form">
 							<div class="search-icon left"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
 							<div class="search-input left">
@@ -102,7 +103,7 @@
 							</ul>
 						</div>
 					</div>
-					<div id="recent-mentions" class="col-md-2 col-sm-2 right">
+					<div id="recent-mentions" class="col-lg-2 col-md-2 col-sm-2 right">
 						<div class="icon right" ng-click="showMentions()">
 							<span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
 							<span class="badge" ng-show="mentions > 0">{{mentions}}</span>
@@ -114,7 +115,7 @@
 	</div>
 	<div id="main-activity-window" class="row">
 		<!-- Sidebar & lists -->
-		<div class="sidebar col-md-2 col-sm-2">
+		<div class="sidebar hidden-xs col-lg-2 col-md-2 col-sm-3">
 			<div id="channels-list">
 				<span class="list-header">Channels <span class="counter" ng-hide="length(channels) == 0">({{length(channels)}})</span><span data-toggle="modal" data-target="#create-channel-form" class="icon right glyphicon glyphicon-plus-sign"></span></span>
 				<ul>
@@ -129,27 +130,27 @@
 			</div>
 		</div>
 		<!-- Main activity window (active chat & typing area) -->
-		<div id="activity-window" class="col-md-10 col-sm-10">
+		<div id="activity-window" class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
 			<!-- Active chat -->
 			<div id="active-chat">
 				<div id="chat-console">
-					<div data-index="{{$index}}" ng-repeat="(id, message) in activeChat.messages | orderMessagesBy: message.lastUpdate: true" class="messages-item">
-						<div class="media-left photo left">
+					<div data-index="{{$index}}" ng-repeat="(id, message) in activeChat.messages | orderMessagesBy: message.lastUpdate: true" class="row messages-item">
+						<div class="pull-left media-left photo">
 					    	<img class="sender-photo media-object" ng-src="{{message.from.photoUrl}}" alt="{{message.from.nickName}} profile picture">
 					  	</div>
 					  	<div class="message-body mention-{{message.mention}}">
-				    		<div class="sender nickname">
-				    			<span class="bold message-sender" ng-click="openDirectMessage(message.from.nickName)">
+				    		<div class="row sender nickname">
+				    			<span class="left bold message-sender" ng-click="openDirectMessage(message.from.nickName)">
 				    				{{message.from.nickName}}
 				    			</span>
-				    			<span class="right message-time">{{message.time}}</span>
+				    			<span class="right align-right message-time">{{message.time}}</span>
 				    		</div>
-							<div class="message-text">
-								{{message.text}}
-								<span class="reply-message-icon right glyphicon glyphicon-new-window" ng-click="openThread(message)" ng-show="(isChannel && activeChat.subscribers[message.from.nickName] !== undefined) || isDirectMessage">
+							<div class="row message-text">
+								<span class="col-md-11 col-sm-11 col-xs-11">{{message.text}}</span>
+								<span class="col-md-1 col-sm-1 col-xs-1 align-right reply-message-icon right glyphicon glyphicon-new-window" ng-click="openThread(message)" ng-show="(isChannel && activeChat.subscribers[message.from.nickName] !== undefined) || isDirectMessage">
 								</span>
 							</div>
-							<div class="message-last-reply" ng-show="message.lastReply" ng-click="openThread(message)">
+							<div class="row message-last-reply" ng-show="message.lastReply" ng-click="openThread(message)">
 								<div class="photo">
 							    	<img class="media-object last-reply-photo" ng-src="{{message.lastReply.from.photoUrl}}" alt="{{message.lastReply.from.nickName}} profile picture">
 							  	</div>
@@ -157,7 +158,7 @@
 							  		{{message.repliesCount == 1 ? "1 reply" : message.repliesCount + " replies"}}
 							  	</span>
 							  	<span class="view-thread-messages">View thread</span>
-							  	<span class="last-reply-time">Last reply on: {{message.lastReply.time}}</span>
+							  	<span class="last-reply-time">Last reply: {{message.lastReply.time}}</span>
 							  	<span class="glyphicon glyphicon-chevron-right right"></span>
 							</div>
 						</div>
@@ -171,7 +172,7 @@
 				</div>
 			</div>
 			<!-- Typing area -->
-			<div id="typing-area" ng-show="activeChat !== undefined">
+			<div id="typing-area" class="col-lg-10 col-md-10 col-sm-9 col-xs-12" ng-show="activeChat !== undefined">
 				<div id="input-message-container">
 					<div class="addon-button">
 						<span class="icon left glyphicon glyphicon-paperclip"></span>
@@ -237,7 +238,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="thread-typing-area" ng-show="activeThread.repliable">
+			<div id="thread-typing-area" class="col-lg-4 col-md-4 col-sm-4 col-xs-10" ng-show="activeThread.repliable">
 				<div id="input-reply-container">
 					<div id="input-reply" class="left">
 						<form name="inputReplyForm" novalidate ng-submit="inputReplyForm.$valid && reply()" >
