@@ -20,13 +20,14 @@ import gotcha.globals.Globals;
 import gotcha.model.Channel;
 
 /**
- * Servlet implementation class CreateChannel
+ * This Servlet is responsible about creating a new channel
  */
 @WebServlet("/createChannel")
 public class CreateChannel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
+     *
      * @see HttpServlet#HttpServlet()
      */
     public CreateChannel() {

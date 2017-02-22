@@ -19,7 +19,7 @@ import gotcha.globals.Globals;
 import gotcha.model.Subscription;
 
 /**
- * Servlet implementation class ChannelUnsubscribe
+ * This Servlet is responsible about Unsubscribing a user from a Channel.
  */
 @WebServlet("/unsubscribe")
 public class Unsubscribe extends HttpServlet {
@@ -46,7 +46,22 @@ public class Unsubscribe extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Unsubscribe a user from a Channel.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #delete(Subscription)} - Delete the subscription from the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().create();
 		// Convert JSON object from request input to User object
@@ -79,7 +94,11 @@ public class Unsubscribe extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to delete a user subscription from the database.
+	 * @param subscription {@link gotcha.model.Subscription} object that contain the subscription data.
+	 * @return True in case the subscription deleted successfully, False otherwise.
+	 */
 	private boolean delete (Subscription subscription) {
 		int rows = 0;
 		try {

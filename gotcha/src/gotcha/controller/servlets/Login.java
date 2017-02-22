@@ -21,7 +21,7 @@ import gotcha.model.User;
 import gotcha.globals.Globals;
 
 /**
- * Servlet implementation class Login
+ * This Servlet is responsible about logging the user in.
  */
 @WebServlet("/login/auth")
 public class Login extends HttpServlet {
@@ -47,7 +47,23 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Verify user data and log him in.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #get(User)} - to get user data from the database if he exist.</dd>
+	 * <br/>
+	 * <dd>{@link #updateUserStatus(HttpSession)} - update the user status to Online.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to User object
@@ -99,7 +115,13 @@ public class Login extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to get the user data.
+	 * If the user doesn't exist,or the password is incorrect, return null.
+	 * @param user {@link gotcha.model.User} object that contain the user name and password.
+	 * @return {@link gotcha.model.User} object that contain required User's 
+	 * data in case he exist and his password is correct, else null.
+	 */
 	private User get (User user) {
 		try {
 			Connection connection = Globals.database.getConnection();
@@ -136,7 +158,10 @@ public class Login extends HttpServlet {
 			return null;
 		}
 	}
-	
+	/**
+	 * A method to update the user status to active after verifying his name and password.
+	 * @param session The session of the user who want to log in.
+	 */
 	private void updateUserStatus (HttpSession session) {
 		User user = (User)session.getAttribute("user");
 		

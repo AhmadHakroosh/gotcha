@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class DeleteChannel
+ * This Servlet is responsible about deleting a channel
  */
 @WebServlet("/DeleteChannel")
 public class DeleteChannel extends HttpServlet {

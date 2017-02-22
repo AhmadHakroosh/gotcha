@@ -18,7 +18,7 @@ import gotcha.globals.Globals;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class Logout
+ * This Servlet is responsible about logging the user out.
  */
 @WebServlet("/logout")
 public class Logout extends HttpServlet {
@@ -46,15 +46,19 @@ public class Logout extends HttpServlet {
 		handleRequest(request, response);
 	}
 	/**
-	 * Handles an HTTP request sent from client.
-	 * Logs out the user who sent this request.
+	 * 	
+	 * Handles an HTTP request.
+	 * Log the user out and update his status to "away".
 	 * <p>
-	 * @param request
-	 * @param response
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #updateUserStatus(HttpSession)} - update the user status to Away (Offline).</dd>
+	 * @param request Http request
+	 * @param response Http response
 	 * @throws ServletException
 	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response) 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/JSON; charset=UTF-8");

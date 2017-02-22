@@ -28,14 +28,21 @@ import com.google.gson.JsonParser;
 import gotcha.model.Message;
 import gotcha.globals.Globals;
 
+/**
+ * The WebSocket Server endpoint.
+ */
 @ServerEndpoint(
 	value = "/{nickname}",
 	decoders = MessageDecoder.class,
 	encoders = MessageEncoder.class
 )
+
 public class GotChaServerEndpoint {
 	
-	// Track online users in the system
+	
+	/**
+	 * A map that track current online users in the system
+	 */
 	private static Map<String, Session> active = Collections.synchronizedMap(new HashMap<String, Session>()); 
 	
 	// Decoder & Encoder
@@ -43,7 +50,7 @@ public class GotChaServerEndpoint {
 	MessageEncoder encoder = new MessageEncoder();
 	
 	/**
-	 * 
+	 * log in the user to the site
 	 */
 	@OnOpen
 	public void login (Session session, @PathParam("nickname") String user) throws IOException {
@@ -55,7 +62,7 @@ public class GotChaServerEndpoint {
 	}
 	
 	/**
-	 * 
+	 * Sending 
 	 */
 	@OnMessage
 	public void send (String jsonMessage) throws IOException {
@@ -85,6 +92,8 @@ public class GotChaServerEndpoint {
 	}
 
 	/**
+	 * This method is the main responsible about logging the user off. first it removes 
+	 * the user's session from the active users map, then it call {@link #logoff(String) logoff()}
 	 * 
 	 */
 	@OnClose
@@ -96,7 +105,7 @@ public class GotChaServerEndpoint {
 			}
 		}
 	}
-	
+
 	@OnError
 	public void log (Session session, Throwable t) {
 		// Generally, this occurs on connection reset
@@ -108,7 +117,9 @@ public class GotChaServerEndpoint {
 	}
 
 	/**
-	 * 
+	 * This method broadcast a message to the channel.
+	 * @param channel The required channel
+	 * @param jsonMessage The message to send
 	 */
 	private void broadcast (String channel, String jsonMessage) throws messageDeliveryException {
 		ArrayList<String> subscribers = Globals.channels.get(channel);
@@ -118,6 +129,7 @@ public class GotChaServerEndpoint {
 	}
 
 	/**
+	 * Notify the specified user with the required message.
 	 * 
 	 */
 	private boolean notify (String user, String jsonMessage) throws messageDeliveryException {
@@ -136,7 +148,7 @@ public class GotChaServerEndpoint {
 	}
 	
 	/**
-	 * 
+	 * store the received message before sending it to the addressee.
 	 */
 	private int store (Message message) {
 		int messageId = 1;
@@ -170,7 +182,9 @@ public class GotChaServerEndpoint {
 		
 		return messageId;
 	}
-    
+	/**
+	 * update the message time and parent (in case it is a reply).
+	 */
 	private void updateParent (Message message) {
 		try {
 			Connection connection = Globals.database.getConnection();
@@ -189,7 +203,9 @@ public class GotChaServerEndpoint {
 			System.out.println("An error has occured while trying to execute the query!");
 		}
 	}
-	
+	/**
+	 * log the user off, update his status to "away" , last seen to "now"
+	 */
     private void logoff (String user) {
     	String status = "away";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
@@ -210,7 +226,10 @@ public class GotChaServerEndpoint {
 			System.out.println("An error has occured while trying to execute the query!");
 		}
     }
-    
+    /**
+	 * update the new logged in user's status (active) , 
+	 * last seen(now) in the USERS database
+	 */
     private void connectUser (String user) {
     	String status = "active";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());

@@ -17,9 +17,10 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Subscription;
+import gotcha.model.User;
 
 /**
- * Servlet implementation class ChannelSubscribe
+ * This Servlet is responsible about Subscribing a user to a Channel.
  */
 @WebServlet("/subscribe")
 public class Subscribe extends HttpServlet {
@@ -46,7 +47,22 @@ public class Subscribe extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Subscribe a user to a Channel.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #insert(Subscription)} - Insert the new subscription to the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().create();
 		// Convert JSON object from request input to User object
@@ -81,7 +97,11 @@ public class Subscribe extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to insert the new user subscription to the database.
+	 * @param subscription {@link gotcha.model.Subscription} object that contain the new subscription data.
+	 * @return True in case the subscription inserted successfully, False otherwise.
+	 */
 	private boolean insert (Subscription subscription) {
 		
 		int rows = 0;

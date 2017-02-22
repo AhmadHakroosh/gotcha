@@ -19,7 +19,7 @@ import gotcha.model.*;
 import gotcha.globals.Globals;
 
 /**
- * Servlet implementation class Messages
+ * This Servlet is responsible about getting messages after success log in.
  */
 @WebServlet("/messages")
 public class Messages extends HttpServlet {
@@ -48,7 +48,21 @@ public class Messages extends HttpServlet {
 	}
 
 	/**
-	 * 
+	 * 	
+	 * Handles an HTTP request.
+	 * Get User's Messages after logging in successfully.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #getUserSubscriptions(User)} - get a list of User's subscribed Channels.</dd>
+	 * <br/>
+	 * <dd>{@link #getUserDirectChats(User)} - get a list of User's direct Messages.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Data forwarded from login servlet
@@ -87,7 +101,9 @@ public class Messages extends HttpServlet {
 	}
 
 	/**
-	 * 
+	 * A method to get a list of User subscriptions.
+	 * @param user {@link gotcha.model.User} object that contain the user nickname.
+	 * @return An list that contain the user subscriptions. 
 	 */
 	private ArrayList<String> getUserSubscriptions (User user) {
 		ArrayList<String> channels = new ArrayList<String>();
@@ -111,7 +127,9 @@ public class Messages extends HttpServlet {
 	}
 
 	/**
-	 * 
+	 * A method to get a list of User direct Messages.
+	 * @param user {@link gotcha.model.User} object that contain the user nickname.
+	 * @return An list that contain the user direct Messages. 
 	 */
 	private ArrayList<String> getUserDirectChats (User user) {
 		ArrayList<String> users = new ArrayList<String>();

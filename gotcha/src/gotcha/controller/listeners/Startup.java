@@ -17,7 +17,7 @@ import gotcha.globals.Database;
 import gotcha.globals.Globals;
 
 /**
- * Application Lifecycle Listener implementation class CreateDataBase
+ * Startup servlet, it create the database (or connect to it).
  *
  */
 @WebListener

@@ -22,7 +22,7 @@ import gotcha.model.Channel;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class GetUserMessages
+ * This Servlet is responsible about getting a Channel's stored data.
  */
 @WebServlet("/channelData")
 public class GetChannelData extends HttpServlet {
@@ -37,6 +37,7 @@ public class GetChannelData extends HttpServlet {
     }
 
 	/**
+	 * @see #handleRequest(HttpServletRequest, HttpServletResponse)
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,17 +45,35 @@ public class GetChannelData extends HttpServlet {
 	}
 	
 	/**
+	 * @see #handleRequest(HttpServletRequest, HttpServletResponse)
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Gets channel data from the database and send it to the client.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link gotcha.globals.Globals#getSubscribersList(String)} - to get the subscribers list.</dd>
+	 * <br/>
+	 * <dd>{@link #getChannelData(String)} - to get channel data.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		Channel inputChannel = gson.fromJson(request.getReader(), Channel.class);
 		Channel channel = getChannelData(inputChannel.name());
-		// Retrieve list of channel subscribers
+	
 		ArrayList<String> subscribers = Globals.getSubscribersList(channel.name());
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -80,7 +99,11 @@ public class GetChannelData extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * The main method to get a Channel data.
+	 * @param name Channel name.
+	 * @return {@link gotcha.model.Channel} object, in case the Channel doesn't exist, it return null.
+	 */
 	private Channel getChannelData (String name) {
 		
 		try {
@@ -91,7 +114,7 @@ public class GetChannelData extends HttpServlet {
 			
 			ResultSet resultSet = statement.executeQuery();
 			
-			// The user exists in our system, get his data
+			// The channel exists in our system, get its data
 			if (resultSet.next()) {
 				Channel channel = new Channel();
 				channel.name(resultSet.getString("NAME"));
@@ -100,7 +123,7 @@ public class GetChannelData extends HttpServlet {
 				statement.close();
 				connection.close();
 				return channel;
-			// He is not existing, return null
+			// it is not existing, return null
 			} else {
 				statement.close();
 				connection.close();
@@ -114,7 +137,12 @@ public class GetChannelData extends HttpServlet {
 		}
 		
 	}
-	
+	/**
+	 * A method to get user data by his nickname.
+	 * @param nickname Required user nickname.
+	 * @return {@link gotcha.model.User} object, in case no user with this nickname,
+	 * it returns null.
+	 */
 	private User getUserData (String nickname) {
 		
 		try {
@@ -137,7 +165,7 @@ public class GetChannelData extends HttpServlet {
 				statement.close();
 				connection.close();
 				return tempUser;
-			// He is not existing, return null
+			// He is not existing, returns null
 			} else {
 				statement.close();
 				connection.close();

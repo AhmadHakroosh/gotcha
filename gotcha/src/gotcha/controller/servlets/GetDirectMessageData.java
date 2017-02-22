@@ -20,7 +20,7 @@ import gotcha.globals.Globals;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class GetDirectMessageData
+ * This Servlet is responsible about getting the user data for a specified direct message.
  */
 @WebServlet("/getDirectMessageData")
 public class GetDirectMessageData extends HttpServlet {
@@ -49,7 +49,20 @@ public class GetDirectMessageData extends HttpServlet {
 	}
 
 	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Gets Direct Message data from the database and send it to the client.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #getUserData(User)} - to get user data from the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
 	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
@@ -69,7 +82,11 @@ public class GetDirectMessageData extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to get user data by his nickname.
+	 * @param user {@link gotcha.model.User} object that contain the user nickname.
+	 * @return {@link gotcha.model.User} object that contain required User's data.
+	 */
 	private User getUserData (User user) {
 		
 		try {

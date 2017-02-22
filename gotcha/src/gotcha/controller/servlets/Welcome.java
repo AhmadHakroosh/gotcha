@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Router
+ * This Servlet is responsible about redirecting the user to the log in
+ * screen in case he didn't log in yet, otherwise redirect him to the homepage.
  */
 @WebServlet("/welcome")
 public class Welcome extends HttpServlet {
@@ -38,7 +39,20 @@ public class Welcome extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Check if the user didn't log in already, redirect him to the log in page, otherwise 
+	 * redirect him to the homepage.
+	 * <p>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
+	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		if (session == null) {

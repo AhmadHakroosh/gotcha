@@ -20,7 +20,7 @@ import gotcha.model.Channel;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class Search
+ * This Servlet is responsible about searching channels or users.
  */
 @WebServlet("/search")
 public class Search extends HttpServlet {
@@ -49,7 +49,23 @@ public class Search extends HttpServlet {
 	}
 
 	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Search for a specified query in the database (user name or channel name).
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link gotcha.controller.search.GotchaSearchEngine#search(GotchaQuery)} - 
+	 * Search for the required query.</dd>
+	 * <br/>
+	 * <dd>{@link gotcha.globals.Globals#getSubscribersList(String)} - 
+	 * to get the subscribers list.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().create();

@@ -20,7 +20,7 @@ import gotcha.globals.Globals;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class Register
+ * This Servlet is responsible about Registering a new user.
  */
 @WebServlet("/register")
 public class Register extends HttpServlet {
@@ -47,7 +47,21 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Register a new User to the database.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #insert(User)} - Insert the new user to the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
 		// Convert JSON object from request input to User object
@@ -92,7 +106,11 @@ public class Register extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to insert the new user to the database.
+	 * @param user {@link gotcha.model.User} object that contain the new user data.
+	 * @return True in case the user inserted successfully, False otherwise.
+	 */
 	private boolean insert (User user) {
 		int rows = 0;
 		

@@ -36,6 +36,9 @@ import gotcha.globals.Globals;
 import gotcha.model.Channel;
 import gotcha.model.User;
 
+/**
+ * Search engine, indexes the users names and channels.
+ */
 public class GotchaSearchEngine {
 	
 	private Analyzer analyzer;

@@ -17,10 +17,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
+import gotcha.model.Subscription;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class UpdateStatus
+ *  This Servlet is responsible about updating a specified User's status.
  */
 @WebServlet("/setStatus")
 public class UpdateStatus extends HttpServlet {
@@ -49,7 +50,17 @@ public class UpdateStatus extends HttpServlet {
 	}
 	
 	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Update the user status.
+	 * <p>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
 	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();

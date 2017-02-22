@@ -62,7 +62,12 @@ public final class Globals {
 	public static final String SELECT_ALL_SUBSCRIPTIONS = "SELECT * FROM SUBSCRIPTIONS";
 	public static final String DELETE_SUBSCRIPTON = "DELETE FROM SUBSCRIPTIONS WHERE NICKNAME=? AND CHANNEL=?";
 	public static final String INSERT_SUBSCRIPTON = "INSERT INTO SUBSCRIPTIONS (NICKNAME, CHANNEL) VALUES (?,?)";
-
+	
+	/**
+	 * A method to get channel's subscribers list.
+	 * @param channel The channel name.
+	 * @return The list of the channel's subscribers.
+	 */
 	public static ArrayList<String> getSubscribersList (String channel) {
 		ArrayList<String> subscribers = new ArrayList<String>();
 		
@@ -86,7 +91,10 @@ public final class Globals {
 
 		return subscribers;
 	}
-	
+	/**
+	 * A method to get a list of all the available channels.
+	 * @return A list of all available channels in the database.
+	 */
 	public static ArrayList<String> getAllChannels () {
 		ArrayList<String> channels = new ArrayList<String>();
 		try {
@@ -107,7 +115,11 @@ public final class Globals {
 
 		return channels;
 	}
-	
+	/**
+	 * A method to get the specified user subscribed channels.
+	 * @param nickname The specified user nickname.
+	 * @return A list of the user's subscribed channels.
+	 */
 	public static ArrayList<Channel> getUserSubscriptions (String nickname) {
 		ArrayList<Channel> channels = new ArrayList<Channel>();
 		try {
@@ -129,7 +141,11 @@ public final class Globals {
 		
 		return channels;
 	}
-	
+	/**
+	 * A method to get Channel by name.
+	 * @param name Required Channel name.
+	 * @return The required Channel.
+	 */
 	public static Channel getChannel (String name) {
 		Channel channel = new Channel();
 		

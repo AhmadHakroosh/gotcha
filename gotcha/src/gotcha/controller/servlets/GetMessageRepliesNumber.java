@@ -18,9 +18,10 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Message;
+import gotcha.model.User;
 
 /**
- * Servlet implementation class GetMessageRepliesNumber
+ * This Servlet is responsible about getting a specified Message's reply count.
  */
 @WebServlet("/getMessageRepliesNumber")
 public class GetMessageRepliesNumber extends HttpServlet {
@@ -49,7 +50,17 @@ public class GetMessageRepliesNumber extends HttpServlet {
 	}
 
 	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Gets specified Message's reply count from the database and send it to the client.
+	 * <p>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
 	 */
 	protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();

@@ -3,7 +3,9 @@ package gotcha.controller.search.model;
 import java.util.ArrayList;
 
 import org.apache.lucene.search.BooleanClause;
-
+/**
+ * General query 
+ */
 public class GotchaQuery {
 	
 	private String in;

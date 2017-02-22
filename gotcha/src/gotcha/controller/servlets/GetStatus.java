@@ -20,7 +20,7 @@ import gotcha.globals.Globals;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class GetStatus
+ * This Servlet is responsible about getting a specified User's status.
  */
 @WebServlet("/getStatus")
 public class GetStatus extends HttpServlet {
@@ -49,7 +49,19 @@ public class GetStatus extends HttpServlet {
 	}
 
 	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Gets thread last written message from the database and send it to the client.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #getStatus(User)} - to get user status from the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
@@ -69,7 +81,11 @@ public class GetStatus extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to get a specified user status.
+	 * @param user  {@link gotcha.model.User} object that contain the user nickname.
+	 * @return {@link gotcha.model.User} object that contain required User's status.
+	 */
 	private User getStatus (User user) {
 		
 		try {

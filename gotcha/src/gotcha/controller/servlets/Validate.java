@@ -19,10 +19,12 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Channel;
+import gotcha.model.Subscription;
 import gotcha.model.User;
 
 /**
- * Servlet implementation class Validate
+ * This Servlet is responsible about validating if a user name/nickname is Available
+ * for a new user, or a Channel name for a new Channel.
  */
 @WebServlet("/validate")
 public class Validate extends HttpServlet {
@@ -49,7 +51,26 @@ public class Validate extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+	/**
+	 * 	
+	 * Handles an HTTP request.
+	 * Validate user name/nickname or channel name availability.
+	 * <p>
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #checkUsernames(String)} - Check if the required user name is Available.</dd>
+	 * <br/>
+	 * <dd>{@link #checkNicknames(String)} - Check if the required nickname is Available.</dd>
+	 * <br/>
+	 * <dd>{@link #checkChannels(String)} - Check if the required Channel name is Available.</dd>
+	 * @param request Http request
+	 * @param response Http response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 *
+	 */
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Gson gson = new GsonBuilder().create();
 		String json = "{}";
@@ -81,7 +102,12 @@ public class Validate extends HttpServlet {
 		out.println(data);
 		out.close();
 	}
-	
+	/**
+	 * A method to check if a nickname is Available and not
+	 * used by another user.
+	 * @param nickname The required nickname.
+	 * @return True if the nickname already exist, False otherwise.
+	 */
 	private boolean checkNicknames (String nickname) {
 		
 		if (nickname == null) return false;
@@ -106,7 +132,12 @@ public class Validate extends HttpServlet {
 			return false;
 		}
 	}
-	
+	/**
+	 * A method to check if a user name is Available and not
+	 * used by another user.
+	 * @param username The required username.
+	 * @return True if the username already exist, False otherwise.
+	 */
 	private boolean checkUsernames (String username) {
 		
 		if (username == null) return false;
@@ -131,7 +162,12 @@ public class Validate extends HttpServlet {
 			return false;
 		}
 	}
-	
+	/**
+	 * A method to check if a Channel name is Available and not
+	 * used by another Channel.
+	 * @param name The required Channel name.
+	 * @return True if the Channel name already exist, False otherwise.
+	 */
 	private boolean checkChannels (String name) {
 
 		if (name == null) return false;
