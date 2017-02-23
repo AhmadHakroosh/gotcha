@@ -19,7 +19,6 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Channel;
-import gotcha.model.Subscription;
 import gotcha.model.User;
 
 /**

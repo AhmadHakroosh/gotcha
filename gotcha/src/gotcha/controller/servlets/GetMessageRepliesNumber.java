@@ -18,7 +18,6 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Message;
-import gotcha.model.User;
 
 /**
  * This Servlet is responsible about getting a specified Message's reply count.

@@ -17,7 +17,6 @@ import com.google.gson.GsonBuilder;
 
 import gotcha.globals.Globals;
 import gotcha.model.Subscription;
-import gotcha.model.User;
 
 /**
  * This Servlet is responsible about Subscribing a user to a Channel.

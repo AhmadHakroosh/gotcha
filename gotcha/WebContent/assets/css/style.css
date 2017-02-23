@@ -438,7 +438,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 #typing-area .icon {
 	font-size: 1.8em;
-	margin: 8px 16px 8px 16px;
+	padding: 0.2em 0.3em;
 	color: lightgrey;
 }
 
@@ -476,7 +476,7 @@ span.user-mention.glyphicon.glyphicon-tag {
 
 #input-message, #input-reply {
 	height: 100%;
-	width: 82%;
+	padding: 0;
 }
 
 #input-message form, #input-message form input, #input-reply form, #input-reply form input {

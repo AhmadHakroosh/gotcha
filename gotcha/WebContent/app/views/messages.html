@@ -177,7 +177,7 @@
 					<div class="addon-button">
 						<span class="icon left glyphicon glyphicon-paperclip"></span>
 					</div>
-					<div id="input-message" class="left">
+					<div id="input-message" class="left col-lg-10 col-md-10 col-sm-10 col-xs-9">
 						<form name="inputMessageForm" novalidate ng-submit="inputMessageForm.$valid && send()" >
 							<input type="text" class="left" ng-model="inputMessage" autocomplete="off" maxlength="500" placeholder="Message {{activeChat && isChannel ? '#' + activeChat.name : '@' + activeChat.user.nickName}}" required>
 						</form>
@@ -240,7 +240,7 @@
 			</div>
 			<div id="thread-typing-area" class="col-lg-4 col-md-4 col-sm-4 col-xs-10" ng-show="activeThread.repliable">
 				<div id="input-reply-container">
-					<div id="input-reply" class="left">
+					<div id="input-reply" class="left col-lg-11 col-md-11 col-sm-10 col-xs-10">
 						<form name="inputReplyForm" novalidate ng-submit="inputReplyForm.$valid && reply()" >
 							<input type="text" class="left" ng-model="inputReply" autocomplete="off" maxlength="500" placeholder="Reply {{activeThread.from.nickName}}'s message" required>
 						</form>
