@@ -3,7 +3,7 @@ package gotcha.model;
 import java.sql.Timestamp;
 /**
  * A Class that represent a Message.
- * @author mohammad
+ * @author ahmad,mohammad
  *
  */
 public class Message {

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 /**
  * A Class that represent a User.
- * @author mohammad
+ * @author ahmad,mohammad
  *
  */
 public class User {

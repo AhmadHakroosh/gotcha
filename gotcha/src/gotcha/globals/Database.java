@@ -10,7 +10,7 @@ import javax.servlet.ServletContext;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 /**
  * A Class that hold Database related variables and methods.
- * @author mohammad
+ * @author ahmad,mohammad
  *
  */
 public class Database {

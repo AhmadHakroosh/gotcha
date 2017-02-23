@@ -16,7 +16,7 @@ import gotcha.model.Channel;
 /**
  * A Class that hold our Application Constants ,Database statements 
  * and other Global Variables.
- * @author mohammad
+ * @author ahmad,mohammad
  *
  */
 public final class Globals {
