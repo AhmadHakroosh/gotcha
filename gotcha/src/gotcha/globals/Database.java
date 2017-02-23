@@ -10,7 +10,7 @@ import javax.servlet.ServletContext;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 /**
  * A Class that hold Database related variables and methods.
- * @author ahmad,mohammad
+ * @author Ahmad Hakroosh, Mohammad Dahamshi
  *
  */
 public class Database {
@@ -60,8 +60,16 @@ public class Database {
 			dataSource.getConnection();
 			dataSource = null;
 			Globals.database = null;
-		} catch (NamingException | SQLException e) {
+		} catch (NamingException e) {
 			System.out.println("An error has occured while trying to shutdown gotchaDB!");
+		} catch (SQLException e) {
+			// The database was shutdown successfully
+			if (e.getErrorCode() == 0) {
+				System.out.println("The database was shutdown successfully.");
+			// Something went wrong
+			} else {
+				System.out.println("An error has occurred while trying to shutdown the database.");
+			}
 		}
 	}
 }
