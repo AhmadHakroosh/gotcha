@@ -1,11 +1,27 @@
 package gotcha.model;
 
 import java.sql.Timestamp;
-
+/**
+ * A Class that represent a Subscription.
+ * @author mohammad
+ *
+ */
 public class Subscription {
+	/**
+	 * Hold the Subscription ID.
+	 */
 	private int id;
+	/**
+	 * Hold the Subscriber nickname.
+	 */
 	private String nickname;
+	/**
+	 * Hold the name of the Channel being Subscribed to.
+	 */
 	private String channel;
+	/**
+	 * Hold the Channel Subscribed to last read time.
+	 */
 	private Timestamp lastRead;
 
 	// Constructor

@@ -1,14 +1,39 @@
 package gotcha.model;
 
 import java.sql.Timestamp;
-
+/**
+ * A Class that represent a Message.
+ * @author mohammad
+ *
+ */
 public class Message {
+	/**
+	 * Hold the Message ID.
+	 */
 	private int id;
+	/**
+	 * Hold the Message parent ID (reply case).
+	 */
 	private int parentId;
+	/**
+	 * Hold the Message sender name.
+	 */
 	private String from;
+	/**
+	 * Hold the Message receiver name.
+	 */
 	private String to;
+	/**
+	 * Hold the Message content.
+	 */
 	private String text;
+	/**
+	 * Hold the Message last update time (when new reply added).
+	 */
 	private Timestamp lastUpdate;
+	/**
+	 * Hold the Message creation time.
+	 */
 	private Timestamp time;
 	
 	// Constructor

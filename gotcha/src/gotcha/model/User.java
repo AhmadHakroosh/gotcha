@@ -3,16 +3,43 @@ package gotcha.model;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
+/**
+ * A Class that represent a User.
+ * @author mohammad
+ *
+ */
 public class User {
-	// User Attributes
+	/**
+	 * Hold the User name.
+	 */
 	private String username;
+	/**
+	 * Hold the User password.
+	 */
 	private String password;
+	/**
+	 * Hold the User nickname.
+	 */
 	private String nickName;
+	/**
+	 * Hold the User description.
+	 */
 	private String description;
+	/**
+	 * Hold the User profile picture URL.
+	 */
 	private String photoUrl;
+	/**
+	 * Hold the User status (Available / Away).
+	 */
 	private String status;
+	/**
+	 * Hold the User last opened chat.
+	 */
 	private String lastOpenChat;
+	/**
+	 * Hold the User last seen time (last time was Available).
+	 */
 	private Timestamp lastSeen;
 	
 	// Default constructor

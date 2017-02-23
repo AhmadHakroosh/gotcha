@@ -52,8 +52,11 @@ public class CreateChannel extends HttpServlet {
 	 * Handles an HTTP request.
 	 * Gets data for a channel to be created, and inserts it to DB.
 	 * <p>
-	 * @param request
-	 * @param response
+	 * <b>Used methods:</b>
+	 * <br/>
+	 * <dd>{@link #insert(Channel)} - to insert the new Channel to the database.</dd>
+	 * @param request Http request
+	 * @param response Http response
 	 * @throws ServletException
 	 * @throws IOException
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -99,7 +102,7 @@ public class CreateChannel extends HttpServlet {
 	/**
 	 * Gets a Channel object to be inserted to the database.
 	 * <p>
-	 * @param channel: Channel object.
+	 * @param channel {@link gotcha.model.Channel} object.
 	 * @return true: if the channels was inserted successfully.
 	 *         false: otherwise.
 	 */

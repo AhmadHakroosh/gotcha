@@ -1,11 +1,27 @@
 package gotcha.model;
 
 import java.sql.Timestamp;
-
+/**
+ * A Class that represent a Channel.
+ * @author mohammad
+ *
+ */
 public class Channel {
+	/**
+	 * Hold the Channel name.
+	 */
 	private String name;
+	/**
+	 * Hold the Channel description.
+	 */
 	private String description;
+	/**
+	 * Hold the name of the Channel creator.
+	 */
 	private String createdBy;
+	/**
+	 * Hold the Channel creation time.
+	 */
 	private Timestamp createdTime;
 	
 	public Channel (String name, String description, String createdBy) {

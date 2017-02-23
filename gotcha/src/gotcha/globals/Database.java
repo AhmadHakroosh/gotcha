@@ -8,7 +8,11 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-
+/**
+ * A Class that hold Database related variables and methods.
+ * @author mohammad
+ *
+ */
 public class Database {
 	private BasicDataSource dataSource;
 	
@@ -30,7 +34,10 @@ public class Database {
 			Globals.database = new Database(servletContext);
 		}
 	}
-	// Get a connection to the database
+	/**
+	 * Get a connection to the database.
+	 * @return Connection to the database.
+	 */
 	public Connection getConnection () {
 		Connection connection = null;
 		
@@ -42,7 +49,10 @@ public class Database {
 		
 		return connection;
 	}
-	// Shutdown database connection and instance
+	/**
+	 * Shutdown database connection and instance
+	 * @param servletContext
+	 */
 	public void shutdown(ServletContext servletContext) {
 		try {
 			String gotchaDB = servletContext.getInitParameter(Globals.dbName);
