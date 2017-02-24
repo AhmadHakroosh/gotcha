@@ -911,6 +911,65 @@ span.user-mention.glyphicon.glyphicon-tag {
 	background: #D9D9DE; 
 }
 
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 35px;
+  height: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #63D259;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #63D259;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 20px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 /* Mobile related style */
 
 #mobile-menu-icon {
@@ -934,6 +993,4 @@ span.user-mention.glyphicon.glyphicon-tag {
 	#top-header #main-header {
 		height: 60px;
 	}
-}
-
-	
+}	

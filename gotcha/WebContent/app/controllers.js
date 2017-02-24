@@ -1121,8 +1121,19 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				$scope.found = success.data;
 				$scope.found.status = true;
 				for (var channel in $scope.found.channels) {
-					$scope.found.channels[channel].subscribed = $scope.channels[channel] !== undefined ? true : false;
-				};
+					if ($scope.channels[channel] !== undefined) {
+						$("#" + channel + "-subscribe-switch").attr('checked', true);
+					} else {
+						$("#" + channel + "-subscribe-switch").attr('checked', false);
+					}
+				}
+				$(".subscribe-switch").change(function(event) {
+					if ($(this).is(':checked')) {
+						$scope.subscribe(this.id.split("-subscribe-switch")[0]);
+					} else {
+						$scope.unsubscribe(this.id.split("-subscribe-switch")[0]);
+					}
+				});
 			},
 			function (failure) {
 				$scope.found.status = false;
@@ -1134,5 +1145,14 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.showLastMessages = function () {
 		$("#chat-console").animate({scrollTop: $("#chat-console").prop("scrollHeight") - $("#chat-console").prop("clientHeight")}, 1000);
 		$scope.viewLastMessages = false;
-	}
+	};
+
+	$scope.clearSearch = function () {
+		$scope.query = undefined;
+		$scope.found = {
+			"status": false,
+			"channels": {},
+			"users": {}
+		};
+	};
 }])

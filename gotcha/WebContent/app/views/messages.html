@@ -70,7 +70,7 @@
 							<div class="search-input left">
 								<input type="text" ng-model="query" placeholder="Search" autocomplete="off" maxlength="120" ng-keyup="search()">
 							</div>
-							<div class="search-input-clear right" ng-show="query"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true" ng-click="query=''"></span></div>
+							<div class="search-input-clear right" ng-show="query"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true" ng-click="clearSearch()"></span></div>
 							<div class="popover-menu"></div>
 						</form>
 						<div id="search-results-container" ng-show="query && found.status">
@@ -81,7 +81,10 @@
 										<div class="result channel-name">
 											<span class="bold">{{channel.name}} </span>
 											<span><span class="icon glyphicon glyphicon-user"></span> {{length(channel.subscriptions)}}</span>
-											<span class="right glyphicon glyphicon-star subscribed-{{channel.subscribed}}" ng-click="subscribe(channel.name)"></span>
+											<label class="right switch">
+												<input id="{{channel.name}}-subscribe-switch" class="subscribe-switch" type="checkbox">
+												<div class="slider round"></div>
+											</label>
 										</div>
 										<div class="result channel-description">{{channel.description}}</div>
 									</div>
