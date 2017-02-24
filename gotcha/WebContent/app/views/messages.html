@@ -33,8 +33,8 @@
 							<span class="chat-name" ng-show="isDirectMessage"><span class="italic">&#64;</span> {{activeChat.user.nickName}}</span>
 						</h5>
 						<div class="chat-header-info" ng-show="isChannel">
-							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user" ng-click="showSubscribers()"></span>{{isChannel ? length(activeChat.subscribers) : 0}}</div>
-							<div class="chat-header-info-item chat-purpose">{{activeChat.description}}</div>
+							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user" ng-click="showSubscribersList=true"></span>{{isChannel ? length(activeChat.subscribers) : 0}}</div>
+							<div class="chat-header-info-item chat-purpose">{{shorten(70, activeChat.description)}}</div>
 							<div ng-show="showSubscribersList" id="channel-subscribers-list">
 								<ul>
 									<span class="bold">Members <span>({{isChannel ? length(activeChat.subscribers) : 0}})</span></span>
@@ -86,7 +86,7 @@
 												<div class="slider round"></div>
 											</label>
 										</div>
-										<div class="result channel-description">{{channel.description}}</div>
+										<div class="result channel-description">{{shorten(25, channel.description)}}</div>
 									</div>
 								</li>
 							</ul>
@@ -99,7 +99,7 @@
 									  		<div class="right status {{user.status}}"></div>
 									  	</div>
 										<div class="bold result user-nickname">{{user.nickName}}</div>
-										<div class="result user-description">{{user.description}}</div>
+										<div class="result user-description">{{shorten(25, user.description)}}</div>
 					  				</div>
 					  				<div class="right chat icon glyphicon glyphicon-comment" ng-click="openDirectMessage(user.nickName)"></div>
 								</li>

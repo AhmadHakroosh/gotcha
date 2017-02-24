@@ -464,8 +464,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.showSubscribers = function () {
-		$scope.showSubscribersList = !$scope.showSubscribersList;
-	}
+		$scope.showSubscribersList = true;
+	};
 
 	// Logout from the system
 	$scope.logout = function () {
@@ -1127,13 +1127,18 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 						$("#" + channel + "-subscribe-switch").attr('checked', false);
 					}
 				}
-				$(".subscribe-switch").change(function(event) {
-					if ($(this).is(':checked')) {
-						$scope.subscribe(this.id.split("-subscribe-switch")[0]);
-					} else {
-						$scope.unsubscribe(this.id.split("-subscribe-switch")[0]);
-					}
-				});
+
+				$timeout(function () { 
+					$(".subscribe-switch").change(function (event) {
+						if (!event.handled && $(this).is(':checked')) {
+							$scope.subscribe(this.id.split("-subscribe-switch")[0]);
+							event.handled = true;
+						} else if (!event.handled && !$(this).is(':checked')) {
+							$scope.unsubscribe(this.id.split("-subscribe-switch")[0]);
+							event.handled = true;
+						}
+					});
+				}, 1000);
 			},
 			function (failure) {
 				$scope.found.status = false;
@@ -1154,5 +1159,11 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			"channels": {},
 			"users": {}
 		};
+	};
+
+	$scope.shorten = function (length, string) {
+		if (string !== undefined) {
+			return string.length > length ? string.substr(0, length) + "..." : string;
+		}
 	};
 }])
