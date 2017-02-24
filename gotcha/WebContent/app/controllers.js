@@ -1120,8 +1120,6 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			function (success) {
 				$scope.found = success.data;
 				$scope.found.status = true;
-				console.log($scope.length($scope.found.channels) + " channels found.");
-				console.log($scope.length($scope.found.users) + " users found.");
 				for (var channel in $scope.found.channels) {
 					$scope.found.channels[channel].subscribed = $scope.channels[channel] !== undefined ? true : false;
 				};
