@@ -74,22 +74,22 @@
 							<div class="popover-menu"></div>
 						</form>
 						<div id="search-results-container" ng-show="query && found.status">
-							<ul id="found-channels-list" ng-show="found.channels.length > 0">
-								<span class="bold">Channels <span>({{found.channels.length}})</span></span>
-								<li ng-repeat="channel in found.channels">
+							<ul id="found-channels-list" ng-show="length(found.channels) > 0">
+								<span class="bold">Channels <span>({{length(found.channels)}})</span></span>
+								<li data-index="{{$index}}" ng-repeat="(name, channel) in found.channels">
 									<div>
 										<div class="result channel-name">
 											<span class="bold">{{channel.name}} </span>
-											<span><span class="icon glyphicon glyphicon-user"></span> {{channel.subscriptions}}</span>
+											<span><span class="icon glyphicon glyphicon-user"></span> {{length(channel.subscriptions)}}</span>
 											<span class="right glyphicon glyphicon-star subscribed-{{channel.subscribed}}" ng-click="subscribe(channel.name)"></span>
 										</div>
 										<div class="result channel-description">{{channel.description}}</div>
 									</div>
 								</li>
 							</ul>
-							<ul id="found-users-list" ng-show="found.users.length > 0">
-								<span class="bold">Members <span>({{found.users.length}})</span></span>
-								<li ng-repeat="user in found.users">
+							<ul id="found-users-list" ng-show="length(found.users) > 0">
+								<span class="bold">Members <span>({{length(found.users)}})</span></span>
+								<li data-index="{{$index}}" ng-repeat="(nickname, user) in found.users">
 									<div class="left found-user">
 										<div class="media-left photo left">
 									    	<img class="user-photo media-object" ng-src="{{user.photoUrl}}" alt="{{user.nickName}} profile picture">

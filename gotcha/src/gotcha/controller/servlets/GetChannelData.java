@@ -82,7 +82,6 @@ public class GetChannelData extends HttpServlet {
 		data = "{"
 				+ "\"name\": \"" + channel.name() + "\","
 				+ "\"description\": \"" + channel.description() + "\","
-				+ "\"messages\": [],"
 				+ "\"subscribers\": {"
 				;
 		

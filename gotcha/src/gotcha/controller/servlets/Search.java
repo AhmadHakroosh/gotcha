@@ -85,11 +85,11 @@ public class Search extends HttpServlet {
 			else channels.add((Channel) object);
 		}
 		
-		data += "\"channels\": [";
+		data += "\"channels\": {";
 		
 		for (Channel channel : channels) {
 			int subscribers = Globals.getSubscribersList(channel.name()).size();
-			data += "{"
+			data += "\"" + channel.name() + "\": {"
 				 + 		"\"name\": \"" + channel.name() + "\","
 				 + 		"\"description\": \"" + channel.description() + "\","
 				 + 		"\"subscriptions\": " + subscribers
@@ -99,16 +99,17 @@ public class Search extends HttpServlet {
 		}
 		
 		i = 1;
-		data += "],"
-			 +  "\"users\": ["
+		data += "},"
+			 +  "\"users\": {"
 			 ;
 		
 		for (User user : users) {
+			data += "\"" + user.nickName() + "\":";
 			data += gson.toJson(user, User.class);
 			data += i++ < users.size() ? "," : "";
 		}
 		
-		data += "]"
+		data += "}"
 			 + "}";
 		
 		out.println(data);

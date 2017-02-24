@@ -193,7 +193,9 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	$scope.oppositeStatus;
 	$scope.disableChannelCreation = true;
 	$scope.found = {
-		"status": false
+		"status": false,
+		"channels": {},
+		"users": {}
 	};
 	
 	var pack = function () {
@@ -1057,11 +1059,51 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			);
 		});
 
-		if ($scope.activeChat !== undefined && $scope.isChannel) {
+		$("#channels-list ul li").each(function () {
+			var channel = {
+				"name": this.innerText.split("# ")[1]
+			};
 
+			$http({
+				method: 'POST',
+				url: 'channelData',
+				headers: {'Content-Type' : "application/json; charset=utf-8"},
+				data: channel
+			}).then(
+				function (success) {
+					$scope.channels[channel.name].subscribers = success.data.subscribers;
+					$scope.channels[channel.name].description = success.data.description;
+				},
+				function (failure) {
+					console.log("Error while trying to retrive channel data.");
+				}
+			);
+		});
+
+		if ($scope.found !== undefined) {
+			for (var foundChannel in $scope.found.channels) {
+				var channel = {
+					"name": foundChannel
+				};
+
+				$http({
+					method: 'POST',
+					url: 'channelData',
+					headers: {'Content-Type' : "application/json; charset=utf-8"},
+					data: channel
+				}).then(
+					function (success) {
+						$scope.found.channels[success.data.name].subscriptions = success.data.subscribers;
+						$scope.found.channels[success.data.name].description = success.data.description;
+					},
+					function (failure) {
+						console.log("Error while trying to retrive channel data.");
+					}
+				);
+			}
 		}
 
-	}, 3000);
+	}, 1000);
 	
 	$scope.search = function () {
 		var query = {
@@ -1076,16 +1118,17 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			data: query
 		}).then(
 			function (success) {
+				$scope.found = success.data;
 				$scope.found.status = true;
-				$scope.found.channels = success.data.channels;
-				$scope.found.channels.forEach(function (channel) {
-					channel.subscribed = $scope.channels[channel.name] !== undefined ? true : false;
-				});
-				$scope.found.users = success.data.users;
+				console.log($scope.length($scope.found.channels) + " channels found.");
+				console.log($scope.length($scope.found.users) + " users found.");
+				for (var channel in $scope.found.channels) {
+					$scope.found.channels[channel].subscribed = $scope.channels[channel] !== undefined ? true : false;
+				};
 			},
 			function (failure) {
 				$scope.found.status = false;
-				$scope.found.message = "We did not find any matches for your search!"
+				$scope.found.message = "We did not find any matches for your search!";
 			}
 		);
 	};
