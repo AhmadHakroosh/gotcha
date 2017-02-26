@@ -93,17 +93,12 @@ public class GotChaServerEndpoint {
 
 	/**
 	 * This method is the main responsible about logging the user off. first it removes 
-	 * the user's session from the active users map, then it call {@link #logoff(String) logoff()}
+	 * the user's session from the active users map, then it call {@link #forceLogOff(String) forceLogOff()}
 	 * 
 	 */
 	@OnClose
 	public void logout (Session session) throws IOException {
-		for (Entry<String, Session> user : active.entrySet()) {
-			if (user.getValue().equals(session)) {
-				logoff(user.getKey());
-				active.remove(user.getKey());
-			}
-		}
+		active.values().remove(session);
 	}
 
 	@OnError
@@ -112,6 +107,13 @@ public class GotChaServerEndpoint {
 		for (Entry<String, Session> one : active.entrySet()) {
 			if (one.getValue().equals(session)) {
 				System.out.println("The user \"" + one.getKey() + "\" has gone away.");
+				forceLogOff(one.getKey());
+				try {
+					logout(one.getValue());
+				} catch (IOException e) {
+					// Something went wrong
+					System.out.println("Something went wrong");
+				}
 			}
 		}
 	}
@@ -206,7 +208,7 @@ public class GotChaServerEndpoint {
 	/**
 	 * log the user off, update his status to "away" , last seen to "now"
 	 */
-    private void logoff (String user) {
+    private void forceLogOff (String user) {
     	String status = "away";
 		Timestamp last_seen = new Timestamp(System.currentTimeMillis());
 		try {

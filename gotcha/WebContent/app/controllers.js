@@ -620,6 +620,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Ubsubscribe from the given channel
 	$scope.unsubscribe = function (channel) {
+		if (channel === undefined || channel == "") return;
+		
 		var subscription = {
 				"nickname": $scope.user.nickName,
 				"channel": channel
@@ -717,6 +719,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Retrieve given channel data
 	var getChannelData = function (name) {
+		if (name === undefined || name == "") return;
+		
 		var channel = {
 				"name": name
 		};
@@ -743,6 +747,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Retrieve given channel messages
 	var getTenChannelMessages = function (channel) {
+		if (channel === undefined || channel == "") return;
+		
 		var message = {
 			"id": $scope.length($scope.channels[channel].messages),
 			"to": channel,
@@ -794,6 +800,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Retrieve user data
 	var getDirectMessageData = function (nickname) {
+		if (nickname === undefined || nickname == "") return;
+		
 		var user = {
 				"nickName": nickname
 		};
@@ -820,6 +828,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	
 	// Retrieve given channel messages
 	var getTenDirectChatMessages = function (nickname) {
+		if (nickname === undefined || nickname == "") return;
+		
 		var message = {
 			"id": $scope.length($scope.directMessages[nickname].messages),
 			"from": nickname,
@@ -909,6 +919,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.getLastThreadMessage = function (thread) {
+		if (thread === undefined) return;
+		
 		var message = {
 			"id": thread.id
 		};
@@ -933,6 +945,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.getMessageRepliesNumber = function (thread) {
+		if (thread === undefined) return;
+		
 		var message = {
 			"id": thread.id
 		};
@@ -954,6 +968,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 	};
 
 	$scope.getTenThreadMessages = function (thread) {
+		if (thread === undefined) return;
+
 		var message = {
 			"id": thread.id,
 			"parentId": $scope.length(thread.replies)
@@ -1166,4 +1182,4 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 			return string.length > length ? string.substr(0, length) + "..." : string;
 		}
 	};
-}])
+}]);
