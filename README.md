@@ -68,26 +68,26 @@ package.
      url="jdbc:derby:gotchaDB;shutdown=true"/>
   </Context>
   ```
- 4. In your application, manually add the following resource-ref definition to your web.xml file:
+4. In your application, manually add the following resource-ref definition to your web.xml file:
 
-  ```
-  <web-app>
-    <resource-ref>
-      <description>GotCha! Database Connection Open</description>
-      <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
-      <res-type>javax.sql.DataSource</res-type>
-      <res-auth>Container</res-auth>
-    </resource-ref>
-    <resource-ref>
-      <description>GotCha! Database Connection Close</description>
-      <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
-      <res-type>javax.sql.DataSource</res-type>
-      <res-auth>Container</res-auth>
-    </resource-ref>
-  </web-app>
-  ```
+```
+<web-app>
+  <resource-ref>
+    <description>GotCha! Database Connection Open</description>
+    <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+  <resource-ref>
+    <description>GotCha! Database Connection Close</description>
+    <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+</web-app>
+```
 
- 5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
+5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
 
 ```
 import java.sql.Connection;
