@@ -1,6 +1,8 @@
 # gotcha
 GotCha! is an Online Team Collaboration application
 
+![alt tag](https://github.com/AhmadHakroosh/gotcha/blob/master/devices.png)
+
 **Course Instructor**
 Dr. Haggai Roitman, IBM Research - Haifa
 
