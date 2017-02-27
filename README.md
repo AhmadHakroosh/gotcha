@@ -70,36 +70,36 @@ package.
   ```
 4. In your application, manually add the following resource-ref definition to your web.xml file:
 
-```
-<web-app>
-  <resource-ref>
-    <description>GotCha! Database Connection Open</description>
-    <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
-    <res-type>javax.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-  <resource-ref>
-    <description>GotCha! Database Connection Close</description>
-    <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
-    <res-type>javax.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-</web-app>
-```
+  ```
+  <web-app>
+    <resource-ref>
+      <description>GotCha! Database Connection Open</description>
+      <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+    </resource-ref>
+    <resource-ref>
+      <description>GotCha! Database Connection Close</description>
+      <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+    </resource-ref>
+  </web-app>
+  ```
 
 5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
 
-```
-import java.sql.Connection;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-//obtain GotCha data source from Tomcat's context
-Context context = new InitialContext();
-BasicDataSource gotchaDB = (BasicDataSource)context.lookup(“java:comp/env/jdbc/gotchaDB);
-Connection conn = gotchaDB.getConnection();
-//use connection as you wish...but close after usage!
-//It is important for correct connection pool management
-//within Tomcat
+  ```
+  import java.sql.Connection;
+  import javax.naming.Context;
+  import javax.naming.InitialContext;
+  import javax.naming.NamingException;
+  import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+  //obtain GotCha data source from Tomcat's context
+  Context context = new InitialContext();
+  BasicDataSource gotchaDB = (BasicDataSource)context.lookup(“java:comp/env/jdbc/gotchaDB);
+  Connection conn = gotchaDB.getConnection();
+  //use connection as you wish...but close after usage!
+  //It is important for correct connection pool management
+  //within Tomcat
 ```
