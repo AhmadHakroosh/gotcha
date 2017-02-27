@@ -66,7 +66,7 @@ package.
    url="jdbc:derby:gotchaDB;shutdown=true"/>
 </Context>
 ```
-4. In your application, manually add the following resource-ref definition to your web.xml file:
+	4. In your application, manually add the following resource-ref definition to your web.xml file:
 
 ```
 <web-app>
@@ -85,7 +85,7 @@ package.
 </web-app>
 ```
 
-5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
+	5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
 
 ```
 import java.sql.Connection;
