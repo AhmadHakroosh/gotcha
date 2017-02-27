@@ -20,7 +20,7 @@ This project aims to make us implement a simple, but powerful Online Collaborati
 #Deployment and Environment 
 
 - Java 7 JRE: [http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html)
-- EclipseIDE (Mars) for J2EE: [http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-jee-mars-2-win32-x86_64.zip](64-bit)/[http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-jee-mars-2-win32.zip](32-bit)
+- EclipseIDE (Mars) for J2EE: [64-bit](http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-jee-mars-2-win32-x86_64.zip)/[32-bit](http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-jee-mars-2-win32.zip)
 - Apache Tomcat v.7: [http://tomcat.apache.org/download-70.cgi](http://tomcat.apache.org/download-70.cgi)
 - Bootstrap: [http://getbootstrap.com/getting-started/#download](http://getbootstrap.com/getting-started/#download)
 - jQuery: [http://code.jquery.com/jquery-1.11.3.min.js](http://code.jquery.com/jquery-1.11.3.min.js)
