@@ -30,7 +30,7 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
     
-  <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" maxActive="20" maxIdle="10" maxWait="10" name="jdbc/gotchaDBOpen" type="javax.sql.DataSource" url="jdbc:derby:gotchaDB;create=true"/>
-  <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" maxActive="20" maxIdle="10" maxWait="10" name="jdbc/gotchaDBClose" type="javax.sql.DataSource" url="jdbc:derby:gotchaDB;shutdown=true"/>
+  <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" maxActive="20" maxIdle="10" maxWait="10" name="jdbc/gotchaDBOpen" type="javax.sql.DataSource" url="jdbc:derby:projectDB;create=true"/>
+  <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" maxActive="20" maxIdle="10" maxWait="10" name="jdbc/gotchaDBClose" type="javax.sql.DataSource" url="jdbc:derby:projectDB;shutdown=true"/>
 
 </Context>
