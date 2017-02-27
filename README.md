@@ -48,44 +48,44 @@ package.
 
 	3.2 Add a new element `<Resource>...</Resource>` as a child element of the `<Context>...</Context>` element in context.xml as follows:
 
-```
- <Context>
-   <!--
-   gotchaDBOpen: The name of the datasource that represents Derby database opening connection.
-   gotchaDB: The Derby database name
-	-->
-   <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" 
-   maxActive="20" maxIdle="10" maxWait="10" 
-   name="jdbc/gotchaDBOpen" type="javax.sql.DataSource" 
-   url="jdbc:derby:gotchaDB;create=true"/>
-   <!--
-   gotchaDBClose: The name of the datasource that represents Derby database closing connection.
-   gotchaDB: The Derby database name
-	-->
-   <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" 
-   maxActive="20" maxIdle="10" maxWait="10" 
-   name="jdbc/gotchaDBClose" type="javax.sql.DataSource" 
-   url="jdbc:derby:gotchaDB;shutdown=true"/>
-</Context>
-```
+  ```
+   <Context>
+     <!--
+     gotchaDBOpen: The name of the datasource that represents Derby database opening connection.
+     gotchaDB: The Derby database name
+  	-->
+     <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" 
+     maxActive="20" maxIdle="10" maxWait="10" 
+     name="jdbc/gotchaDBOpen" type="javax.sql.DataSource" 
+     url="jdbc:derby:gotchaDB;create=true"/>
+     <!--
+     gotchaDBClose: The name of the datasource that represents Derby database closing connection.
+     gotchaDB: The Derby database name
+  	-->
+     <Resource auth="Container" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" 
+     maxActive="20" maxIdle="10" maxWait="10" 
+     name="jdbc/gotchaDBClose" type="javax.sql.DataSource" 
+     url="jdbc:derby:gotchaDB;shutdown=true"/>
+  </Context>
+  ```
  4. In your application, manually add the following resource-ref definition to your web.xml file:
 
-```
-<web-app>
-  <resource-ref>
-    <description>GotCha! Database Connection Open</description>
-    <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
-    <res-type>javax.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-  <resource-ref>
-    <description>GotCha! Database Connection Close</description>
-    <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
-    <res-type>javax.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-</web-app>
-```
+  ```
+  <web-app>
+    <resource-ref>
+      <description>GotCha! Database Connection Open</description>
+      <res-ref-name>jdbc/gotchaDBOpen</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+    </resource-ref>
+    <resource-ref>
+      <description>GotCha! Database Connection Close</description>
+      <res-ref-name>jdbc/gotchaDBClose</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+    </resource-ref>
+  </web-app>
+  ```
 
  5. Now, you should be able to obtain a connection to your database using Tomcat’s connection pool as follows:
 
