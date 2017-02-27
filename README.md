@@ -32,15 +32,19 @@ This project aims to make us implement a simple, but powerful Online Collaborati
 #HOW TO: Use Derby Database as a Web Application data source
 
 1. Obtain the latest Apache Derby realease:
-http://db.apache.org/derby/releases/release-10.12.1.1.cgi
+	http://db.apache.org/derby/releases/release-10.12.1.1.cgi
 
 	1.1 Unzip db-derby-10.12.1.1-bin.zip and obtain the files:
 	derby.jar and derbyclient.jar
-2. Let TOMCAT_DIR be the directory where you unzipped the Tomcat
-package.
-2.2 Copy derby.jar and derbyclient.jar files into WEB-INF/lib into your project folder. Open the file TOMCAT_DIR/conf/context.xml
 
-	2.3 	Add a new element `<Resource>...</Resource>` as a child element of the `<Context>...</Context>` element in context.xml as follows:
+2. Copy derby.jar and derbyclient.jar files into WEB-INF/lib into your project folder.
+
+3. Let TOMCAT_DIR be the directory where you unzipped the Tomcat
+package.
+
+	3.1 Open the file TOMCAT_DIR/conf/context.xml.
+
+	3.2 Add a new element `<Resource>...</Resource>` as a child element of the `<Context>...</Context>` element in context.xml as follows:
 
 ```
  <Context>
