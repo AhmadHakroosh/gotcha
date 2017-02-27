@@ -34,7 +34,7 @@ This project aims to make us implement a simple, but powerful Online Collaborati
 1. Obtain the latest Apache Derby realease:
 http://db.apache.org/derby/releases/release-10.12.1.1.cgi
 
-	1.1 Unzip db-derby-10.11.1.1-bin.zip and obtain the files:
+	1.1 Unzip db-derby-10.12.1.1-bin.zip and obtain the files:
 	derby.jar and derbyclient.jar
 2. Let TOMCAT_DIR be the directory where you unzipped the Tomcat
 package.
