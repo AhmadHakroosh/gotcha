@@ -19,14 +19,14 @@ This project aims to make us implement a simple, but powerful Online Collaborati
 
 #Deployment and Environment 
 
-- Java7JRE [http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html)
-- EclipseIDE(Mars)forJ2E: [https://eclipse.org/downloads/packages/eclipse-ide-java-eedevelopers/mars1](https://eclipse.org/downloads/packages/eclipse-ide-java-eedevelopers/mars1)
+- Java 7 JRE: [http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html)
+- EclipseIDE (Mars) for J2EE: [https://eclipse.org/downloads/packages/eclipse-ide-java-eedevelopers/mars1](https://eclipse.org/downloads/packages/eclipse-ide-java-eedevelopers/mars1)
 - Apache Tomcat v.7: [http://tomcat.apache.org/download-70.cgi](http://tomcat.apache.org/download-70.cgi)
 - Bootstrap: [http://getbootstrap.com/getting-started/#download](http://getbootstrap.com/getting-started/#download)
 - jQuery: [http://code.jquery.com/jquery-1.11.3.min.js](http://code.jquery.com/jquery-1.11.3.min.js)
 - AngularJS: [https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular.min.js](https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular.min.js)
-- Apache Derby : [http://db.apache.org/derby/releases/release-10.12.1.1.cgi](http://db.apache.org/derby/releases/release-10.12.1.1.cgi)
-- Apache Lucene : [http://archive.apache.org/dist/lucene/java/5.5.3/lucene-5.5.3.zip](http://archive.apache.org/dist/lucene/java/5.5.3/lucene-5.5.3.zip)
+- Apache Derby: [http://db.apache.org/derby/releases/release-10.12.1.1.cgi](http://db.apache.org/derby/releases/release-10.12.1.1.cgi)
+- Apache Lucene: [http://archive.apache.org/dist/lucene/java/5.5.3/lucene-5.5.3.zip](http://archive.apache.org/dist/lucene/java/5.5.3/lucene-5.5.3.zip)
 
 
 ----------
