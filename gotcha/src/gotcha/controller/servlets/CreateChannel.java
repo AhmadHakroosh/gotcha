@@ -20,7 +20,7 @@ import gotcha.globals.Globals;
 import gotcha.model.Channel;
 
 /**
- * This Servlet is responsible about creating a new channel
+ * This Servlet is responsible for creating a new channel
  */
 @WebServlet("/createChannel")
 public class CreateChannel extends HttpServlet {

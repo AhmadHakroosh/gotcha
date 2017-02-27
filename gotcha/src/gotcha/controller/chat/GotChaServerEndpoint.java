@@ -29,7 +29,8 @@ import gotcha.model.Message;
 import gotcha.globals.Globals;
 
 /**
- * The WebSocket Server endpoint.
+ * The WebSocket Server End-Point.
+ * This class is responsible for messages delivery from users to users/channel, and storing messages in the database.
  */
 @ServerEndpoint(
 	value = "/{nickname}",
@@ -62,7 +63,8 @@ public class GotChaServerEndpoint {
 	}
 	
 	/**
-	 * Sending 
+	 * Sends a message that has came to the server end-point.
+	 * @param String jsonMessage - a stringified JSON object that describes the message.
 	 */
 	@OnMessage
 	public void send (String jsonMessage) throws IOException {
@@ -92,15 +94,21 @@ public class GotChaServerEndpoint {
 	}
 
 	/**
-	 * This method is the main responsible about logging the user off. first it removes 
-	 * the user's session from the active users map, then it call {@link #forceLogOff(String) forceLogOff()}
-	 * 
+	 * This method is responsible for removing a logging out user from the active list.
+	 * @param Session session
+	 * @throws IOException
 	 */
 	@OnClose
 	public void logout (Session session) throws IOException {
 		active.values().remove(session);
 	}
-
+	
+	/**
+	 * Called when an error has occurred while the websocket connection was active.
+	 * 
+	 * @param Session session
+	 * @param Throwable t
+	 */
 	@OnError
 	public void log (Session session, Throwable t) {
 		// Generally, this occurs on connection reset
@@ -119,9 +127,12 @@ public class GotChaServerEndpoint {
 	}
 
 	/**
-	 * This method broadcast a message to the channel.
-	 * @param channel The required channel
-	 * @param jsonMessage The message to send
+	 * This is the responsible for delivering a message to all subscribed and active users of a channel.
+	 * 
+	 * @param String channel - The required channel.
+	 * @param String jsonMessage - a stringified JSON object of the message to be sent.
+	 * 
+	 * @throws messageDeliveryException
 	 */
 	private void broadcast (String channel, String jsonMessage) throws messageDeliveryException {
 		ArrayList<String> subscribers = Globals.channels.get(channel);
@@ -133,6 +144,10 @@ public class GotChaServerEndpoint {
 	/**
 	 * Notify the specified user with the required message.
 	 * 
+	 * @param String user - The required user.
+	 * @param String jsonMessage - a stringified JSON object of the message to be sent.
+	 * 
+	 * @throws messageDeliveryException
 	 */
 	private boolean notify (String user, String jsonMessage) throws messageDeliveryException {
 		if (active.containsKey(user)) {
@@ -150,7 +165,12 @@ public class GotChaServerEndpoint {
 	}
 	
 	/**
-	 * store the received message before sending it to the addressee.
+	 * Stores a message into the database.
+	 * 
+	 * @param Message message - a message to be stored.
+	 * 
+	 * @return int - the stored message id.
+	 * 
 	 */
 	private int store (Message message) {
 		int messageId = 1;
@@ -185,7 +205,10 @@ public class GotChaServerEndpoint {
 		return messageId;
 	}
 	/**
-	 * update the message time and parent (in case it is a reply).
+	 * Updates the message parent LastUpdate (in case it is a reply).
+	 * 
+	 * @param Message message - a child message to update its parent
+	 * 
 	 */
 	private void updateParent (Message message) {
 		try {
@@ -201,12 +224,16 @@ public class GotChaServerEndpoint {
 			statement.close();
 			connection.close();
 			
-		} catch (SQLException e ){
+		} catch (SQLException e ) {
 			System.out.println("An error has occured while trying to execute the query!");
 		}
 	}
 	/**
-	 * log the user off, update his status to "away" , last seen to "now"
+	 * Logs the user off, update his status to "away" , last seen to "now".
+	 * Called only when the closes the application window without logging out, or on an error.
+	 * 
+	 * @param String user - the user to be logged off.
+	 * 
 	 */
     private void forceLogOff (String user) {
     	String status = "away";
@@ -230,7 +257,9 @@ public class GotChaServerEndpoint {
     }
     /**
 	 * update the new logged in user's status (active) , 
-	 * last seen(now) in the USERS database
+	 * last seen(now) in the USERS database.
+	 * 
+	 * @param String user - the user to be set as active.
 	 */
     private void connectUser (String user) {
     	String status = "active";
@@ -252,7 +281,14 @@ public class GotChaServerEndpoint {
 			System.out.println("An error has occured while trying to execute the query!");
 		}
     }
-    
+    /**
+     * Recreates the message before sending it to the destination, it adds its correct id.
+     * 
+     * @param String textMessage - a stringified JSON object of the message.
+     * @param int id - the message id
+     * 
+     * @return String the modified message
+     */
     public String recreate (String textMessage, int id) {
     	JsonParser parser = new JsonParser();
     	JsonElement jsonMessage = parser.parse(textMessage);

@@ -73,18 +73,20 @@ public class Search extends HttpServlet {
 		// Prepare a JSON to be forwarded to a new servlet or returned in the response
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json; charset=UTF-8");
-		
+		// Search the index for the provided query
 		HashMap<String, Object> results = Globals.searchEngine.search(query);
 		ArrayList<Channel> channels = new ArrayList<Channel>();
 		ArrayList<User> users = new ArrayList<User>();
 		int i = 1;
 		String data = "{";
-		
+		// For each result..
 		for (Object object : results.values()) {
+			// If it is a user, add it to users
 			if (object instanceof User) users.add((User) object);
+			// else, add it to channels
 			else channels.add((Channel) object);
 		}
-		
+		// Start building the response
 		data += "\"channels\": {";
 		
 		for (Channel channel : channels) {
@@ -111,7 +113,7 @@ public class Search extends HttpServlet {
 		
 		data += "}"
 			 + "}";
-		
+		// Respond
 		out.println(data);
 		out.close();
 	}

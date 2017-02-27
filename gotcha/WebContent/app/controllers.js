@@ -642,6 +642,10 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				});
 				if (data.status == "success") {
 					delete $scope.channels[channel];
+					// Open another channel/direct-message
+					if ($scope.length($scope.channels) > 0) $scope.openChannel(Object.keys($scope.channels)[0]);
+					else if ($scope.length($scope.directMessages) > 0) $scope.openDirectMessage(Object.keys($scope.directMessages)[0]);
+					
 					$timeout(function () {
 						$rootScope.route = data.route;					
 					}, 1000);
@@ -651,6 +655,8 @@ gotcha.controller('mainController', ['$scope', '$rootScope', '$location', '$http
 				console.log("Cannot unsubscribe from the channel!");
 			}
 		);
+
+				
 	};
 	
 	// Open channel chat method

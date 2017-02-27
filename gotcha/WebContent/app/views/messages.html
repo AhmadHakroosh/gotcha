@@ -34,7 +34,7 @@
 						</h5>
 						<div class="chat-header-info" ng-show="isChannel">
 							<div class="chat-header-info-item chat-members"><span id="header-member-count" class="icon glyphicon glyphicon-user" ng-click="showSubscribersList=true"></span>{{isChannel ? length(activeChat.subscribers) : 0}}</div>
-							<div class="chat-header-info-item chat-purpose">{{shorten(70, activeChat.description)}}</div>
+							<div class="chat-header-info-item chat-purpose">{{activeChat.description == "null" ? "no description" : shorten(70, activeChat.description)}}</div>
 							<div ng-show="showSubscribersList" id="channel-subscribers-list">
 								<ul>
 									<span class="bold">Members <span>({{isChannel ? length(activeChat.subscribers) : 0}})</span></span>

@@ -113,7 +113,14 @@ public class GotchaSearchEngine {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Resposible for providing search service to the users.
+	 * Find searched channel names, users, or user's subscribed channels.
+	 * 
+	 * @param GotchaQuery gotchaQuery - a custom query built specially for gotcha.
+	 * 
+	 * @return HashMap<String, Object> - top 100 of found channels and users.
+	 */
 	public HashMap<String, Object> search (GotchaQuery gotchaQuery) {
 		
 		HashMap<String, Object> found = new HashMap<String ,Object>();
@@ -193,21 +200,25 @@ public class GotchaSearchEngine {
 		
 		return found;
 	}
-	
+	/**
+	 * Adds a newly created user or channel to the index
+	 * 
+	 * @param Object object - user/channel
+	 */
 	public void add (Object object) {
 		try {
 			IndexWriterConfig config = new IndexWriterConfig(analyzer);
 			config.setSimilarity(similarity);
 			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			indexWriter = new IndexWriter(directory, config);
-			
+			// If it is a user
 			if (object instanceof User) {
 				User user = (User) object;
 				Document document = new Document();
 				document.add(new TextField("type", "User", Field.Store.YES));
 				document.add(new TextField("name", user.nickName(), Field.Store.YES));
 				indexWriter.addDocument(document);
-				
+			// else, it is a channel	
 			} else {
 				Channel channel = (Channel) object;
 				Document document = new Document();
@@ -215,7 +226,7 @@ public class GotchaSearchEngine {
 				document.add(new TextField("name", channel.name(), Field.Store.YES));
 				indexWriter.addDocument(document);
 			}
-			
+			// Push changes
 			indexWriter.commit();
 			indexWriter.close();
 			
@@ -223,21 +234,25 @@ public class GotchaSearchEngine {
 			System.out.println("An unknown error has occurred while trying to open gotchaIndex!");
 		}
 	}
-	
+	/**
+	 * Removes a deleted channel or user from the index.
+	 * 
+	 * @param Object object - channel/user to be deleted.
+	 */
 	public void remove (Object object) {
 		try {
 			IndexWriterConfig config = new IndexWriterConfig(analyzer);
 			config.setSimilarity(similarity);
 			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			indexWriter = new IndexWriter(directory, config);
-			
+			// It is a user
 			if (object instanceof User) {
 				User user = (User) object;
 				String [] fields = {"type", "name"};
 				String [] queries = {"User", user.nickName()};
 				Query query = MultiFieldQueryParser.parse(queries, fields, analyzer);
 				indexWriter.deleteDocuments(query);
-				
+			// else, it is a channel
 			} else {
 				Channel channel = (Channel) object;
 				String [] fields = {"type", "name"};
