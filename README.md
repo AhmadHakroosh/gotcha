@@ -9,7 +9,7 @@ Dr. Haggai Roitman, IBM Research - Haifa
 **Publication date:** 1/1/2017
 
 **Scope**
-during the project we explore, design and implement a web application that is built on top of the various client-side and server-side technologies that were tought during the semester.
+during the project we explore, design and implement a web application that is built on top of the various client-side and server-side technologies that were taught during the semester.
 
 **Project general description**
 This project aims to make us implement a simple, but powerful Online Collaboration system ([https://en.wikipedia.org/wiki/Computer-supported_collaboration](https://en.wikipedia.org/wiki/Computer-supported_collaboration)) – Computer-supported collaboration (CSC) research focuses on technology that affects groups, organizations, communities and societies, e.g., voice mail and text chat. It grew from cooperative work study of supporting people's work activities and working relationships. As net technology increasingly supported a wide range of recreational and social activities, consumer markets expanded the user base, enabling more and more people to connect online to create what researchers have called a computer supported cooperative work, which includes "all contexts in which technology is used to mediate human activities such as communication, coordination, cooperation, competition, entertainment, games, art, and music" (from CSCW 2004).
