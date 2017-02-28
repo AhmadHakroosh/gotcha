@@ -97,7 +97,7 @@ package.
   import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
   //obtain GotCha data source from Tomcat's context
   Context context = new InitialContext();
-  BasicDataSource gotchaDB = (BasicDataSource)context.lookup(“java:comp/env/jdbc/gotchaDB);
+  BasicDataSource gotchaDB = (BasicDataSource)context.lookup("java:comp/env/jdbc/gotchaDB");
   Connection conn = gotchaDB.getConnection();
   //use connection as you wish...but close after usage!
   //It is important for correct connection pool management
